@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico | UPSIDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080E;--surface:#13131E;--surface2:#1e1e2a;--border:#2a2a3a;
+  --text:#F2F2EE;--text2:#8A8A9E;--lime:#BFEA2E;--lime-dim:#5C7A00;
+  --red:#ef4444;--font:'Inter',system-ui,sans-serif;--font-display:'Space Grotesk',system-ui,sans-serif;
+}
+html{font-size:16px}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;
+  -webkit-font-smoothing:antialiased;
+}
+.container{width:100%;max-width:520px;padding:1.5rem;margin:0 auto}
+.container.centered{display:flex;flex-direction:column;justify-content:center;min-height:calc(100dvh - 3px)}
+/* Progress bar */
+.progress-wrap{
+  position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100;
+}
+.progress-bar{height:100%;background:var(--lime);transition:width .4s ease}
+/* Header */
+.header{
+  text-align:center;padding:2rem 0 1rem;
+}
+.logo{margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;gap:.75rem}
+.logo svg{flex-shrink:0}
+.logo-text{font-family:var(--font-display);font-size:1.5rem;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.step-label{font-size:.75rem;color:var(--text2)}
+/* Steps */
+.step{
+  display:none;opacity:0;
+  transform:translateY(12px);
+  transition:opacity .35s ease, transform .35s ease;
+}
+.step.active{display:block}
+.step.visible{opacity:1;transform:translateY(0)}
+.step h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;line-height:1.3;margin-bottom:.5rem;letter-spacing:-.02em}
+.step .subtitle{color:var(--text2);font-size:.9375rem;line-height:1.5;margin-bottom:2rem}
+.step.step-welcome{text-align:center}
+.step.step-welcome h2{font-size:1.75rem}
+.step.step-welcome .subtitle{max-width:360px;margin-left:auto;margin-right:auto}
+/* Form elements */
+label.field{display:block;margin-bottom:1.5rem}
+label.field .label-text{
+  font-size:.8125rem;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;display:block;
+}
+input[type="text"],input[type="email"],input[type="tel"],input[type="number"],
+select,textarea{
+  width:100%;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);
+  border-radius:.5rem;color:var(--text);font-family:var(--font);font-size:1rem;
+  outline:none;transition:border-color .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--lime)}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0a0' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
+textarea{resize:vertical;min-height:80px}
+/* Visual selectors (card grid) */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
+.card-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.card-grid.cols-1{grid-template-columns:1fr}
+.card{
+  padding:1rem;background:var(--surface);border:2px solid var(--border);
+  border-radius:.75rem;text-align:center;cursor:pointer;
+  transition:border-color .2s, background .2s;font-size:.9375rem;
+  user-select:none;
+}
+.card:hover{border-color:#444}
+.card.selected{border-color:var(--lime);background:var(--surface2)}
+.card .card-icon{font-size:1.5rem;margin-bottom:.375rem}
+.card .card-label{font-weight:500}
+.card .card-sub{font-size:.75rem;color:var(--text2);margin-top:.125rem}
+/* Chips (multi-select) */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.chip{
+  padding:.5rem 1rem;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:2rem;font-size:.875rem;cursor:pointer;transition:all .2s;
+  user-select:none;
+}
+.chip:hover{border-color:#444}
+.chip.selected{border-color:var(--lime);background:rgba(132,204,22,.1);color:var(--lime)}
+/* Slider */
+.slider-wrap{margin-bottom:1.5rem}
+.slider-wrap .label-text{
+  font-size:.8125rem;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:block;
+}
+.slider-track{position:relative;padding:0 .5rem}
+input[type="range"]{
+  width:100%;appearance:none;height:6px;background:var(--border);border-radius:3px;outline:none;
+}
+input[type="range"]::-webkit-slider-thumb{
+  appearance:none;width:22px;height:22px;border-radius:50%;background:var(--lime);
+  cursor:pointer;border:3px solid var(--bg);
+}
+.slider-value{
+  text-align:center;font-size:2rem;font-weight:700;color:var(--lime);margin-top:.5rem;
+}
+/* Pipeline stages */
+.pipeline{margin-bottom:1.5rem;position:relative;padding-left:1.5rem}
+.pipeline::before{
+  content:'';position:absolute;left:.6875rem;top:1.25rem;bottom:1.25rem;width:2px;
+  background:var(--border);border-radius:1px;
+}
+.pipeline-stage{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.875rem 1rem;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:.75rem;margin-bottom:.625rem;transition:all .25s;cursor:pointer;
+  user-select:none;position:relative;
+}
+.pipeline-stage:hover{border-color:rgba(191,234,46,.25);background:var(--surface2)}
+.pipeline-stage.active{border-color:var(--lime);background:rgba(191,234,46,.04)}
+.pipeline-stage .stage-toggle{
+  width:20px;height:20px;border-radius:6px;border:2px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .25s;
+}
+.pipeline-stage.active .stage-toggle{border-color:var(--lime);background:var(--lime)}
+.pipeline-stage.active .stage-toggle::after{content:'';width:8px;height:5px;border-left:2px solid var(--bg);border-bottom:2px solid var(--bg);transform:rotate(-45deg) translateY(-1px);display:block}
+.pipeline-stage .stage-text{flex:1;font-size:.9375rem;line-height:1.3}
+.pipeline-stage .stage-number{
+  position:absolute;left:-1.5rem;width:1.375rem;height:1.375rem;border-radius:50%;
+  background:var(--surface);border:2px solid var(--border);
+  font-size:.6875rem;font-weight:700;color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;z-index:1;
+}
+.pipeline-stage.active .stage-number{border-color:var(--lime);background:var(--lime);color:var(--bg)}
+/* Handler selector (appears when stage is active) */
+.handler-row{
+  display:none;padding:.375rem 0 .375rem 0;margin-left:0;
+}
+.handler-row.visible{display:flex;gap:.375rem;flex-wrap:wrap;padding-left:.25rem}
+.handler-btn{
+  padding:.4rem .875rem;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:2rem;font-size:.75rem;cursor:pointer;transition:all .2s;
+  color:var(--text2);font-family:var(--font);font-weight:500;
+}
+.handler-btn:hover{border-color:rgba(191,234,46,.3);color:var(--text)}
+.handler-btn.selected{border-color:var(--lime);color:var(--lime);background:rgba(191,234,46,.08)}
+/* Bottleneck selector */
+.bottleneck-wrap{margin-top:1.5rem;padding:1.25rem;background:linear-gradient(135deg,var(--surface),var(--surface2));border-radius:1rem;border:1px solid var(--border)}
+.bottleneck-wrap .label-text{margin-bottom:1rem;font-size:.875rem;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0}
+.bottleneck-option{
+  padding:.75rem 1rem;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:.75rem;margin-bottom:.5rem;cursor:pointer;font-size:.875rem;
+  transition:all .2s;display:flex;align-items:center;gap:.625rem;width:100%;text-align:left;color:var(--text);
+  font-family:var(--font);
+}
+.bottleneck-option::before{
+  content:'';width:16px;height:16px;border-radius:50%;border:2px solid var(--border);
+  flex-shrink:0;transition:all .2s;
+}
+.bottleneck-option:hover{border-color:rgba(191,234,46,.3);background:var(--surface2)}
+.bottleneck-option.selected{border-color:var(--lime);background:rgba(191,234,46,.06)}
+.bottleneck-option.selected::before{border-color:var(--lime);background:var(--lime);box-shadow:inset 0 0 0 3px var(--surface)}
+/* Buttons */
+.btn-row{display:flex;gap:.75rem;margin-top:2rem}
+.btn{
+  flex:1;padding:.875rem 1.5rem;border:none;border-radius:.5rem;
+  font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;
+  transition:all .2s;
+}
+.btn-primary{background:var(--lime);color:var(--bg)}
+.btn-primary:hover{background:var(--lime-dim)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:#555}
+.btn-full{width:100%;padding:1rem;font-size:1.0625rem}
+/* Thank you */
+.thankyou{text-align:center;padding:3rem 0}
+.thankyou .check{
+  width:64px;height:64px;border-radius:50%;background:var(--lime);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;
+  font-size:1.75rem;color:var(--bg);
+}
+.thankyou h2{margin-bottom:.75rem}
+.thankyou p{color:var(--text2);line-height:1.6}
+/* Responsive */
+@media(max-width:400px){
+  .card-grid{grid-template-columns:1fr}
+  .container{padding:1rem}
+}
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .4s ease forwards}
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="container centered" id="mainContainer">
+<div class="header">
+  <div class="logo"><svg width="48" height="28" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="22" height="52" rx="3" fill="#F2F2EE"/><rect x="0" y="38" width="64" height="14" rx="3" fill="#F2F2EE"/><rect x="42" y="0" width="22" height="52" rx="3" fill="#BFEA2E"/></svg><span class="logo-text">UPSIDE</span></div>
+  <div class="step-label" id="stepLabel"></div>
+</div>
+
+<!-- STEP 1: Welcome -->
+<div class="step step-welcome active visible" data-step="1">
+  <h2>Santiago nos contó sobre tu negocio.</h2>
+  <p class="subtitle">Construimos sistemas de IA que manejan tus llamadas y mensajes automáticamente — para que puedas enfocarte en crecer.<br><br>Esto toma 3 minutos. Vamos a mapear tu proceso para diseñarte una solución.</p>
+  <button class="btn btn-primary btn-full" onclick="goTo(2)">Empezar</button>
+</div>
+
+<!-- STEP 2: Tu Negocio -->
+<div class="step" data-step="2">
+  <h2>Tu negocio</h2>
+  <p class="subtitle">Cuéntaños lo básico para entender tu operación.</p>
+
+  <label class="field">
+    <span class="label-text">Nombre del negocio</span>
+    <input type="text" id="businessName" placeholder="Ej: Lime Logistics Sydney">
+  </label>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Servicio principal</span>
+    <div class="card-grid" data-field="mainService">
+      <div class="card" data-value="Logística de bicicletas"><div class="card-icon">🚲</div><div class="card-label">Logística de bicicletas</div></div>
+      <div class="card" data-value="Gestión de baterías"><div class="card-icon">🔋</div><div class="card-label">Gestión de baterías</div></div>
+      <div class="card" data-value="Operación de flota"><div class="card-icon">🚐</div><div class="card-label">Operación de flota</div></div>
+      <div class="card" data-value="Múltiples servicios"><div class="card-icon">⚡</div><div class="card-label">Múltiples servicios</div></div>
+    </div>
+  </div>
+
+  <label class="field">
+    <span class="label-text">Cuántos agentes/conductores?</span>
+    <input type="number" id="teamSize" placeholder="Ej: 5" min="1">
+  </label>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cuánto tiempo llevas operando?</span>
+    <div class="card-grid" data-field="timeRunning">
+      <div class="card" data-value="Menos de 6 meses"><div class="card-label">< 6 meses</div></div>
+      <div class="card" data-value="6-12 meses"><div class="card-label">6-12 meses</div></div>
+      <div class="card" data-value="1-2 años"><div class="card-label">1-2 años</div></div>
+      <div class="card" data-value="2+ años"><div class="card-label">2+ años</div></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">Atras</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Siguiente</button>
+  </div>
+</div>
+
+<!-- STEP 3: Sobrecarga de Comunicación -->
+<div class="step" data-step="3">
+  <h2>Tu comunicacion</h2>
+  <p class="subtitle">Entendemos que estas saturado. Ayudaños a dimensionar el volumen.</p>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Llamadas por dia</span>
+    <div class="card-grid" data-field="callsPerDay">
+      <div class="card" data-value="10-20"><div class="card-icon">📞</div><div class="card-label">10-20</div></div>
+      <div class="card" data-value="20-50"><div class="card-icon">📞📞</div><div class="card-label">20-50</div></div>
+      <div class="card" data-value="50-100"><div class="card-icon">🔥</div><div class="card-label">50-100</div></div>
+      <div class="card" data-value="100+"><div class="card-icon">💀</div><div class="card-label">100+</div></div>
+    </div>
+  </div>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Mensajes por dia (WhatsApp, SMS, etc.)</span>
+    <div class="card-grid" data-field="messagesPerDay">
+      <div class="card" data-value="10-20"><div class="card-icon">💬</div><div class="card-label">10-20</div></div>
+      <div class="card" data-value="20-50"><div class="card-icon">💬💬</div><div class="card-label">20-50</div></div>
+      <div class="card" data-value="50-100"><div class="card-icon">🔥</div><div class="card-label">50-100</div></div>
+      <div class="card" data-value="100+"><div class="card-icon">💀</div><div class="card-label">100+</div></div>
+    </div>
+  </div>
+
+  <div class="slider-wrap">
+    <span class="label-text">Qué % logras responder?</span>
+    <div class="slider-track">
+      <input type="range" id="responseRate" min="0" max="100" value="50">
+    </div>
+    <div class="slider-value" id="responseRateValue">50%</div>
+  </div>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Canales que usas</span>
+    <div class="chips" data-field="channels">
+      <div class="chip" data-value="WhatsApp">WhatsApp</div>
+      <div class="chip" data-value="Teléfono">Teléfono</div>
+      <div class="chip" data-value="SMS">SMS</div>
+      <div class="chip" data-value="Email">Email</div>
+      <div class="chip" data-value="Facebook">Facebook</div>
+      <div class="chip" data-value="Instagram">Instagram</div>
+      <div class="chip" data-value="Otro">Otro</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">Atras</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Siguiente</button>
+  </div>
+</div>
+
+<!-- STEP 4: Pipeline -->
+<div class="step" data-step="4">
+  <h2>Tu pipeline</h2>
+  <p class="subtitle">Activa las etapas que aplican a tu negocio y dinos quien las maneja.</p>
+
+  <div class="pipeline" id="pipeline">
+    <div class="pipeline-stage" data-stage="Llega una consulta nueva">
+      <div class="stage-number">1</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Llega una consulta nueva</div>
+    </div>
+    <div class="handler-row" data-handler-for="Llega una consulta nueva">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Responder con precio/disponibilidad">
+      <div class="stage-number">2</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Responder con precio/disponibilidad</div>
+    </div>
+    <div class="handler-row" data-handler-for="Responder con precio/disponibilidad">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Agendar recolección o entrega">
+      <div class="stage-number">3</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Agendar recolección o entrega</div>
+    </div>
+    <div class="handler-row" data-handler-for="Agendar recolección o entrega">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Asignar a conductor/agente">
+      <div class="stage-number">4</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Asignar a conductor/agente</div>
+    </div>
+    <div class="handler-row" data-handler-for="Asignar a conductor/agente">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Confirmar trabajo completado">
+      <div class="stage-number">5</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Confirmar trabajo completado</div>
+    </div>
+    <div class="handler-row" data-handler-for="Confirmar trabajo completado">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Manejar pago/facturación">
+      <div class="stage-number">6</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Manejar pago/facturación</div>
+    </div>
+    <div class="handler-row" data-handler-for="Manejar pago/facturación">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+
+    <div class="pipeline-stage" data-stage="Seguimiento / clientes recurrentes">
+      <div class="stage-number">7</div>
+      <div class="stage-toggle"></div>
+      <div class="stage-text">Seguimiento / clientes recurrentes</div>
+    </div>
+    <div class="handler-row" data-handler-for="Seguimiento / clientes recurrentes">
+      <button class="handler-btn" data-handler="me">Yo</button>
+      <button class="handler-btn" data-handler="team">Equipo</button>
+      <button class="handler-btn" data-handler="nobody">Nadie</button>
+      <button class="handler-btn" data-handler="automated">Automatizado</button>
+    </div>
+  </div>
+
+  <div class="bottleneck-wrap" id="bottleneckWrap" style="display:none">
+    <span class="label-text">Cuál etapa te causa MÁS problemas?</span>
+    <div id="bottleneckOptions"></div>
+  </div>
+
+  <label class="field" style="margin-top:1.5rem">
+    <span class="label-text">Algo más en tu proceso? (opcional)</span>
+    <textarea id="pipelineNotes" placeholder="Ej: también manejo inventario de repuestos..."></textarea>
+  </label>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">Atras</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Siguiente</button>
+  </div>
+</div>
+
+<!-- STEP 5: Cuello de botella -->
+<div class="step" data-step="5">
+  <h2>El cuello de botella</h2>
+  <p class="subtitle">Identifiquemos donde esta el mayor impacto.</p>
+
+  <label class="field">
+    <span class="label-text">Qué es lo #1 que desearías no hacer manualmente?</span>
+    <textarea id="topManualTask" placeholder="Ej: responder las mismas preguntas de precio todo el dia..."></textarea>
+  </label>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Qué pasa con los mensajes que no contestas?</span>
+    <div class="card-grid cols-1" data-field="missedOutcome">
+      <div class="card" data-value="Se van con la competencia"><div class="card-label">Se van con la competencia</div></div>
+      <div class="card" data-value="Vuelven a llamar despues"><div class="card-label">Vuelven a llamar despues</div></div>
+      <div class="card" data-value="Se pierden para siempre"><div class="card-label">Se pierden para siempre</div></div>
+      <div class="card" data-value="No se"><div class="card-label">No se</div></div>
+    </div>
+  </div>
+
+  <div id="automationPriorityWrap">
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Si pudiéramos automatizar UNA cosa, cuál sería?</span>
+    <div class="card-grid cols-1" data-field="automationPriority" id="automationPriorityCards"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(4)">Atras</button>
+    <button class="btn btn-primary" onclick="goTo(6)">Siguiente</button>
+  </div>
+</div>
+
+<!-- STEP 6: Contacto -->
+<div class="step" data-step="6">
+  <h2>Hablemos</h2>
+  <p class="subtitle">Déjaños tus datos y te contactamos con una propuesta personalizada.</p>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cómo prefieres que te contactemos?</span>
+    <div class="card-grid cols-3" data-field="contactMethod">
+      <div class="card" data-value="WhatsApp"><div class="card-icon">💬</div><div class="card-label">WhatsApp</div></div>
+      <div class="card" data-value="Email"><div class="card-icon">✉️</div><div class="card-label">Email</div></div>
+      <div class="card" data-value="Llamada"><div class="card-icon">📞</div><div class="card-label">Llamada</div></div>
+    </div>
+  </div>
+
+  <label class="field">
+    <span class="label-text">Tu telefono</span>
+    <input type="tel" id="contactPhone" placeholder="+61 4XX XXX XXX">
+  </label>
+
+  <label class="field">
+    <span class="label-text">Tu email</span>
+    <input type="email" id="contactEmail" placeholder="tu@email.com">
+  </label>
+
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Disponibilidad para una llamada de 15 min</span>
+    <div class="card-grid cols-3" data-field="availability">
+      <div class="card" data-value="Esta semana"><div class="card-label">Esta semana</div></div>
+      <div class="card" data-value="La próxima"><div class="card-label">La próxima</div></div>
+      <div class="card" data-value="Soy flexible"><div class="card-label">Flexible</div></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(5)">Atras</button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Enviar diagnóstico</button>
+  </div>
+</div>
+
+<!-- THANK YOU -->
+<div class="step" data-step="7">
+  <div class="thankyou">
+    <div class="check">✓</div>
+    <h2>Tenemos todo lo que necesitamos.</h2>
+    <p>Espera una propuesta personalizada en las próximas 24 horas.<br><br>Si necesitas algo antes, escríbele a Santiago.</p>
+    <div style="margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:.25rem">
+      <svg width="36" height="21" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="22" height="52" rx="3" fill="#F2F2EE"/><rect x="0" y="38" width="64" height="14" rx="3" fill="#F2F2EE"/><rect x="42" y="0" width="22" height="52" rx="3" fill="#BFEA2E"/></svg>
+      <div style="font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:-.02em;color:var(--text2);margin-top:.25rem">UPSIDE</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// State
+const state = {
+  currentStep: 1,
+  totalSteps: 6,
+  mainService: null,
+  timeRunning: null,
+  callsPerDay: null,
+  messagesPerDay: null,
+  channels: [],
+  pipelineStages: {},
+  bottleneck: null,
+  missedOutcome: null,
+  automationPriority: null,
+  contactMethod: null,
+  availability: null,
+};
+
+// Card grid selection (single select)
+document.querySelectorAll('.card-grid').forEach(grid => {
+  grid.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      grid.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const field = grid.dataset.field;
+      if (field) state[field] = card.dataset.value;
+    });
+  });
+});
+
+// Chips (multi-select)
+document.querySelectorAll('.chips').forEach(chipGroup => {
+  chipGroup.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+      const field = chipGroup.dataset.field;
+      if (field) {
+        state[field] = Array.from(chipGroup.querySelectorAll('.chip.selected'))
+          .map(c => c.dataset.value);
+      }
+    });
+  });
+});
+
+// Slider
+const slider = document.getElementById('responseRate');
+const sliderVal = document.getElementById('responseRateValue');
+if (slider) {
+  slider.addEventListener('input', () => {
+    sliderVal.textContent = slider.value + '%';
+  });
+}
+
+// Pipeline stages
+document.querySelectorAll('.pipeline-stage').forEach(stage => {
+  stage.addEventListener('click', () => {
+    const name = stage.dataset.stage;
+    stage.classList.toggle('active');
+    const handlerRow = document.querySelector('[data-handler-for="' + name + '"]');
+    if (stage.classList.contains('active')) {
+      handlerRow.classList.add('visible');
+      if (!state.pipelineStages[name]) state.pipelineStages[name] = { handler: null };
+    } else {
+      handlerRow.classList.remove('visible');
+      delete state.pipelineStages[name];
+    }
+    updateBottleneckOptions();
+    updateAutomationPriority();
+  });
+});
+
+// Handler buttons
+document.querySelectorAll('.handler-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const row = btn.closest('.handler-row');
+    row.querySelectorAll('.handler-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const stageName = row.dataset.handlerFor;
+    if (state.pipelineStages[stageName]) {
+      state.pipelineStages[stageName].handler = btn.dataset.handler;
+    }
+  });
+});
+
+function updateBottleneckOptions() {
+  const wrap = document.getElementById('bottleneckWrap');
+  const container = document.getElementById('bottleneckOptions');
+  const activeStages = Object.keys(state.pipelineStages);
+  if (activeStages.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  container.innerHTML = '';
+  activeStages.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'bottleneck-option' + (state.bottleneck === name ? ' selected' : '');
+    btn.textContent = name;
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.bottleneck-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.bottleneck = name;
+    });
+    container.appendChild(btn);
+  });
+}
+
+function updateAutomationPriority() {
+  const container = document.getElementById('automationPriorityCards');
+  const activeStages = Object.keys(state.pipelineStages);
+  container.innerHTML = '';
+  activeStages.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'card' + (state.automationPriority === name ? ' selected' : '');
+    card.dataset.value = name;
+    card.innerHTML = '<div class="card-label">' + name + '</div>';
+    card.addEventListener('click', () => {
+      container.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.automationPriority = name;
+    });
+    container.appendChild(card);
+  });
+}
+
+// Navigation
+function goTo(step) {
+  const current = document.querySelector('.step.active');
+  if (current) {
+    current.classList.remove('visible');
+    setTimeout(() => {
+      current.classList.remove('active');
+      showStep(step);
+    }, 200);
+  } else {
+    showStep(step);
+  }
+}
+
+function showStep(step) {
+  state.currentStep = step;
+  const el = document.querySelector('[data-step="' + step + '"]');
+  if (!el) return;
+  el.classList.add('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.classList.add('visible');
+    });
+  });
+  // Update progress
+  const pct = step <= state.totalSteps ? ((step - 1) / state.totalSteps) * 100 : 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  // Update label
+  const labels = ['', 'Bienvenida', 'Tu negocio', 'Comunicación', 'Pipeline', 'Cuello de botella', 'Contacto', ''];
+  document.getElementById('stepLabel').textContent = step > 0 && step <= state.totalSteps ? 'Paso ' + step + ' de ' + state.totalSteps + ' — ' + labels[step] : '';
+  // Populate dynamic fields when entering step 5
+  if (step === 5) updateAutomationPriority();
+  // Remove centering after welcome step
+  const mc = document.getElementById('mainContainer');
+  if (step === 1) mc.classList.add('centered');
+  else mc.classList.remove('centered');
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Submit
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const pipelineArr = Object.entries(state.pipelineStages).map(([stage, data]) => ({
+    stage,
+    handler: data.handler || 'unknown',
+    is_bottleneck: state.bottleneck === stage,
+  }));
+
+  const payload = {
+    business_name: document.getElementById('businessName')?.value || '',
+    main_service: state.mainService,
+    team_size: parseInt(document.getElementById('teamSize')?.value) || null,
+    time_running: state.timeRunning,
+    calls_per_day: state.callsPerDay,
+    messages_per_day: state.messagesPerDay,
+    response_rate: parseInt(document.getElementById('responseRate')?.value) || 50,
+    channels: state.channels,
+    pipeline_stages: pipelineArr,
+    missed_calls_outcome: state.missedOutcome,
+    top_manual_task: document.getElementById('topManualTask')?.value || '',
+    automation_priority: state.automationPriority,
+    contact_method: state.contactMethod,
+    contact_info: {
+      phone: document.getElementById('contactPhone')?.value || '',
+      email: document.getElementById('contactEmail')?.value || '',
+    },
+    availability: state.availability,
+    source: 'diagnostic_form',
+  };
+
+  try {
+    const res = await fetch("https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/client-diagnostic", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Server error');
+    goTo(7);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar diagnóstico';
+    alert('Error al enviar. Intenta de nuevo.');
+  }
+}
+
+// Init
+showStep(1);
+</script>
+</body>
+</html>
