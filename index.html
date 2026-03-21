@@ -192,6 +192,11 @@ input[type="range"]::-webkit-slider-thumb{
 /* Animations */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{animation:fadeUp .4s ease forwards}
+.step-error{color:var(--red);font-size:.8125rem;text-align:center;min-height:1rem;margin-top:.25rem}
+.card-grid.error .card{border-color:var(--red);animation:shake .3s}
+.chips.error .chip{border-color:var(--red);animation:shake .3s}
+.field.error input,.field.error textarea{border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 </style>
 </head>
 <body>
@@ -202,6 +207,7 @@ input[type="range"]::-webkit-slider-thumb{
 <div class="header">
   <div class="logo"><svg width="48" height="28" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="22" height="52" rx="3" fill="#F2F2EE"/><rect x="0" y="38" width="64" height="14" rx="3" fill="#F2F2EE"/><rect x="42" y="0" width="22" height="52" rx="3" fill="#BFEA2E"/></svg><span class="logo-text">UPSIDE</span></div>
   <div class="step-label" id="stepLabel"></div>
+  <div class="step-error" id="stepError"></div>
 </div>
 
 <!-- STEP 1: Welcome -->
@@ -510,6 +516,7 @@ function renderPipeline(serviceName) {
 
     // Stage click listener
     stageDiv.addEventListener('click', () => {
+      clearStepError();
       stageDiv.classList.toggle('active');
       if (stageDiv.classList.contains('active')) {
         handlerRow.classList.add('visible');
@@ -517,6 +524,7 @@ function renderPipeline(serviceName) {
       } else {
         handlerRow.classList.remove('visible');
         delete state.pipelineStages[stageName];
+        if (state.bottleneck === stageName) state.bottleneck = null;
       }
       updateBottleneckOptions();
     });
@@ -528,6 +536,15 @@ function renderPipeline(serviceName) {
   updateBottleneckOptions();
 }
 
+// Clear validation errors on interaction
+function clearStepError() {
+  const errEl = document.getElementById('stepError');
+  if (errEl) errEl.textContent = '';
+  document.querySelectorAll('.card-grid.error').forEach(g => g.classList.remove('error'));
+  document.querySelectorAll('.chips.error').forEach(g => g.classList.remove('error'));
+  document.querySelectorAll('.field.error').forEach(f => f.classList.remove('error'));
+}
+
 // Card grid selection (single select)
 document.querySelectorAll('.card-grid').forEach(grid => {
   grid.querySelectorAll('.card').forEach(card => {
@@ -536,6 +553,7 @@ document.querySelectorAll('.card-grid').forEach(grid => {
       card.classList.add('selected');
       const field = grid.dataset.field;
       if (field) state[field] = card.dataset.value;
+      clearStepError();
     });
   });
 });
@@ -550,6 +568,7 @@ document.querySelectorAll('.chips').forEach(chipGroup => {
         state[field] = Array.from(chipGroup.querySelectorAll('.chip.selected'))
           .map(c => c.dataset.value);
       }
+      clearStepError();
     });
   });
 });
@@ -561,6 +580,90 @@ if (slider) {
   slider.addEventListener('input', () => {
     sliderVal.textContent = slider.value + '%';
   });
+}
+
+// Clear errors when typing in text inputs
+document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],textarea').forEach(el => {
+  el.addEventListener('input', clearStepError);
+});
+
+// Validation
+function validateStep(stepNum) {
+  if (stepNum === 2) {
+    const bName = document.getElementById('businessName')?.value?.trim();
+    if (!bName) {
+      document.getElementById('businessName')?.closest('.field')?.classList.add('error');
+    }
+    if (!state.mainService) {
+      document.querySelector('.card-grid[data-field="mainService"]')?.classList.add('error');
+    }
+    if (!state.teamSize) {
+      document.querySelector('.card-grid[data-field="teamSize"]')?.classList.add('error');
+    }
+    if (!state.timeRunning) {
+      document.querySelector('.card-grid[data-field="timeRunning"]')?.classList.add('error');
+    }
+    if (!bName || !state.mainService || !state.teamSize || !state.timeRunning) {
+      return { valid: false, message: 'Completa todos los campos para continuar' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  if (stepNum === 3) {
+    if (!state.callsPerDay) {
+      document.querySelector('.card-grid[data-field="callsPerDay"]')?.classList.add('error');
+    }
+    if (!state.messagesPerDay) {
+      document.querySelector('.card-grid[data-field="messagesPerDay"]')?.classList.add('error');
+    }
+    if (!state.channels || state.channels.length === 0) {
+      document.querySelector('.chips[data-field="channels"]')?.classList.add('error');
+    }
+    if (!state.callsPerDay || !state.messagesPerDay || !state.channels || state.channels.length === 0) {
+      return { valid: false, message: 'Completa todos los campos para continuar' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  if (stepNum === 4) {
+    if (Object.keys(state.pipelineStages).length === 0) {
+      return { valid: false, message: 'Activa al menos una etapa' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  if (stepNum === 5) {
+    if (!state.missedOutcome) {
+      document.querySelector('.card-grid[data-field="missedOutcome"]')?.classList.add('error');
+      return { valid: false, message: 'Completa todos los campos para continuar' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  if (stepNum === 6) {
+    if (!state.contactMethod) {
+      document.querySelector('.card-grid[data-field="contactMethod"]')?.classList.add('error');
+    }
+    if (!state.availability) {
+      document.querySelector('.card-grid[data-field="availability"]')?.classList.add('error');
+    }
+    const phone = document.getElementById('contactPhone')?.value?.trim();
+    const email = document.getElementById('contactEmail')?.value?.trim();
+    const hasContact = phone || email;
+    if (!hasContact) {
+      document.getElementById('contactPhone')?.closest('.field')?.classList.add('error');
+      document.getElementById('contactEmail')?.closest('.field')?.classList.add('error');
+    }
+    if (!state.contactMethod || !state.availability) {
+      return { valid: false, message: 'Completa todos los campos para continuar' };
+    }
+    if (!hasContact) {
+      return { valid: false, message: 'Necesitamos al menos un telefono o email' };
+    }
+    return { valid: true, message: '' };
+  }
+
+  return { valid: true, message: '' };
 }
 
 // Pipeline stages and handler buttons are now attached dynamically by renderPipeline()
@@ -590,6 +693,16 @@ function updateBottleneckOptions() {
 
 // Navigation
 function goTo(step) {
+  // Validate on forward navigation only
+  if (step > state.currentStep) {
+    clearStepError();
+    const result = validateStep(state.currentStep);
+    if (!result.valid) {
+      const errEl = document.getElementById('stepError');
+      if (errEl) errEl.textContent = result.message;
+      return;
+    }
+  }
   const current = document.querySelector('.step.active');
   if (current) {
     current.classList.remove('visible');
@@ -604,6 +717,7 @@ function goTo(step) {
 
 function showStep(step) {
   state.currentStep = step;
+  clearStepError();
   const el = document.querySelector('[data-step="' + step + '"]');
   if (!el) return;
   el.classList.add('active');
@@ -630,6 +744,14 @@ function showStep(step) {
 
 // Submit
 async function submitForm() {
+  clearStepError();
+  const result = validateStep(6);
+  if (!result.valid) {
+    const errEl = document.getElementById('stepError');
+    if (errEl) errEl.textContent = result.message;
+    return;
+  }
+
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = 'Enviando...';
@@ -643,7 +765,7 @@ async function submitForm() {
   const payload = {
     business_name: document.getElementById('businessName')?.value || '',
     main_service: state.mainService,
-    team_size: state.teamSize || null,
+    team_size: state.teamSize ? {'1-3':3,'4-10':10,'11-25':25,'25+':26}[state.teamSize] || null : null,
     time_running: state.timeRunning,
     calls_per_day: state.callsPerDay,
     messages_per_day: state.messagesPerDay,
@@ -663,7 +785,7 @@ async function submitForm() {
   };
 
   try {
-    const res = await fetch("https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/client-diagnostic", {
+    const res = await fetch('https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/client-diagnostic', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
