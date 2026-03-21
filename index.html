@@ -340,15 +340,10 @@ input[type="range"]::-webkit-slider-thumb{
     <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Qué pasa con los mensajes que no contestas?</span>
     <div class="card-grid cols-1" data-field="missedOutcome">
       <div class="card" data-value="Se van con la competencia"><div class="card-label">Se van con la competencia</div></div>
-      <div class="card" data-value="Vuelven a llamar despues"><div class="card-label">Vuelven a llamar despues</div></div>
+      <div class="card" data-value="Vuelven a llamar después"><div class="card-label">Vuelven a llamar después</div></div>
       <div class="card" data-value="Se pierden para siempre"><div class="card-label">Se pierden para siempre</div></div>
       <div class="card" data-value="No se"><div class="card-label">No se</div></div>
     </div>
-  </div>
-
-  <div id="automationPriorityWrap">
-    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Si pudiéramos automatizar UNA cosa, cuál sería?</span>
-    <div class="card-grid cols-1" data-field="automationPriority" id="automationPriorityCards"></div>
   </div>
 
   <div class="btn-row">
@@ -360,7 +355,7 @@ input[type="range"]::-webkit-slider-thumb{
 <!-- STEP 6: Contacto -->
 <div class="step" data-step="6">
   <h2>Hablemos</h2>
-  <p class="subtitle">Déjaños tus datos y te contactamos con una propuesta personalizada.</p>
+  <p class="subtitle">Déjanos tus datos y te contactamos con una propuesta personalizada.</p>
 
   <div>
     <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cómo prefieres que te contactemos?</span>
@@ -429,43 +424,43 @@ const state = {
   availability: null,
 };
 
-// Pipeline configs per service
+// Pipeline configs per service (only automatable stages)
 const PIPELINES = {
   "Logística de bicicletas": [
-    "Orden de recolección recibida",
-    "Asignación de ruta y equipo",
-    "Recolección en campo",
-    "Swap de baterías completado",
-    "Redistribución en zona",
-    "Confirmación de entrega",
-    "Facturación y cierre"
+    "Recibir solicitud de servicio",
+    "Responder con disponibilidad y precio",
+    "Agendar y asignar a conductor",
+    "Notificar al equipo la ruta",
+    "Confirmar que el trabajo se completó",
+    "Enviar factura o cobro",
+    "Seguimiento post-servicio"
   ],
   "Gestión de baterías": [
-    "Solicitud de intercambio",
-    "Verificación de inventario",
-    "Asignación de baterías",
-    "Despacho a campo",
-    "Intercambio realizado",
-    "Recarga y diagnóstico",
-    "Reintegro a inventario"
+    "Recibir solicitud de intercambio",
+    "Consultar inventario disponible",
+    "Asignar baterías y notificar",
+    "Coordinar horario de entrega",
+    "Registrar intercambio completado",
+    "Actualizar inventario y reportar",
+    "Facturación y seguimiento"
   ],
   "Operación de flota": [
-    "Solicitud recibida",
-    "Ruta asignada",
-    "Conductor confirmado",
-    "En tránsito",
-    "Entrega completada",
-    "Novedad reportada",
-    "Cierre y facturación"
+    "Recibir pedido del cliente",
+    "Cotizar y confirmar servicio",
+    "Asignar conductor y ruta",
+    "Notificar al cliente el estatus",
+    "Registrar entrega completada",
+    "Cobrar y enviar comprobante",
+    "Seguimiento y recontratación"
   ],
   "Múltiples servicios": [
-    "Solicitud entrante",
-    "Servicio clasificado",
-    "Equipo asignado",
-    "En ejecución",
-    "Verificación de calidad",
-    "Reporte al cliente",
-    "Cobro y cierre"
+    "Recibir y clasificar solicitud",
+    "Responder con precio y opciones",
+    "Asignar al equipo correcto",
+    "Coordinar horarios y logística",
+    "Confirmar trabajo terminado",
+    "Facturar y cobrar",
+    "Seguimiento y fidelización"
   ]
 };
 
