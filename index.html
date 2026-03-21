@@ -308,91 +308,7 @@ input[type="range"]::-webkit-slider-thumb{
   <h2>Tu pipeline</h2>
   <p class="subtitle">Activa las etapas que aplican a tu negocio y dinos quien las maneja.</p>
 
-  <div class="pipeline" id="pipeline">
-    <div class="pipeline-stage" data-stage="Llega una consulta nueva">
-      <div class="stage-number">1</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Llega una consulta nueva</div>
-    </div>
-    <div class="handler-row" data-handler-for="Llega una consulta nueva">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Responder con precio/disponibilidad">
-      <div class="stage-number">2</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Responder con precio/disponibilidad</div>
-    </div>
-    <div class="handler-row" data-handler-for="Responder con precio/disponibilidad">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Agendar recolección o entrega">
-      <div class="stage-number">3</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Agendar recolección o entrega</div>
-    </div>
-    <div class="handler-row" data-handler-for="Agendar recolección o entrega">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Asignar a conductor/agente">
-      <div class="stage-number">4</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Asignar a conductor/agente</div>
-    </div>
-    <div class="handler-row" data-handler-for="Asignar a conductor/agente">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Confirmar trabajo completado">
-      <div class="stage-number">5</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Confirmar trabajo completado</div>
-    </div>
-    <div class="handler-row" data-handler-for="Confirmar trabajo completado">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Manejar pago/facturación">
-      <div class="stage-number">6</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Manejar pago/facturación</div>
-    </div>
-    <div class="handler-row" data-handler-for="Manejar pago/facturación">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-
-    <div class="pipeline-stage" data-stage="Seguimiento / clientes recurrentes">
-      <div class="stage-number">7</div>
-      <div class="stage-toggle"></div>
-      <div class="stage-text">Seguimiento / clientes recurrentes</div>
-    </div>
-    <div class="handler-row" data-handler-for="Seguimiento / clientes recurrentes">
-      <button class="handler-btn" data-handler="me">Yo</button>
-      <button class="handler-btn" data-handler="team">Equipo</button>
-      <button class="handler-btn" data-handler="nobody">Nadie</button>
-      <button class="handler-btn" data-handler="automated">Automatizado</button>
-    </div>
-  </div>
+  <div class="pipeline" id="pipeline"></div>
 
   <div class="bottleneck-wrap" id="bottleneckWrap" style="display:none">
     <span class="label-text">Cuál etapa te causa MÁS problemas?</span>
@@ -513,6 +429,104 @@ const state = {
   availability: null,
 };
 
+// Pipeline configs per service
+const PIPELINES = {
+  "Logística de bicicletas": [
+    "Orden de recolección recibida",
+    "Asignación de ruta y equipo",
+    "Recolección en campo",
+    "Swap de baterías completado",
+    "Redistribución en zona",
+    "Confirmación de entrega",
+    "Facturación y cierre"
+  ],
+  "Gestión de baterías": [
+    "Solicitud de intercambio",
+    "Verificación de inventario",
+    "Asignación de baterías",
+    "Despacho a campo",
+    "Intercambio realizado",
+    "Recarga y diagnóstico",
+    "Reintegro a inventario"
+  ],
+  "Operación de flota": [
+    "Solicitud recibida",
+    "Ruta asignada",
+    "Conductor confirmado",
+    "En tránsito",
+    "Entrega completada",
+    "Novedad reportada",
+    "Cierre y facturación"
+  ],
+  "Múltiples servicios": [
+    "Solicitud entrante",
+    "Servicio clasificado",
+    "Equipo asignado",
+    "En ejecución",
+    "Verificación de calidad",
+    "Reporte al cliente",
+    "Cobro y cierre"
+  ]
+};
+
+function renderPipeline(serviceName) {
+  const stages = PIPELINES[serviceName] || PIPELINES["Múltiples servicios"];
+  const container = document.getElementById('pipeline');
+  container.innerHTML = '';
+  state.pipelineStages = {};
+  state.bottleneck = null;
+
+  stages.forEach((stageName, i) => {
+    // Create pipeline-stage
+    const stageDiv = document.createElement('div');
+    stageDiv.className = 'pipeline-stage';
+    stageDiv.dataset.stage = stageName;
+    stageDiv.innerHTML = '<div class="stage-number">' + (i + 1) + '</div>' +
+      '<div class="stage-toggle"></div>' +
+      '<div class="stage-text">' + stageName + '</div>';
+
+    // Create handler-row
+    const handlerRow = document.createElement('div');
+    handlerRow.className = 'handler-row';
+    handlerRow.dataset.handlerFor = stageName;
+    ['me','team','nobody','automated'].forEach(h => {
+      const labels = {me:'Yo',team:'Equipo',nobody:'Nadie',automated:'Automatizado'};
+      const btn = document.createElement('button');
+      btn.className = 'handler-btn';
+      btn.dataset.handler = h;
+      btn.textContent = labels[h];
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        handlerRow.querySelectorAll('.handler-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (state.pipelineStages[stageName]) {
+          state.pipelineStages[stageName].handler = h;
+        }
+      });
+      handlerRow.appendChild(btn);
+    });
+
+    // Stage click listener
+    stageDiv.addEventListener('click', () => {
+      stageDiv.classList.toggle('active');
+      if (stageDiv.classList.contains('active')) {
+        handlerRow.classList.add('visible');
+        if (!state.pipelineStages[stageName]) state.pipelineStages[stageName] = { handler: null };
+      } else {
+        handlerRow.classList.remove('visible');
+        delete state.pipelineStages[stageName];
+      }
+      updateBottleneckOptions();
+      updateAutomationPriority();
+    });
+
+    container.appendChild(stageDiv);
+    container.appendChild(handlerRow);
+  });
+
+  updateBottleneckOptions();
+}
+
 // Card grid selection (single select)
 document.querySelectorAll('.card-grid').forEach(grid => {
   grid.querySelectorAll('.card').forEach(card => {
@@ -548,37 +562,7 @@ if (slider) {
   });
 }
 
-// Pipeline stages
-document.querySelectorAll('.pipeline-stage').forEach(stage => {
-  stage.addEventListener('click', () => {
-    const name = stage.dataset.stage;
-    stage.classList.toggle('active');
-    const handlerRow = document.querySelector('[data-handler-for="' + name + '"]');
-    if (stage.classList.contains('active')) {
-      handlerRow.classList.add('visible');
-      if (!state.pipelineStages[name]) state.pipelineStages[name] = { handler: null };
-    } else {
-      handlerRow.classList.remove('visible');
-      delete state.pipelineStages[name];
-    }
-    updateBottleneckOptions();
-    updateAutomationPriority();
-  });
-});
-
-// Handler buttons
-document.querySelectorAll('.handler-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const row = btn.closest('.handler-row');
-    row.querySelectorAll('.handler-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    const stageName = row.dataset.handlerFor;
-    if (state.pipelineStages[stageName]) {
-      state.pipelineStages[stageName].handler = btn.dataset.handler;
-    }
-  });
-});
+// Pipeline stages and handler buttons are now attached dynamically by renderPipeline()
 
 function updateBottleneckOptions() {
   const wrap = document.getElementById('bottleneckWrap');
@@ -651,6 +635,8 @@ function showStep(step) {
   // Update label
   const labels = ['', 'Bienvenida', 'Tu negocio', 'Comunicación', 'Pipeline', 'Cuello de botella', 'Contacto', ''];
   document.getElementById('stepLabel').textContent = step > 0 && step <= state.totalSteps ? 'Paso ' + step + ' de ' + state.totalSteps + ' — ' + labels[step] : '';
+  // Render dynamic pipeline when entering step 4
+  if (step === 4) renderPipeline(state.mainService || 'Múltiples servicios');
   // Populate dynamic fields when entering step 5
   if (step === 5) updateAutomationPriority();
   // Remove centering after welcome step
