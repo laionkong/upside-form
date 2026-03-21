@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diagnóstico | UPSIDE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -81,9 +82,9 @@ textarea{resize:vertical;min-height:80px}
 /* Chips (multi-select) */
 .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
 .chip{
-  padding:.5rem 1rem;background:var(--surface);border:1.5px solid var(--border);
+  padding:.625rem 1.125rem;background:var(--surface);border:1.5px solid var(--border);
   border-radius:2rem;font-size:.875rem;cursor:pointer;transition:all .2s;
-  user-select:none;
+  user-select:none;min-height:44px;
 }
 .chip:hover{border-color:#444}
 .chip.selected{border-color:var(--lime);background:rgba(132,204,22,.1);color:var(--lime)}
@@ -139,9 +140,9 @@ input[type="range"]::-webkit-slider-thumb{
 }
 .handler-row.visible{display:flex;gap:.375rem;flex-wrap:wrap;padding-left:.25rem}
 .handler-btn{
-  padding:.4rem .875rem;background:var(--surface);border:1.5px solid var(--border);
+  padding:.625rem 1rem;background:var(--surface);border:1.5px solid var(--border);
   border-radius:2rem;font-size:.75rem;cursor:pointer;transition:all .2s;
-  color:var(--text2);font-family:var(--font);font-weight:500;
+  color:var(--text2);font-family:var(--font);font-weight:500;min-height:44px;
 }
 .handler-btn:hover{border-color:rgba(191,234,46,.3);color:var(--text)}
 .handler-btn.selected{border-color:var(--lime);color:var(--lime);background:rgba(191,234,46,.08)}
@@ -205,15 +206,15 @@ input[type="range"]::-webkit-slider-thumb{
 
 <!-- STEP 1: Welcome -->
 <div class="step step-welcome active visible" data-step="1">
-  <h2>Santiago nos contó sobre tu negocio.</h2>
-  <p class="subtitle">Construimos sistemas de IA que manejan tus llamadas y mensajes automáticamente — para que puedas enfocarte en crecer.<br><br>Esto toma 3 minutos. Vamos a mapear tu proceso para diseñarte una solución.</p>
-  <button class="btn btn-primary btn-full" onclick="goTo(2)">Empezar</button>
+  <h2>Ya sabemos que estás desbordado. Vamos a resolverlo.</h2>
+  <p class="subtitle">Responde unas preguntas rápidas sobre tu operación.<br><br>Con eso te armamos un plan específico para automatizar lo que más te está quitando tiempo. 3 minutos.</p>
+  <button class="btn btn-primary btn-full" onclick="goTo(2)">Empecemos</button>
 </div>
 
 <!-- STEP 2: Tu Negocio -->
 <div class="step" data-step="2">
-  <h2>Tu negocio</h2>
-  <p class="subtitle">Cuéntaños lo básico para entender tu operación.</p>
+  <h2>Sobre tu operación</h2>
+  <p class="subtitle">Cada negocio es diferente. Esto nos ayuda a diseñar algo exacto para lo tuyo.</p>
 
   <label class="field">
     <span class="label-text">Nombre del negocio</span>
@@ -230,10 +231,15 @@ input[type="range"]::-webkit-slider-thumb{
     </div>
   </div>
 
-  <label class="field">
-    <span class="label-text">Cuántos agentes/conductores?</span>
-    <input type="number" id="teamSize" placeholder="Ej: 5" min="1">
-  </label>
+  <div>
+    <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cuántos agentes/conductores?</span>
+    <div class="card-grid" data-field="teamSize">
+      <div class="card" data-value="1-3"><div class="card-label">1-3</div></div>
+      <div class="card" data-value="4-10"><div class="card-label">4-10</div></div>
+      <div class="card" data-value="11-25"><div class="card-label">11-25</div></div>
+      <div class="card" data-value="25+"><div class="card-label">25+</div></div>
+    </div>
+  </div>
 
   <div>
     <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cuánto tiempo llevas operando?</span>
@@ -246,15 +252,15 @@ input[type="range"]::-webkit-slider-thumb{
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="goTo(1)">Atras</button>
-    <button class="btn btn-primary" onclick="goTo(3)">Siguiente</button>
+    <button class="btn btn-secondary" onclick="goTo(1)">Volver</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Listo, siguiente</button>
   </div>
 </div>
 
 <!-- STEP 3: Sobrecarga de Comunicación -->
 <div class="step" data-step="3">
-  <h2>Tu comunicacion</h2>
-  <p class="subtitle">Entendemos que estas saturado. Ayudaños a dimensionar el volumen.</p>
+  <h2>Tus llamadas y mensajes</h2>
+  <p class="subtitle">Esto nos dice qué tan rápido necesitas resultados.</p>
 
   <div>
     <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Llamadas por dia</span>
@@ -298,15 +304,15 @@ input[type="range"]::-webkit-slider-thumb{
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="goTo(2)">Atras</button>
-    <button class="btn btn-primary" onclick="goTo(4)">Siguiente</button>
+    <button class="btn btn-secondary" onclick="goTo(2)">Volver</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Ya casi</button>
   </div>
 </div>
 
 <!-- STEP 4: Pipeline -->
 <div class="step" data-step="4">
-  <h2>Tu pipeline</h2>
-  <p class="subtitle">Activa las etapas que aplican a tu negocio y dinos quien las maneja.</p>
+  <h2>Cómo fluye tu operación?</h2>
+  <p class="subtitle">Marca las etapas que existen en tu día a día y quién se encarga.</p>
 
   <div class="pipeline" id="pipeline"></div>
 
@@ -321,15 +327,15 @@ input[type="range"]::-webkit-slider-thumb{
   </label>
 
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="goTo(3)">Atras</button>
-    <button class="btn btn-primary" onclick="goTo(5)">Siguiente</button>
+    <button class="btn btn-secondary" onclick="goTo(3)">Volver</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Una más</button>
   </div>
 </div>
 
 <!-- STEP 5: Cuello de botella -->
 <div class="step" data-step="5">
-  <h2>El cuello de botella</h2>
-  <p class="subtitle">Identifiquemos donde esta el mayor impacto.</p>
+  <h2>Dónde duele más?</h2>
+  <p class="subtitle">Si pudieras recuperar una hora al día, qué tarea eliminarías?</p>
 
   <label class="field">
     <span class="label-text">Qué es lo #1 que desearías no hacer manualmente?</span>
@@ -347,15 +353,15 @@ input[type="range"]::-webkit-slider-thumb{
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="goTo(4)">Atras</button>
-    <button class="btn btn-primary" onclick="goTo(6)">Siguiente</button>
+    <button class="btn btn-secondary" onclick="goTo(4)">Volver</button>
+    <button class="btn btn-primary" onclick="goTo(6)">Último paso</button>
   </div>
 </div>
 
 <!-- STEP 6: Contacto -->
 <div class="step" data-step="6">
   <h2>Hablemos</h2>
-  <p class="subtitle">Déjanos tus datos y te contactamos con una propuesta personalizada.</p>
+  <p class="subtitle">Recibirás la propuesta directamente. Solo necesitamos saber cómo contactarte.</p>
 
   <div>
     <span class="label-text" style="display:block;margin-bottom:.5rem;font-size:.8125rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em">Cómo prefieres que te contactemos?</span>
@@ -385,9 +391,10 @@ input[type="range"]::-webkit-slider-thumb{
     </div>
   </div>
 
+  <div id="submitError" style="display:none;color:var(--red);font-size:.875rem;text-align:center;margin-top:1rem">Error al enviar. Intenta de nuevo.</div>
   <div class="btn-row">
-    <button class="btn btn-secondary" onclick="goTo(5)">Atras</button>
-    <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Enviar diagnóstico</button>
+    <button class="btn btn-secondary" onclick="goTo(5)">Volver</button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Ver mi propuesta</button>
   </div>
 </div>
 
@@ -395,8 +402,8 @@ input[type="range"]::-webkit-slider-thumb{
 <div class="step" data-step="7">
   <div class="thankyou">
     <div class="check">✓</div>
-    <h2>Tenemos todo lo que necesitamos.</h2>
-    <p>Espera una propuesta personalizada en las próximas 24 horas.<br><br>Si necesitas algo antes, escríbele a Santiago.</p>
+    <h2>Listo. Tu propuesta está en camino.</h2>
+    <p>En las próximas 24 horas te llega un plan con exactamente qué podemos automatizar, cuánto cuesta y cuánto tiempo toma.<br><br>Te escribimos por WhatsApp.</p>
     <div style="margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:.25rem">
       <svg width="36" height="21" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="22" height="52" rx="3" fill="#F2F2EE"/><rect x="0" y="38" width="64" height="14" rx="3" fill="#F2F2EE"/><rect x="42" y="0" width="22" height="52" rx="3" fill="#BFEA2E"/></svg>
       <div style="font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:-.02em;color:var(--text2);margin-top:.25rem">UPSIDE</div>
@@ -412,6 +419,7 @@ const state = {
   currentStep: 1,
   totalSteps: 6,
   mainService: null,
+  teamSize: null,
   timeRunning: null,
   callsPerDay: null,
   messagesPerDay: null,
@@ -419,7 +427,6 @@ const state = {
   pipelineStages: {},
   bottleneck: null,
   missedOutcome: null,
-  automationPriority: null,
   contactMethod: null,
   availability: null,
 };
@@ -427,31 +434,31 @@ const state = {
 // Pipeline configs per service (only automatable stages)
 const PIPELINES = {
   "Logística de bicicletas": [
-    "Recibir solicitud de servicio",
-    "Responder con disponibilidad y precio",
-    "Agendar y asignar a conductor",
-    "Notificar al equipo la ruta",
-    "Confirmar que el trabajo se completó",
-    "Enviar factura o cobro",
-    "Seguimiento post-servicio"
+    "Recibir asignaciones del día",
+    "Coordinar conductores y vans",
+    "Comunicar rutas y puntos",
+    "Supervisar avance del equipo",
+    "Registrar bicis completadas",
+    "Calcular pagos a conductores",
+    "Reportar resultados"
   ],
   "Gestión de baterías": [
-    "Recibir solicitud de intercambio",
+    "Recibir solicitudes de intercambio",
     "Consultar inventario disponible",
     "Asignar baterías y notificar",
     "Coordinar horario de entrega",
     "Registrar intercambio completado",
-    "Actualizar inventario y reportar",
-    "Facturación y seguimiento"
+    "Actualizar inventario",
+    "Reportar y facturar"
   ],
   "Operación de flota": [
     "Recibir pedido del cliente",
     "Cotizar y confirmar servicio",
     "Asignar conductor y ruta",
-    "Notificar al cliente el estatus",
+    "Notificar estatus al cliente",
     "Registrar entrega completada",
     "Cobrar y enviar comprobante",
-    "Seguimiento y recontratación"
+    "Seguimiento post-servicio"
   ],
   "Múltiples servicios": [
     "Recibir y clasificar solicitud",
@@ -484,8 +491,8 @@ function renderPipeline(serviceName) {
     const handlerRow = document.createElement('div');
     handlerRow.className = 'handler-row';
     handlerRow.dataset.handlerFor = stageName;
-    ['me','team','nobody','automated'].forEach(h => {
-      const labels = {me:'Yo',team:'Equipo',nobody:'Nadie',automated:'Automatizado'};
+    ['me','team','nobody'].forEach(h => {
+      const labels = {me:'Yo',team:'Mi equipo',nobody:'Nadie'};
       const btn = document.createElement('button');
       btn.className = 'handler-btn';
       btn.dataset.handler = h;
@@ -512,7 +519,6 @@ function renderPipeline(serviceName) {
         delete state.pipelineStages[stageName];
       }
       updateBottleneckOptions();
-      updateAutomationPriority();
     });
 
     container.appendChild(stageDiv);
@@ -582,24 +588,6 @@ function updateBottleneckOptions() {
   });
 }
 
-function updateAutomationPriority() {
-  const container = document.getElementById('automationPriorityCards');
-  const activeStages = Object.keys(state.pipelineStages);
-  container.innerHTML = '';
-  activeStages.forEach(name => {
-    const card = document.createElement('div');
-    card.className = 'card' + (state.automationPriority === name ? ' selected' : '');
-    card.dataset.value = name;
-    card.innerHTML = '<div class="card-label">' + name + '</div>';
-    card.addEventListener('click', () => {
-      container.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      state.automationPriority = name;
-    });
-    container.appendChild(card);
-  });
-}
-
 // Navigation
 function goTo(step) {
   const current = document.querySelector('.step.active');
@@ -632,8 +620,6 @@ function showStep(step) {
   document.getElementById('stepLabel').textContent = step > 0 && step <= state.totalSteps ? 'Paso ' + step + ' de ' + state.totalSteps + ' — ' + labels[step] : '';
   // Render dynamic pipeline when entering step 4
   if (step === 4) renderPipeline(state.mainService || 'Múltiples servicios');
-  // Populate dynamic fields when entering step 5
-  if (step === 5) updateAutomationPriority();
   // Remove centering after welcome step
   const mc = document.getElementById('mainContainer');
   if (step === 1) mc.classList.add('centered');
@@ -657,7 +643,7 @@ async function submitForm() {
   const payload = {
     business_name: document.getElementById('businessName')?.value || '',
     main_service: state.mainService,
-    team_size: parseInt(document.getElementById('teamSize')?.value) || null,
+    team_size: state.teamSize || null,
     time_running: state.timeRunning,
     calls_per_day: state.callsPerDay,
     messages_per_day: state.messagesPerDay,
@@ -666,7 +652,7 @@ async function submitForm() {
     pipeline_stages: pipelineArr,
     missed_calls_outcome: state.missedOutcome,
     top_manual_task: document.getElementById('topManualTask')?.value || '',
-    automation_priority: state.automationPriority,
+    automation_priority: null,
     contact_method: state.contactMethod,
     contact_info: {
       phone: document.getElementById('contactPhone')?.value || '',
@@ -686,8 +672,9 @@ async function submitForm() {
     goTo(7);
   } catch (e) {
     btn.disabled = false;
-    btn.textContent = 'Enviar diagnóstico';
-    alert('Error al enviar. Intenta de nuevo.');
+    btn.textContent = 'Ver mi propuesta';
+    const errMsg = document.getElementById('submitError');
+    if (errMsg) errMsg.style.display = 'block';
   }
 }
 
