@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#131319">
+<title>UPSIDE Playbook SDR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{-webkit-tap-highlight-color:transparent}
+:root{
+--primary:#BFEA2E;
+--surface:#131319;
+--card-bg:#1E1E26;
+--border:#2A2A34;
+--border-focus:#3A3A44;
+--text:#F2F2EE;
+--text-muted:#8A8A9E;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+font-family:'Manrope',system-ui,-apple-system,sans-serif;
+font-size:15px;
+line-height:1.5;
+color:var(--text);
+background:var(--surface);
+-webkit-font-smoothing:antialiased;
+padding-bottom:60px;
+}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif}
+
+/* HEADER */
+.header{
+position:sticky;
+top:0;
+z-index:100;
+background:var(--surface);
+color:var(--text);
+padding:14px 16px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:1px solid var(--border);
+}
+.header-logo{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:18px;
+letter-spacing:0.5px;
+color:var(--text);
+}
+.header-logo span{color:var(--primary)}
+.header-subtitle{font-size:14px;font-weight:500;color:var(--text-muted)}
+.header-right{
+font-size:12px;
+color:var(--text-muted);
+text-align:right;
+line-height:1.3;
+}
+
+/* SEARCH */
+.search-wrap{
+position:sticky;
+top:52px;
+z-index:99;
+background:var(--surface);
+padding:10px 16px;
+}
+.search-input{
+width:100%;
+padding:10px 14px;
+font-size:16px;
+font-family:'Manrope',system-ui,sans-serif;
+border:1px solid var(--border-focus);
+border-radius:0;
+background:var(--border);
+color:var(--text);
+outline:none;
+-webkit-appearance:none;
+}
+.search-input:focus{border-color:var(--primary)}
+.search-input::placeholder{color:var(--text-muted)}
+
+/* STATS BAR */
+.stats-bar{
+padding:6px 16px 2px;
+font-size:13px;
+color:var(--text-muted);
+background:var(--surface);
+border-bottom:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:6px;
+}
+.stats-counts{flex:1;min-width:0}
+.sort-toggle{
+display:flex;
+gap:4px;
+flex-shrink:0;
+}
+.sort-btn{
+padding:4px 10px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:11px;
+background:transparent;
+border:1px solid var(--border);
+color:var(--text-muted);
+cursor:pointer;
+white-space:nowrap;
+min-height:28px;
+display:flex;
+align-items:center;
+}
+.sort-btn.active{border-color:var(--primary);color:var(--primary)}
+
+/* PROSPECT CARDS */
+.card{
+margin:12px 16px;
+background:var(--card-bg);
+border:1px solid var(--border);
+box-shadow:0 2px 8px rgba(0,0,0,0.3);
+overflow:hidden;
+transition:border-color 0.2s ease, border-left 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.card.expanded{border-left:3px solid var(--primary);box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.card[data-status="rechazado"]{opacity:0.4}
+.card[data-status="rechazado"] .card-header:active{transform:none}
+.card-header{
+padding:12px 14px;
+cursor:pointer;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+gap:6px;
+min-height:44px;
+user-select:none;
+-webkit-user-select:none;
+transition:transform 0.1s ease, opacity 0.1s ease;
+}
+.card-header:active{transform:scale(0.99);opacity:0.85}
+.card-rank{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:14px;
+color:var(--text-muted);
+min-width:28px;
+}
+.card-name{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:18px;
+flex:1;
+min-width:120px;
+color:var(--text);
+display:flex;
+align-items:center;
+gap:6px;
+}
+.status-dot{
+width:8px;
+height:8px;
+border-radius:50%;
+display:inline-block;
+flex-shrink:0;
+}
+.day-badge{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:11px;
+color:var(--text-muted);
+white-space:nowrap;
+}
+.card-score{
+display:inline-block;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:12px;
+padding:2px 8px;
+min-width:32px;
+text-align:center;
+}
+.card-score.score-high{background:var(--primary);color:var(--surface)}
+.card-score.score-mid{background:var(--border);color:var(--text)}
+.card-score.score-low{background:var(--border);color:var(--text-muted)}
+.card-channel{
+display:inline-block;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:11px;
+padding:2px 8px;
+text-transform:uppercase;
+letter-spacing:0.5px;
+}
+.card-channel.call{background:var(--primary);color:var(--surface)}
+.card-channel.wa{background:var(--surface);color:var(--text);border:1px solid var(--primary)}
+.card-sub{
+width:100%;
+padding:0 0 0 28px;
+display:flex;
+align-items:center;
+gap:8px;
+margin-top:2px;
+}
+.card-vertical{font-size:12px;color:var(--text-muted)}
+.card-phone{
+font-family:'Courier New',monospace;
+font-size:15px;
+color:var(--primary);
+text-decoration:none;
+font-weight:500;
+letter-spacing:2px;
+}
+.card-phone:active{opacity:0.6}
+
+/* EXPANDED BODY */
+.card-body{
+display:none;
+border-top:1px solid var(--border);
+background:var(--surface);
+}
+.card.expanded .card-body{display:block}
+
+/* STATUS BAR */
+.status-bar{
+display:flex;
+gap:6px;
+padding:10px 14px;
+border-bottom:1px solid var(--border);
+overflow-x:auto;
+-webkit-overflow-scrolling:touch;
+}
+.status-pill{
+padding:8px 12px;
+font-size:12px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+background:var(--card-bg);
+border:1px solid var(--border);
+color:var(--text-muted);
+cursor:pointer;
+white-space:nowrap;
+min-height:44px;
+display:flex;
+align-items:center;
+user-select:none;
+-webkit-user-select:none;
+transition:border-color 0.15s ease, color 0.15s ease;
+}
+.status-pill.active{border-color:var(--primary);color:var(--primary)}
+.status-pill.contactado.active{border-color:#F5C542;color:#F5C542}
+.status-pill.interesado.active{border-color:#BFEA2E;color:#BFEA2E}
+.status-pill.no-contesta.active{border-color:#F5A623;color:#F5A623}
+.status-pill.rechazado.active{border-color:#E85454;color:#E85454}
+
+/* DAY TABS */
+.day-tabs{
+display:flex;
+background:var(--card-bg);
+border-bottom:1px solid var(--border);
+overflow-x:auto;
+-webkit-overflow-scrolling:touch;
+}
+.day-tab{
+flex:none;
+padding:14px 16px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:13px;
+color:var(--text-muted);
+cursor:pointer;
+border-bottom:3px solid transparent;
+white-space:nowrap;
+min-height:44px;
+display:flex;
+align-items:center;
+user-select:none;
+-webkit-user-select:none;
+transition:opacity 0.1s ease;
+}
+.day-tab:active{opacity:0.7}
+.day-tab.active{color:var(--text);border-bottom-color:var(--primary)}
+
+/* CHANNEL TABS */
+.channel-tabs{
+display:flex;
+padding:8px 14px;
+gap:8px;
+}
+.ch-tab{
+padding:6px 14px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:12px;
+cursor:pointer;
+border:1px solid var(--border);
+background:var(--border);
+color:var(--text-muted);
+min-height:36px;
+display:flex;
+align-items:center;
+user-select:none;
+-webkit-user-select:none;
+transition:all 0.15s ease;
+}
+.ch-tab:active{opacity:0.7}
+.ch-tab.active-call{background:var(--primary);color:var(--surface);border-color:var(--primary)}
+.ch-tab.active-wa{background:var(--surface);color:var(--primary);border-color:var(--primary)}
+.ch-tab.disabled{opacity:0.3;pointer-events:none}
+
+/* CONTENT PANELS */
+.day-content{display:none;padding:0 14px 14px;background:var(--surface)}
+.day-content.active{display:block}
+
+/* WA BOX */
+.wa-box{
+background:var(--card-bg);
+border:none;
+border-left:3px solid var(--primary);
+padding:16px;
+margin-top:8px;
+font-size:15px;
+line-height:1.6;
+color:var(--text);
+white-space:pre-wrap;
+word-wrap:break-word;
+}
+.wa-copy-btn{
+display:block;
+width:100%;
+text-align:center;
+margin-top:10px;
+padding:12px 0;
+background:var(--primary);
+color:var(--surface);
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:14px;
+border:none;
+cursor:pointer;
+min-height:44px;
+transition:background 0.15s ease, color 0.15s ease;
+}
+.wa-copy-btn:active{background:var(--surface);color:var(--primary);border:1px solid var(--primary)}
+.wa-copy-btn.copied{background:var(--primary);color:var(--surface)}
+.wa-note{
+margin-top:8px;
+font-size:13px;
+color:var(--text-muted);
+font-style:italic;
+}
+
+/* CALL SCRIPT ACCORDION */
+.script-section{
+border-bottom:1px solid var(--border);
+}
+.script-section:last-child{border-bottom:none}
+.script-header{
+padding:10px 0;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+min-height:44px;
+user-select:none;
+-webkit-user-select:none;
+}
+.script-arrow{
+font-size:11px;
+color:var(--text-muted);
+transition:transform 0.2s ease, color 0.2s ease;
+width:16px;
+text-align:center;
+flex-shrink:0;
+}
+.script-section.open .script-arrow{transform:rotate(90deg);color:var(--primary)}
+.script-label{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:14px;
+color:var(--text-muted);
+transition:color 0.2s ease;
+}
+.script-section.open .script-label{color:var(--primary)}
+.script-time{
+font-size:12px;
+color:var(--text-muted);
+margin-left:auto;
+}
+.script-content{
+display:none;
+padding:0 0 12px 24px;
+font-size:16px;
+font-family:'Manrope',system-ui,sans-serif;
+line-height:1.7;
+color:var(--text);
+}
+.script-section.open .script-content{display:block}
+.script-section:first-child .script-content{display:block}
+.script-section:first-child .script-arrow{transform:rotate(90deg);color:var(--primary)}
+.script-section:first-child .script-label{color:var(--primary)}
+.script-content p{margin-bottom:8px}
+.script-content ol,.script-content ul{padding-left:18px;margin-bottom:8px}
+.script-content li{margin-bottom:4px}
+.script-content strong{font-weight:600;color:var(--text)}
+.script-content .quote{
+font-style:italic;
+background:var(--card-bg);
+padding:16px;
+margin:6px 0;
+border-left:3px solid var(--primary);
+font-size:16px;
+}
+.script-content .objection{
+margin-bottom:10px;
+}
+.script-content .objection-q{
+font-weight:700;
+font-size:13px;
+margin-bottom:4px;
+color:var(--text);
+}
+.script-content .objection-a{
+font-style:italic;
+padding-left:10px;
+border-left:2px solid var(--border);
+color:var(--text-muted);
+}
+
+/* IGOR NOTES */
+.igor-notes-wrap{
+padding:12px 14px;
+border-top:1px solid var(--border);
+}
+.igor-notes-label{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:12px;
+color:var(--text-muted);
+margin-bottom:6px;
+}
+.igor-notes{
+width:100%;
+background:var(--surface);
+border:1px solid var(--border);
+color:var(--text);
+font-family:'Manrope',system-ui,sans-serif;
+font-size:16px;
+padding:10px;
+min-height:60px;
+resize:vertical;
+border-radius:0;
+-webkit-appearance:none;
+}
+.igor-notes:focus{border-color:var(--primary);outline:none}
+.igor-notes::placeholder{color:var(--text-muted)}
+
+/* FOOTER */
+.footer{
+text-align:center;
+padding:24px 16px;
+font-size:11px;
+color:var(--text-muted);
+letter-spacing:0.3px;
+background:var(--surface);
+border-top:1px solid var(--border);
+}
+
+/* HIDDEN utility */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="header-logo">UPSIDE<span>.</span> <small class="header-subtitle">Playbook SDR</small></div>
+<div class="header-right">Igor<br>Mar 2026</div>
+</div>
+
+<div class="search-wrap">
+<input type="text" class="search-input" id="searchInput" placeholder="Buscar prospecto...">
+</div>
+
+<div class="stats-bar" id="statsBar">
+<span class="stats-counts" id="statsCounts">17 prospectos &middot; 0 contactados &middot; 0 interesados</span>
+<div class="sort-toggle">
+<div class="sort-btn active" data-sort="priority">Por prioridad</div>
+<div class="sort-btn" data-sort="status">Por status</div>
+</div>
+</div>
+
+<div id="cardList">
+
+<!-- ==================== CARD 1: Coraz&oacute;n de Maguey ==================== -->
+<div class="card" data-name="corazon de maguey" data-slug="corazon-de-maguey" data-vertical="restaurante" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#1</span>
+<span class="card-name">Coraz&oacute;n de Maguey<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">82</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Restaurante &middot; Coyoac&aacute;n</span>
+<a class="card-phone" href="tel:+525574068199" onclick="event.stopPropagation()">5574068199</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs">
+<div class="day-tab active">D&Iacute;A 0</div>
+<div class="day-tab">D&Iacute;A +2</div>
+<div class="day-tab">D&Iacute;A +3</div>
+</div>
+<!-- DAY 0 -->
+<div class="day-content active" data-day="0">
+<div class="channel-tabs">
+<div class="ch-tab active-call" data-ch="call">LLAMAR</div>
+<div class="ch-tab" data-ch="wa">WA</div>
+</div>
+<div class="channel-content call-content">
+<div class="script-section open">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div>
+<div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve viendo que Coraz&oacute;n de Maguey tiene casi 1,900 rese&ntilde;as en Google y est&aacute;n en el top 30 de restaurantes en CDMX. Muy impresionante. Pero not&eacute; que todo su proceso de eventos corporativos es 100% manual, y creo que ah&iacute; est&aacute;n dejando dinero en la mesa.&rdquo;</div></div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div>
+<div class="script-content">
+<ol>
+<li>&ldquo;&iquest;Cu&aacute;ntas solicitudes de reservaci&oacute;n para eventos corporativos les llegan por WhatsApp al mes?&rdquo;</li>
+<li>&ldquo;&iquest;Les llegan consultas despu&eacute;s de las 10 de la noche? &iquest;Qui&eacute;n las atiende?&rdquo;</li>
+<li>&ldquo;&iquest;Tienen alg&uacute;n sistema de reservaci&oacute;n en l&iacute;nea o todo es por tel&eacute;fono y WhatsApp?&rdquo;</li>
+</ol>
+</div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div>
+<div class="script-content"><div class="quote">&ldquo;Un evento corporativo puede valer entre $50,000 y $100,000 pesos. Si una solicitud llega a las 11 de la noche un viernes y nadie la atiende hasta el lunes, ese cliente ya cotiz&oacute; con tres restaurantes m&aacute;s. Con 1,900 rese&ntilde;as ustedes tienen la demanda, el tema es que la est&aacute;n atendiendo con las mismas herramientas de hace 10 a&ntilde;os.&rdquo;</div></div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div>
+<div class="script-content"><div class="quote">&ldquo;Nosotros hacemos agentes de WhatsApp con inteligencia artificial que contestan autom&aacute;ticamente las solicitudes de reservaci&oacute;n y eventos, califican al cliente, arman la cotizaci&oacute;n inicial y agendan la llamada con ustedes. Todo sin que tengan que levantar el tel&eacute;fono a las 11 de la noche. Ya lo tenemos funcionando en MarioBox, un cliente en Polanco &mdash; bajamos sus no-shows 38% en 3 semanas.&rdquo;</div></div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div>
+<div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a el sistema para Coraz&oacute;n de Maguey? Tengo disponible el jueves o viernes por la ma&ntilde;ana. &iquest;Cu&aacute;l les funciona mejor?&rdquo;</div></div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div>
+<div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo ahorita.&rdquo;</div><div class="objection-a">&ldquo;Lo entiendo perfecto, el servicio no para. Por eso la demo es de 15 minutos, no de una hora. Le muestro exactamente c&oacute;mo funcionar&iacute;a para eventos y reservaciones de ustedes. &iquest;Le funciona el jueves a las 10?&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots, nuestros clientes quieren trato humano.&rdquo;</div><div class="objection-a">&ldquo;Totalmente de acuerdo. El agente no reemplaza al mesero ni al gerente. Lo que hace es contestar a las 11 de la noche cuando nadie puede, calificar si es un evento real o alguien preguntando por curiosidad, y pasarle al humano solo los que valen la pena.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No necesitamos automatizaci&oacute;n, nos va bien as&iacute;.&rdquo;</div><div class="objection-a">&ldquo;Les va incre&iacute;ble, las rese&ntilde;as lo demuestran. La pregunta es: &iquest;cu&aacute;ntas solicitudes de eventos se les fueron el mes pasado porque nadie contest&oacute; a tiempo? Con su volumen, aunque sea una al mes ya es dinero. Les muestro los n&uacute;meros en 15 minutos y ustedes deciden.&rdquo;</div></div>
+</div>
+</div>
+<div class="script-section">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div>
+<div class="script-content">
+<p><strong>Mejor hora:</strong> 10:00 - 11:30 am (antes del rush de comida)</p>
+<p><strong>Voicemail:</strong> &ldquo;Soy Igor de UPSIDE. Vi que Coraz&oacute;n de Maguey tiene casi 1,900 rese&ntilde;as y sus eventos corporativos se manejan manual. Le marco ma&ntilde;ana.&rdquo;</p>
+<p><strong>Tono:</strong> Respetuoso pero seguro. Es un restaurante con historia y prestigio.</p>
+</div>
+</div>
+</div>
+<div class="channel-content wa-content hidden">
+<p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p>
+<div class="wa-box">Hola, buenas tardes. Vi que Coraz&oacute;n de Maguey tiene m&aacute;s de 1,800 rese&ntilde;as y es top 30 en CDMX, pero las reservaciones de eventos privados siguen siendo por llamada o WhatsApp manual. Nosotros ayudamos a restaurantes como ustedes a automatizar reservaciones y cotizaciones de eventos con un agente de WhatsApp que responde 24/7, califica el tipo de evento y propone fechas disponibles. &iquest;Les puedo mandar un demo de 2 minutos para que vean c&oacute;mo funciona?</div>
+<button class="wa-copy-btn" data-action="copy">COPIAR</button>
+</div>
+</div>
+<!-- DAY +2 -->
+<div class="day-content" data-day="1">
+<div class="channel-tabs">
+<div class="ch-tab active-call">LLAMAR</div>
+<div class="ch-tab disabled">WA</div>
+</div>
+<div class="channel-content">
+<p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Mencionar: &ldquo;Le marqu&eacute; ayer/antes de ayer&rdquo;. Misma estructura de apertura.</p>
+</div>
+</div>
+<!-- DAY +3 -->
+<div class="day-content" data-day="2">
+<div class="channel-tabs">
+<div class="ch-tab disabled">LLAMAR</div>
+<div class="ch-tab active-wa" data-ch="wa">WA</div>
+</div>
+<div class="channel-content">
+<div class="wa-box">Hola, buenas tardes. Vi que Coraz&oacute;n de Maguey tiene m&aacute;s de 1,800 rese&ntilde;as y es top 30 en CDMX, pero las reservaciones de eventos privados siguen siendo por llamada o WhatsApp manual. Nosotros ayudamos a restaurantes como ustedes a automatizar reservaciones y cotizaciones de eventos con un agente de WhatsApp que responde 24/7, califica el tipo de evento y propone fechas disponibles. &iquest;Les puedo mandar un demo de 2 minutos para que vean c&oacute;mo funciona?</div>
+<button class="wa-copy-btn" data-action="copy">COPIAR</button>
+</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 2: VETME ==================== -->
+<div class="card" data-name="vetme condesa" data-slug="vetme-condesa" data-vertical="veterinaria" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#2</span>
+<span class="card-name">VETME Condesa<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">82</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Veterinaria &middot; Condesa</span>
+<a class="card-phone" href="tel:+525556363605" onclick="event.stopPropagation()">5556363605</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs">
+<div class="day-tab active">D&Iacute;A 0</div>
+<div class="day-tab">D&Iacute;A +2</div>
+<div class="day-tab">D&Iacute;A +3</div>
+</div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs">
+<div class="ch-tab active-call" data-ch="call">LLAMAR</div>
+<div class="ch-tab" data-ch="wa">WA</div>
+</div>
+<div class="channel-content call-content">
+<div class="script-section open">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div>
+<div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando las rese&ntilde;as de VETME y tienen m&aacute;s de 1,100 con muy buena calificaci&oacute;n. Pero encontr&eacute; varias quejas recurrentes: &lsquo;no contestan&rsquo;, &lsquo;me cuelgan&rsquo;, &lsquo;imposible comunicarse&rsquo;. Y s&eacute; que ustedes atienden 24/7, entonces el problema no es de voluntad, es de capacidad.&rdquo;</div></div>
+</div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntas emergencias les llegan fuera de horario o en la madrugada? &iquest;Qui&eacute;n las filtra?&rdquo;</li><li>&ldquo;&iquest;Hacen alg&uacute;n tipo de triaje antes de que el due&ntilde;o llegue con la mascota, o todo se clasifica en recepci&oacute;n?&rdquo;</li><li>&ldquo;Los domingos y d&iacute;as festivos, &iquest;cu&aacute;ntos WhatsApps se quedan sin contestar?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Cuando un due&ntilde;o tiene una emergencia a las 2 de la ma&ntilde;ana y no le contestan, no solo pierden esa consulta de emergencia. Pierden la vacuna del pr&oacute;ximo mes, la esterilizaci&oacute;n que iba a agendar, y las recomendaciones que iba a dar a sus amigos del parque. Una llamada sin contestar no es una consulta perdida, son 12 meses de relaci&oacute;n con ese cliente.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Nosotros hacemos agentes de WhatsApp con inteligencia artificial que hacen el triaje autom&aacute;tico: preguntan s&iacute;ntomas, clasifican la urgencia, y si es emergencia real los canalizan directo a la guardia. Si es consulta de rutina, agendan la cita sin que nadie tenga que contestar el tel&eacute;fono. Ya lo tenemos funcionando en MarioBox, un cliente en Polanco &mdash; bajamos sus no-shows 38% en 3 semanas.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo funcionar&iacute;a el triaje automatizado para VETME? Tengo espacio el jueves o viernes temprano. &iquest;Cu&aacute;l les queda?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots para temas de salud animal.&rdquo;</div><div class="objection-a">&ldquo;Tiene toda la raz&oacute;n, un bot no puede diagnosticar. Lo que s&iacute; puede hacer es preguntar &lsquo;&iquest;qu&eacute; s&iacute;ntomas tiene?&rsquo;, &lsquo;&iquest;hace cu&aacute;nto empez&oacute;?&rsquo;, &lsquo;&iquest;comi&oacute; algo raro?&rsquo; y con eso clasificar si es urgencia o cita de rutina. El veterinario sigue tomando todas las decisiones cl&iacute;nicas.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Mi recepcionista ya lo hace.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Y a las 2 de la ma&ntilde;ana? &iquest;Y los domingos? No es reemplazar a la recepcionista, es darle un apoyo que nunca se cansa y que filtra lo urgente de lo que puede esperar.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo para implementar algo nuevo.&rdquo;</div><div class="objection-a">&ldquo;Nosotros nos encargamos de todo: configuraci&oacute;n, entrenamiento del agente con sus servicios y precios, y soporte continuo. De su lado solo necesitamos una reuni&oacute;n de 30 minutos. &iquest;Le funciona el jueves a las 8:30?&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 8:30 - 9:30 am o 2:00 - 3:00 pm</p><p><strong>Tono:</strong> Emp&aacute;tico y directo. Las veterinarias tienen mucha carga emocional. Nunca minimices el estr&eacute;s de atender emergencias.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden">
+<p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p>
+<div class="wa-box">Hola, buenas tardes. Estuve revisando las rese&ntilde;as de VETME y vi que tienen m&aacute;s de 1,100 en Google, pero varias mencionan tiempos de espera y llamadas sin respuesta. Siendo hospital 24/7, cada consulta de emergencia que se pierde es ingreso perdido. Nosotros implementamos un agente de WhatsApp que hace triaje autom&aacute;tico -- clasifica emergencias vs. consultas regulares, agenda citas y manda recordatorios de vacunas. &iquest;Les puedo mostrar c&oacute;mo funciona en 5 minutos?</div>
+<button class="wa-copy-btn" data-action="copy">COPIAR</button>
+</div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Mencionar: &ldquo;Le marqu&eacute; ayer/antes de ayer&rdquo;. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Estuve revisando las rese&ntilde;as de VETME y vi que tienen m&aacute;s de 1,100 en Google, pero varias mencionan tiempos de espera y llamadas sin respuesta. Siendo hospital 24/7, cada consulta de emergencia que se pierde es ingreso perdido. Nosotros implementamos un agente de WhatsApp que hace triaje autom&aacute;tico -- clasifica emergencias vs. consultas regulares, agenda citas y manda recordatorios de vacunas. &iquest;Les puedo mostrar c&oacute;mo funciona en 5 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 3: Leonora Studio ==================== -->
+<div class="card" data-name="leonora studio" data-slug="leonora-studio" data-vertical="salon" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#3</span>
+<span class="card-name">Leonora Studio<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">78</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Sal&oacute;n &middot; Polanco</span>
+<a class="card-phone" href="tel:+525575778358" onclick="event.stopPropagation()">5575778358</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs">
+<div class="day-tab active">D&Iacute;A 0</div>
+<div class="day-tab">D&Iacute;A +2</div>
+<div class="day-tab">D&Iacute;A +5</div>
+</div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs">
+<div class="ch-tab" data-ch="call">LLAMAR</div>
+<div class="ch-tab active-wa" data-ch="wa">WA</div>
+</div>
+<div class="channel-content call-content hidden">
+<p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p>
+</div>
+<div class="channel-content wa-content">
+<div class="wa-box">Hola, buenas tardes. Vi que Leonora Studio tiene 7 sucursales en CDMX. Con ese volumen, imagino que coordinar citas entre ubicaciones es un reto -- cada clienta que pregunta disponibilidad en una sucursal y no hay espacio, hay que revisar las otras manualmente. Nosotros hacemos un agente de WhatsApp que detecta en qu&eacute; zona est&aacute; la clienta, muestra disponibilidad en tiempo real de esa sucursal y agenda directo. &iquest;Les interesa ver un demo de 2 minutos?</div>
+<button class="wa-copy-btn" data-action="copy">COPIAR</button>
+</div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open">
+<div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div>
+<div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as sobre la coordinaci&oacute;n de citas entre las 7 sucursales de Leonora Studio. Con ese volumen, imagino que es un reto que alguien revise las otras manualmente.&rdquo;</div></div>
+</div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;Del total de citas que agendan al mes, &iquest;qu&eacute; porcentaje llega por WhatsApp versus por tel&eacute;fono?&rdquo;</li><li>&ldquo;&iquest;Les llegan DMs de Instagram pidiendo citas fuera de horario? &iquest;Qui&eacute;n los atiende?&rdquo;</li><li>&ldquo;Cuando una clienta quiere cita en una sucursal espec&iacute;fica pero no hay espacio, &iquest;le ofrecen disponibilidad en otra?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Cuando una clienta manda un DM a las 9 de la noche preguntando por disponibilidad y nadie le contesta hasta el d&iacute;a siguiente, ya agend&oacute; en otro sal&oacute;n. Con 7 sucursales, cada clienta que se va no es una cita perdida, es una clienta que le va a dar sus $2,000 al mes a la competencia durante los pr&oacute;ximos 2 a&ntilde;os.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Nosotros hacemos agentes de WhatsApp con IA que contestan al instante, revisan la disponibilidad de las 7 sucursales en tiempo real, y agendan la cita. Si Polanco est&aacute; lleno, le ofrece Santa Fe autom&aacute;ticamente. Ya lo tenemos funcionando en MarioBox &mdash; bajamos sus no-shows 38% en 3 semanas.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a el sistema para las 7 sucursales? Tengo disponible el jueves o viernes. &iquest;Cu&aacute;l les funciona?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Nuestras clientas no quieren hablar con un bot.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Prefieren hablar con un bot que les contesta en 5 segundos y les agenda la cita, o mandar un WhatsApp y que nadie les conteste hasta ma&ntilde;ana? Un asistente que les resuelve al instante s&iacute; lo agradecen.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No necesitamos, as&iacute; estamos bien.&rdquo;</div><div class="objection-a">&ldquo;Les va muy bien, 7 sucursales lo demuestran. La pregunta es: &iquest;cu&aacute;ntas citas se pierden al mes porque el WhatsApp est&aacute; saturado? Incluso un 5% de mejora son muchas clientas recurrentes.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo para implementar algo nuevo.&rdquo;</div><div class="objection-a">&ldquo;Con 7 sucursales los d&iacute;as no alcanzan. Nosotros nos encargamos de todo. Solo necesitamos una reuni&oacute;n de 30 minutos. &iquest;Le funciona el jueves a las 9?&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 9:00 - 10:00 am</p><p><strong>Tono:</strong> Elegante y profesional. Sal&oacute;n premium en Polanco.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 4: Los Danzantes ==================== -->
+<div class="card" data-name="los danzantes" data-slug="los-danzantes" data-vertical="restaurante" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#4</span>
+<span class="card-name">Los Danzantes<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">78</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Restaurante &middot; Coyoac&aacute;n</span>
+<a class="card-phone" href="tel:+525543567185" onclick="event.stopPropagation()">5543567185</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab active-call" data-ch="call">LLAMAR</div><div class="ch-tab" data-ch="wa">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve investigando Los Danzantes y la verdad es impresionante: 26 a&ntilde;os de historia, excelentes rese&ntilde;as en TripAdvisor, uno de los mejores restaurantes oaxaque&ntilde;os de CDMX. Pero not&eacute; algo que no cuadra con ese nivel: no tienen ning&uacute;n sistema de reservaci&oacute;n en l&iacute;nea.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntas solicitudes de reservaci&oacute;n para eventos privados les llegan al mes?&rdquo;</li><li>&ldquo;Con la menci&oacute;n en la Gu&iacute;a Michelin, &iquest;les llegan consultas de turistas extranjeros fuera de horario?&rdquo;</li><li>&ldquo;&iquest;Tienen alg&uacute;n sistema de reservaci&oacute;n digital o todo es tel&eacute;fono y WhatsApp?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Un turista en Tokio que vio Los Danzantes en la Gu&iacute;a Michelin les manda WhatsApp a las 3 de la ma&ntilde;ana hora CDMX. Nadie contesta hasta las 10. Para ese momento, ya reserv&oacute; en otro restaurante. Un evento privado puede valer entre $50,000 y $100,000 pesos.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan 24h en espa&ntilde;ol e ingl&eacute;s, manejan reservaciones y eventos, califican si es un evento real, y agendan la llamada con ustedes. Con el tono que un restaurante de su nivel merece. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para Los Danzantes? Tengo disponible jueves o viernes por la ma&ntilde;ana.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo ahorita.&rdquo;</div><div class="objection-a">&ldquo;La demo es de 15 minutos, no de una hora. Le muestro c&oacute;mo funcionar&iacute;a para reservaciones y eventos. &iquest;Jueves a las 10?&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots, nuestro servicio es de alta gama.&rdquo;</div><div class="objection-a">&ldquo;El agente se configura con el tono de Los Danzantes: formal, c&aacute;lido, conocedor de la carta y del mezcal. Es como un host digital que filtra y organiza.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Llevamos 26 a&ntilde;os as&iacute;.&rdquo;</div><div class="objection-a">&ldquo;Hace 26 a&ntilde;os no exist&iacute;an las rese&ntilde;as de TripAdvisor ni la Gu&iacute;a Michelin mandando turistas de todo el mundo. La demanda cambi&oacute;, la herramienta tambi&eacute;n puede evolucionar.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10:00 - 11:30 am</p><p><strong>Tono:</strong> Respetuoso y admirativo. No vayas como alguien que les va a ense&ntilde;ar su negocio.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden"><p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p><div class="wa-box">Hola, buenas tardes. Los Danzantes lleva 26 a&ntilde;os y es uno de los restaurantes oaxaque&ntilde;os m&aacute;s reconocidos de CDMX -- excelentes rese&ntilde;as en TripAdvisor. Pero su &uacute;nica forma de reservar es llamar o mandar WhatsApp. Para un restaurante de ese nivel, cada reservaci&oacute;n de evento privado que se pierde por respuesta lenta son $50K-$100K MXN. Nosotros automatizamos reservaciones y cotizaciones de eventos con un agente de WhatsApp en espa&ntilde;ol e ingl&eacute;s (para turistas). &iquest;Les puedo mostrar c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. &ldquo;Le marqu&eacute; ayer/antes de ayer&rdquo;. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Los Danzantes lleva 26 a&ntilde;os y es uno de los restaurantes oaxaque&ntilde;os m&aacute;s reconocidos de CDMX -- excelentes rese&ntilde;as en TripAdvisor. Pero su &uacute;nica forma de reservar es llamar o mandar WhatsApp. Para un restaurante de ese nivel, cada reservaci&oacute;n de evento privado que se pierde por respuesta lenta son $50K-$100K MXN. Nosotros automatizamos reservaciones y cotizaciones de eventos con un agente de WhatsApp en espa&ntilde;ol e ingl&eacute;s (para turistas). &iquest;Les puedo mostrar c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 5: Centro Dermatol&oacute;gico ==================== -->
+<div class="card" data-name="centro dermatologico del valle" data-slug="centro-dermatologico-del-valle" data-vertical="clinica" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#5</span>
+<span class="card-name">Centro Dermatol&oacute;gico<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">78</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Cl&iacute;nica &middot; Del Valle</span>
+<a class="card-phone" href="tel:+525555595418" onclick="event.stopPropagation()">5555595418</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab active-call" data-ch="call">LLAMAR</div><div class="ch-tab" data-ch="wa">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve investigando Centro Dermatol&oacute;gico del Valle y vi que manejan tratamientos de alto ticket como Botox, l&aacute;ser y cirug&iacute;a dermatol&oacute;gica. Con ese tipo de servicios, las consultas no paran despu&eacute;s de las 8 de la noche &mdash; justo a esa hora es cuando la gente se pone a investigar tratamientos.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntas citas pierden al mes por no-shows? &iquest;Tienen sistema de recordatorios?&rdquo;</li><li>&ldquo;Despu&eacute;s de las 8pm, &iquest;les llegan WhatsApps preguntando por tratamientos?&rdquo;</li><li>&ldquo;&iquest;Cu&aacute;nto tiempo al d&iacute;a invierte su equipo respondiendo preguntas repetitivas sobre precios y cuidados post-tratamiento?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Una persona busca &lsquo;Botox Del Valle&rsquo; a las 10pm, les manda WhatsApp, y nadie contesta hasta las 9am. Para ese momento ya habl&oacute; con otras 3 cl&iacute;nicas. Una consulta de Botox puede valer entre $3,000 y $10,000 pesos. Y no es una sola consulta, es un paciente que regresa cada 4-6 meses.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan al instante 24h: resuelven preguntas frecuentes, califican si el paciente es candidato, y agendan la cita. Tambi&eacute;n mandan recordatorios para reducir no-shows. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38% en 3 semanas.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para el Centro Dermatol&oacute;gico? &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Mi recepcionista ya lo hace.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Y a las 10pm? &iquest;Los s&aacute;bados despu&eacute;s de las 2? El agente cubre las horas que ella no puede y le quita las preguntas repetitivas.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots para temas de salud.&rdquo;</div><div class="objection-a">&ldquo;Un bot no puede diagnosticar. Pero s&iacute; puede contestar &lsquo;&iquest;cu&aacute;nto cuesta el Botox?&rsquo; y &lsquo;&iquest;necesito cita previa?&rsquo;. Si la pregunta es cl&iacute;nica, lo canaliza al doctor.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Es muy caro.&rdquo;</div><div class="objection-a">&ldquo;Si el sistema les recupera 4 pacientes al mes que se iban porque no les contestaron a tiempo, &iquest;cu&aacute;nto vale eso en tratamientos recurrentes durante un a&ntilde;o? Se paga solo el primer mes.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 8:30 - 9:30 am o 2:00 - 3:00 pm</p><p><strong>Tono:</strong> Profesional. Usa &ldquo;pacientes&rdquo;, no &ldquo;clientes&rdquo;. Nunca trivialices los procedimientos.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden"><p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p><div class="wa-box">Hola, buenas tardes. Vi que Centro Dermatol&oacute;gico del Valle maneja tratamientos de alto ticket como Botox, l&aacute;ser y cirug&iacute;a est&eacute;tica. Con ese tipo de servicios, cada consulta que llega por WhatsApp fuera de horario y no se responde es una cita de $5K-$15K que se va a otra cl&iacute;nica. Nosotros implementamos un agente de WhatsApp que responde 24/7, califica el tipo de tratamiento y agenda citas con el doctor disponible. Se paga solo con 2-3 citas extra al mes. &iquest;Les interesa ver c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. &ldquo;Le marqu&eacute; ayer&rdquo;. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que Centro Dermatol&oacute;gico del Valle maneja tratamientos de alto ticket como Botox, l&aacute;ser y cirug&iacute;a est&eacute;tica. Con ese tipo de servicios, cada consulta que llega por WhatsApp fuera de horario y no se responde es una cita de $5K-$15K que se va a otra cl&iacute;nica. Nosotros implementamos un agente de WhatsApp que responde 24/7, califica el tipo de tratamiento y agenda citas con el doctor disponible. Se paga solo con 2-3 citas extra al mes. &iquest;Les interesa ver c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 6: YOUR HOME ==================== -->
+<div class="card" data-name="your home inmobiliaria" data-slug="your-home-inmobiliaria" data-vertical="inmobiliaria" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#6</span>
+<span class="card-name">YOUR HOME<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">78</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Inmobiliaria &middot; Interlomas</span>
+<a class="card-phone" href="tel:+525516440769" onclick="event.stopPropagation()">5516440769</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que YOUR HOME tiene 50+ propiedades en EasyBroker pero manejan las consultas de WhatsApp manual entre 4 agentes. Eso significa que despu&eacute;s de las 6pm nadie responde, y los leads del fin de semana se pierden. Nosotros hacemos un agente de WhatsApp que califica al prospecto (presupuesto, zona, tipo de propiedad), le manda fotos y agenda visitas autom&aacute;ticamente. Se integra con EasyBroker. &iquest;Les puedo mostrar un demo de 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que YOUR HOME tiene m&aacute;s de 50 propiedades en EasyBroker con 4 agentes compartiendo un solo WhatsApp. Con ese volumen, se les est&aacute;n escapando prospectos.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntos leads nuevos les llegan al mes entre portales, redes y WhatsApp?&rdquo;</li><li>&ldquo;Cuando entra un lead nuevo, &iquest;cu&aacute;nto tiempo pasa antes de que alguien le conteste?&rdquo;</li><li>&ldquo;Los fines de semana, &iquest;qui&eacute;n atiende las consultas?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;El 78% de los compradores cierra con el primer agente que les responde. Si un lead llega el s&aacute;bado a las 7pm y nadie contesta hasta el lunes, ese prospecto ya habl&oacute; con 5 inmobiliarias. Cada hora sin respuesta es una comisi&oacute;n que se va.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan en menos de 30 segundos, 24/7. Pregunta qu&eacute; busca, filtra presupuesto y zona, muestra propiedades con fotos, y agenda visita con el agente correcto. Todo autom&aacute;tico. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para YOUR HOME con sus 50 propiedades? &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Ya respondemos r&aacute;pido.&rdquo;</div><div class="objection-a">&ldquo;&iquest;A las 11pm? &iquest;Los domingos? El agente cubre esas horas y les pasa prospectos ya calificados.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos CRM con EasyBroker.&rdquo;</div><div class="objection-a">&ldquo;EasyBroker es excelente para gestionar propiedades, pero no contesta WhatsApps a las 2am. Son complementarios.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Es muy caro.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Cu&aacute;nto vale una comisi&oacute;n promedio? Si el sistema recupera 2 prospectos al mes, se paga en la primera venta.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10:00 - 11:00 am o 3:00 - 4:00 pm</p><p><strong>Tono:</strong> De colega a colega. Habla de leads, cierres, comisiones.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 7: Rayo Vende ==================== -->
+<div class="card" data-name="rayo vende" data-slug="rayo-vende" data-vertical="inmobiliaria" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#7</span>
+<span class="card-name">Rayo Vende<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">76</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Inmobiliaria &middot; Pedregal</span>
+<a class="card-phone" href="tel:+525555131010" onclick="event.stopPropagation()">5555131010</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que Rayo Vende maneja m&aacute;s de 80 propiedades de lujo en Pedregal y Polanco con m&aacute;s de 15 brokers. Con ese volumen, el reto cl&aacute;sico es responder r&aacute;pido -- en bienes ra&iacute;ces de lujo, el primer agente que responde se queda con el deal. Nosotros implementamos un agente de WhatsApp que responde en segundos con fotos de la propiedad, califica al comprador y agenda visita. Con propiedades de $25M-$60M, una sola venta extra justifica la inversi&oacute;n. &iquest;Les puedo mostrar c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que Rayo Vende maneja m&aacute;s de 80 propiedades de lujo con m&aacute;s de 15 brokers. Impresionante la operaci&oacute;n.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntos leads les llegan al mes de portales y redes?&rdquo;</li><li>&ldquo;Cuando un prospecto manda mensaje un s&aacute;bado a las 10pm pidiendo info de una propiedad de $30M, &iquest;en cu&aacute;nto le contestan?&rdquo;</li><li>&ldquo;&iquest;C&oacute;mo distribuyen esos leads entre los 15 brokers?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;En bienes ra&iacute;ces de lujo, el primer agente que responde se queda con el deal. Si alguien pide info de una propiedad de $50M un s&aacute;bado a las 10pm y nadie contesta hasta el lunes, ya est&aacute; hablando con otra inmobiliaria. Cada lead que se enfr&iacute;a es una comisi&oacute;n de cientos de miles.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que califican al prospecto, mandan fichas t&eacute;cnicas, responden preguntas de ubicaci&oacute;n y amenidades, y agendan visitas con el broker correcto. Todo autom&aacute;tico, 24/7. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si agendamos 15 minutos para mostrarle c&oacute;mo se ver&iacute;a con las propiedades de Rayo Vende? &iquest;Martes o mi&eacute;rcoles?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Ya respondemos r&aacute;pido.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Los fines de semana y despu&eacute;s de las 7pm? La mayor&iacute;a de b&uacute;squedas de lujo son fuera de horario.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos asistente.&rdquo;</div><div class="objection-a">&ldquo;El agente califica, manda ficha t&eacute;cnica con fotos y agenda visita directo. Su asistente se libera para tareas de mayor valor.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Suena caro.&rdquo;</div><div class="objection-a">&ldquo;Una comisi&oacute;n de una propiedad de $20M paga el sistema por a&ntilde;os. Le muestro el retorno en 15 minutos.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10-11am, 3-4pm</p><p><strong>Tono:</strong> Profesional pero relajado. Demuestra que entiendes bienes ra&iacute;ces de lujo.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 8: Llave Bienes Ra&iacute;ces ==================== -->
+<div class="card" data-name="llave bienes raices" data-slug="llave-bienes-raices" data-vertical="inmobiliaria" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#8</span>
+<span class="card-name">Llave Bienes Ra&iacute;ces<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">76</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Inmobiliaria &middot; Del Valle</span>
+<a class="card-phone" href="tel:+525590354634" onclick="event.stopPropagation()">5590354634</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que Llave Bienes Ra&iacute;ces tiene m&aacute;s de 40 a&ntilde;os en el mercado con 5 l&iacute;neas corporativas, pero cierran fines de semana. Los s&aacute;bados son el d&iacute;a con m&aacute;s b&uacute;squedas de propiedades en portales. Un agente de WhatsApp que responda 24/7 con informaci&oacute;n de propiedades, fotos y agende visitas les recuperar&iacute;a ese 20-30% de leads que hoy se van con la competencia. &iquest;Les interesa ver un demo?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Investig&eacute; Llave Bienes Ra&iacute;ces y llevan m&aacute;s de 40 a&ntilde;os en el mercado con 5 l&iacute;neas corporativas. Es una trayectoria muy s&oacute;lida.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntos leads les llegan al mes entre portales, redes y las 5 l&iacute;neas?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa con los mensajes que llegan s&aacute;bados y domingos?&rdquo;</li><li>&ldquo;&iquest;C&oacute;mo distribuyen las consultas entre agentes?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Los s&aacute;bados son el d&iacute;a con m&aacute;s b&uacute;squedas de propiedades en M&eacute;xico. Si alguien encuentra una casa el s&aacute;bado a mediod&iacute;a y no recibe respuesta hasta el lunes, ya habl&oacute; con 2 o 3 inmobiliarias m&aacute;s. Con 40 a&ntilde;os de reputaci&oacute;n, esos leads deber&iacute;an quedarse con ustedes.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que reciben al prospecto, califican, comparten informaci&oacute;n de propiedades y agendan visitas. Todo autom&aacute;tico, incluyendo fines de semana y noches. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si le muestro en 15 minutos c&oacute;mo se ver&iacute;a el sistema para Llave? &iquest;Martes o jueves?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Llevamos 40 a&ntilde;os as&iacute;.&rdquo;</div><div class="objection-a">&ldquo;Por eso mismo los respeto. El agente pone esos 40 a&ntilde;os de conocimiento disponibles las 24 horas.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos CRM.&rdquo;</div><div class="objection-a">&ldquo;Excelente, el agente se conecta con su sistema. Los leads llegan clasificados directo.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Suena caro.&rdquo;</div><div class="objection-a">&ldquo;Si de los leads del fin de semana est&aacute;n perdiendo el 20%, &iquest;cu&aacute;ntas comisiones son al mes? Le muestro el retorno en 15 minutos.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10-11am, 3-4pm</p><p><strong>Tono:</strong> Respetuoso con la trayectoria. 40 a&ntilde;os es mucho. Posici&oacute;nalo como evoluci&oacute;n, no correcci&oacute;n.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 9: Silvia Galv&aacute;n ==================== -->
+<div class="card" data-name="silvia galvan" data-slug="silvia-galvan" data-vertical="salon" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#9</span>
+<span class="card-name">Silvia Galv&aacute;n<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">75</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Sal&oacute;n &middot; Condesa</span>
+<a class="card-phone" href="tel:+525547370133" onclick="event.stopPropagation()">5547370133</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que Silvia Galv&aacute;n Image Studio tiene 8 sucursales y m&aacute;s de 117K seguidores en Instagram. Con ese volumen, imagino que su equipo pasa horas al d&iacute;a contestando las mismas preguntas por WhatsApp: precios, disponibilidad por sucursal, qu&eacute; estilista tiene espacio. Nosotros hacemos un agente de WhatsApp que responde autom&aacute;ticamente, muestra disponibilidad en cualquiera de las 8 sucursales y agenda la cita con confirmaci&oacute;n instant&aacute;nea. &iquest;Les puedo mostrar c&oacute;mo funciona en 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que Silvia Galv&aacute;n tiene 8 sucursales y 117 mil seguidores en Instagram. Con ese volumen, imagino que su equipo pasa horas contestando las mismas preguntas.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;De las citas, &iquest;cu&aacute;ntas son por WhatsApp y cu&aacute;ntas por tel&eacute;fono?&rdquo;</li><li>&ldquo;Con 117K seguidores, &iquest;cu&aacute;ntos DMs reciben al d&iacute;a pidiendo cita?&rdquo;</li><li>&ldquo;Cuando alguien quiere agendar con preferencia de sucursal, &iquest;c&oacute;mo manejan disponibilidad entre las 8?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;117 mil seguidores generan tr&aacute;fico todos los d&iacute;as. Pero los DMs no escalan: alguien tiene que contestar uno por uno, revisar disponibilidad en 8 sucursales, y coordinar manualmente. Si alguien escribe a las 9pm preguntando por espacio, nadie contesta hasta el d&iacute;a siguiente.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que reciben al cliente, preguntan qu&eacute; servicio busca, muestran disponibilidad en la sucursal m&aacute;s cercana, y agendan directo. 24 horas, 8 sucursales al mismo tiempo. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si en 15 minutos le muestro c&oacute;mo se ver&iacute;a el agente para las sucursales de Silvia Galv&aacute;n? &iquest;Martes o mi&eacute;rcoles antes de las 10?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Clientas no quieren bots.&rdquo;</div><div class="objection-a">&ldquo;El agente habla con el tono de Silvia Galv&aacute;n, conoce los servicios y sucursales. Si la consulta es especial, la transfiere a una persona real.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos recepcionistas.&rdquo;</div><div class="objection-a">&ldquo;&iquest;Cada sucursal tiene recepcionista dedicada a WhatsApp e Instagram? El agente cubre horas pico, noches y domingos.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo.&rdquo;</div><div class="objection-a">&ldquo;Nosotros nos encargamos de toda la implementaci&oacute;n. Solo servicios, horarios y sucursales. &iquest;Le funciona el martes temprano?&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 9-10am</p><p><strong>Tono:</strong> Admiraci&oacute;n genuina. 8 sucursales y 117K seguidores es un logro real.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 10: Helwe ==================== -->
+<div class="card" data-name="helwe hair and makeup" data-slug="helwe-hair-and-makeup" data-vertical="salon" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#10</span>
+<span class="card-name">Helwe Hair &amp; Makeup<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">75</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Sal&oacute;n &middot; Polanco</span>
+<a class="card-phone" href="tel:+525567325072" onclick="event.stopPropagation()">5567325072</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que Helwe tiene m&aacute;s de 950 rese&ntilde;as en Google -- impresionante para un sal&oacute;n en Polanco. Con ese nivel de demanda, imagino que las consultas por WhatsApp son constantes: precios, disponibilidad, si hay espacio hoy. Nosotros hacemos un agente de WhatsApp que responde autom&aacute;ticamente, agenda citas directo y manda confirmaciones y recordatorios. En un sal&oacute;n con servicios de $2,000-$10,000, se paga solo con las citas que hoy se pierden por respuesta lenta. &iquest;Les interesa ver un demo de 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que Helwe tiene m&aacute;s de 950 rese&ntilde;as en Google. Claramente hacen un trabajo incre&iacute;ble. Con ese nivel de demanda, las consultas por WhatsApp son constantes.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Qu&eacute; porcentaje de citas entra por WhatsApp vs. plataformas de terceros?&rdquo;</li><li>&ldquo;&iquest;Tienen a alguien dedicado a DMs de Instagram y WhatsApp?&rdquo;</li><li>&ldquo;Con servicios de $2,000 a $10,000, &iquest;cu&aacute;ntos mensajes de consulta reciben al d&iacute;a?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Cada mensaje que llega fuera de horario o en hora pico se queda sin respuesta. Con servicios de $2,000 a $10,000, cada cliente que no recibe respuesta r&aacute;pida y agenda en otro lado son miles de pesos que se van. Y si usan plataformas de terceros, cada cita tiene comisi&oacute;n. Ese dinero podr&iacute;a quedarse en Helwe.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que reciben al cliente, muestran servicios, contestan horarios y precios, y agendan directo sin intermediarios ni comisiones. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si le muestro en 15 minutos c&oacute;mo funcionar&iacute;a el agente contestando como si fuera alguien de Helwe? &iquest;Martes o mi&eacute;rcoles temprano?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Clientes no quieren bots.&rdquo;</div><div class="objection-a">&ldquo;El agente no suena a bot gen&eacute;rico. Lo entrenamos con el tono de Helwe. Si la consulta es especial, lo transfiere a una persona real.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya nos va bien.&rdquo;</div><div class="objection-a">&ldquo;Se nota con 956 rese&ntilde;as. Mientras m&aacute;s citas manejan, m&aacute;s tiempo se va en mensajes repetitivos. El agente se encarga de eso.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No tengo tiempo.&rdquo;</div><div class="objection-a">&ldquo;Nosotros nos encargamos de todo. Demo de 15 minutos. &iquest;Martes antes de las 10?&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 9-10am</p><p><strong>Tono:</strong> Ligero y amigable. Admira lo que hacen.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 11: Omdental ==================== -->
+<div class="card" data-name="omdental" data-slug="omdental" data-vertical="clinica" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#11</span>
+<span class="card-name">Omdental<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">75</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Cl&iacute;nica dental &middot; Roma Sur</span>
+<a class="card-phone" href="tel:+525527141844" onclick="event.stopPropagation()">5527141844</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab active-call" data-ch="call">LLAMAR</div><div class="ch-tab" data-ch="wa">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve viendo la p&aacute;gina de Omdental y me llam&oacute; la atenci&oacute;n que son una cl&iacute;nica biling&uuml;e en Roma Sur &mdash; eso les abre mercado con expats adem&aacute;s de pacientes locales. Con esa combinaci&oacute;n, imagino que el volumen de consultas por WhatsApp es alto, y cada una se responde manualmente.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;Cuando un paciente escribe por WhatsApp preguntando por implantes, &iquest;qui&eacute;n contesta y en cu&aacute;nto tiempo?&rdquo;</li><li>&ldquo;&iquest;Cu&aacute;ntos mensajes reciben al d&iacute;a pidiendo cita o info de tratamientos?&rdquo;</li><li>&ldquo;&iquest;Est&aacute;n midiendo cu&aacute;ntos pacientes llegan por la p&aacute;gina vs. cu&aacute;ntos agendan?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Ya invirtieron en una p&aacute;gina biling&uuml;e y en posicionarse en Roma Sur. Pero entre que el paciente manda el mensaje y alguien contesta, hay un cuello de botella. Un paciente de implantes que escribe a las 8pm y no recibe respuesta hasta el d&iacute;a siguiente probablemente ya busc&oacute; otra cl&iacute;nica.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que reciben al paciente, dan info del tratamiento en espa&ntilde;ol o ingl&eacute;s, contestan preguntas frecuentes y agendan directo. Todo autom&aacute;tico, 24h. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si le muestro en 15 minutos c&oacute;mo se ver&iacute;a el agente respondiendo biling&uuml;e para Omdental? &iquest;Martes o mi&eacute;rcoles?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;La recepcionista ya lo hace.&rdquo;</div><div class="objection-a">&ldquo;El agente cubre noches, fines de semana, hora de comida. Ella se enfoca en los pacientes que ya est&aacute;n en la cl&iacute;nica.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots.&rdquo;</div><div class="objection-a">&ldquo;El agente no diagnostica. Solo da info general, horarios, disponibilidad. Pregunta cl&iacute;nica la transfiere al doctor.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro.&rdquo;</div><div class="objection-a">&ldquo;Un solo paciente de implantes que s&iacute; agenda cubre el costo por meses. Le muestro los n&uacute;meros en 15 minutos.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 8:30-9:30am, 2-3pm</p><p><strong>Tono:</strong> T&eacute;cnico pero accesible. Reconoce lo que ya tienen bien hecho.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden"><p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p><div class="wa-box">Hola, buenas tardes. Vi que Omdental es una cl&iacute;nica dental biling&uuml;e en Roma Sur -- eso les abre mercado con expats adem&aacute;s de pacientes locales. Pero cada consulta de precios y disponibilidad sigue llegando por WhatsApp y alguien del equipo tiene que responder manualmente. Nosotros construimos un agente de WhatsApp que responde en espa&ntilde;ol e ingl&eacute;s, da informaci&oacute;n del tratamiento, disponibilidad y agenda la cita autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a para Omdental?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que Omdental es una cl&iacute;nica dental biling&uuml;e en Roma Sur -- eso les abre mercado con expats adem&aacute;s de pacientes locales. Pero cada consulta de precios y disponibilidad sigue llegando por WhatsApp y alguien del equipo tiene que responder manualmente. Nosotros construimos un agente de WhatsApp que responde en espa&ntilde;ol e ingl&eacute;s, da informaci&oacute;n del tratamiento, disponibilidad y agenda la cita autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a para Omdental?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 12: Inmobiliaria Cattori ==================== -->
+<div class="card" data-name="inmobiliaria cattori" data-slug="inmobiliaria-cattori" data-vertical="inmobiliaria" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#12</span>
+<span class="card-name">Inmobiliaria Cattori<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">72</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Inmobiliaria &middot; Pedregal</span>
+<a class="card-phone" href="tel:+525555502946" onclick="event.stopPropagation()">5555502946</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que Inmobiliaria Cattori tiene 299 propiedades de lujo listadas entre iCasas y EasyBroker, pero todas las consultas pasan por llamada o WhatsApp manual. Con propiedades de $6M a $59M, cada lead que se enfr&iacute;a por respuesta lenta es una comisi&oacute;n importante. Nosotros hacemos un agente de WhatsApp que califica compradores (presupuesto, zona, tipo), les manda fotos y agenda visitas. Pilar se dedica a cerrar, no a filtrar. &iquest;Les interesa ver un demo?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que Inmobiliaria Cattori tiene casi 300 propiedades de lujo, desde $6.5 hasta $59 millones. Impresionante. Not&eacute; que Pilar Cattori coordina pr&aacute;cticamente toda la operaci&oacute;n.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;Con 299 propiedades, &iquest;cu&aacute;ntos leads nuevos al mes?&rdquo;</li><li>&ldquo;Un lead de $40M, &iquest;en cu&aacute;nto tiempo recibe respuesta?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa con consultas viernes en la noche o fines de semana?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Una propiedad de $30M genera comisi&oacute;n de $200K a $1.5M. Si el prospecto tarda horas en recibir respuesta, ya est&aacute; hablando con otra inmobiliaria. Con 299 propiedades y una sola persona coordinando, es imposible responder todo al instante.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que reciben, preguntan qu&eacute; busca, mandan fichas con fotos, y agendan visita con el agente correcto. 24/7. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; le parece si en 15 minutos le muestro c&oacute;mo se ver&iacute;a con el cat&aacute;logo de Cattori? &iquest;Martes o jueves?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Pilar se encarga de todo.&rdquo;</div><div class="objection-a">&ldquo;El agente le quita consultas repetitivas. Ella se enfoca solo en prospectos listos para visitar.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos asistente.&rdquo;</div><div class="objection-a">&ldquo;El agente atiende 50 conversaciones al mismo tiempo y manda fichas al instante. Su asistente se libera.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro.&rdquo;</div><div class="objection-a">&ldquo;Una comisi&oacute;n de $20M cubre el sistema por mucho tiempo. Si rescata un lead al mes, ya se pag&oacute;.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10-11am, 3-4pm</p><p><strong>Tono:</strong> Respetuoso y directo. Pilar es la operadora clave.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 13: Rock Your Hair ==================== -->
+<div class="card" data-name="rock your hair" data-slug="rock-your-hair" data-vertical="salon" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#13</span>
+<span class="card-name">Rock Your Hair<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">70</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Sal&oacute;n &middot; Condesa</span>
+<a class="card-phone" href="tel:+525547543945" onclick="event.stopPropagation()">5547543945</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico. Tel: 5547543945</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Rock Your Hair es top 10 en CDMX con 9.2 en Saloon y 482 rese&ntilde;as en Google. Pero varias rese&ntilde;as mencionan que la atenci&oacute;n por WhatsApp es un &aacute;rea de mejora. Un agente de WhatsApp que responda amablemente 24/7, con disponibilidad de estilistas y confirmaci&oacute;n instant&aacute;nea, protege esa reputaci&oacute;n que tanto les cost&oacute; construir. &iquest;Les puedo mostrar c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que Rock Your Hair tiene m&aacute;s de 1,400 rese&ntilde;as combinadas y est&aacute;n en el Top 10 de salones en CDMX. La calidad t&eacute;cnica se nota. Pero encontr&eacute; algo: varias clientas mencionan que el personal de WhatsApp es poco amable.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntos mensajes de WhatsApp les llegan al d&iacute;a para agendar o reprogramar?&rdquo;</li><li>&ldquo;&iquest;Tienen a alguien dedicado a WhatsApp o lo hace recepci&oacute;n entre cortes?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa con los mensajes despu&eacute;s de las 8pm o en domingo?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Un balayage cuesta m&aacute;s de $1,800. Si una clienta manda WhatsApp y la respuesta tarda o el tono no es amable, se va con otro sal&oacute;n. Lo peor: eso ya est&aacute; visible en Google. Rese&ntilde;as que dicen textual que el trato por WhatsApp es poco amable. A&ntilde;os de reputaci&oacute;n t&eacute;cnica se pueden erosionar por un punto de contacto.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan al instante, con el tono que ustedes definan, 24h. Muestra disponibilidad real, agenda, confirma, manda recordatorios y reprograma sin fricci&oacute;n. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para Rock Your Hair? &iquest;Jueves o viernes antes de las 10?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Clientas no quieren bots.&rdquo;</div><div class="objection-a">&ldquo;Ahora est&aacute;n hablando con un humano y se quejan en Google de que es poco amable. El agente contesta r&aacute;pido, con el tono que ustedes elijan.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Nos va bien as&iacute;.&rdquo;</div><div class="objection-a">&ldquo;T&eacute;cnicamente incre&iacute;ble. Pero las rese&ntilde;as dicen que la experiencia de agendar no est&aacute; al nivel del servicio. Cada menci&oacute;n negativa sobre WhatsApp les cuesta clientas.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 9:00 - 10:00 am</p><p><strong>Tono:</strong> Respetuoso con su trayectoria. Top 10 CDMX. Sin WA p&uacute;blico en web, tel&eacute;fono es el listado.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 14: iik SPA ==================== -->
+<div class="card" data-name="iik spa" data-slug="iik-spa" data-vertical="spa" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#14</span>
+<span class="card-name">iik&#39; SPA<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">70</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Spa &middot; Polanco</span>
+<a class="card-phone" href="tel:+525611139225" onclick="event.stopPropagation()">5611139225</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que iik SPA tiene 4.8 estrellas con rese&ntilde;as que dicen "f&aacute;cil reservar por WhatsApp" -- pero ese proceso es 100% manual. Sin analytics en la web, no saben cu&aacute;ntos clientes los visitan sin reservar. Nosotros hacemos un agente de WhatsApp que agenda citas, sugiere tratamientos complementarios y manda recordatorios. Con clientes de Polanco, una sola cita extra al d&iacute;a paga el sistema. &iquest;Les interesa verlo?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que iik&rsquo; SPA tiene rese&ntilde;as incre&iacute;bles: 4.8 en Google, clientas que dicen que es el mejor masaje de su vida. Lo que me llam&oacute; la atenci&oacute;n es que todo el proceso de reservaci&oacute;n es manual.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntas reservaciones al d&iacute;a por WhatsApp vs. formulario del sitio?&rdquo;</li><li>&ldquo;&iquest;Qui&eacute;n procesa las solicitudes del formulario y cu&aacute;nto tarda en confirmar?&rdquo;</li><li>&ldquo;&iquest;Saben cu&aacute;ntas personas visitan su p&aacute;gina al mes sin reservar?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Su sitio no tiene analytics. No saben cu&aacute;ntas personas entran, ven los servicios, y se van sin reservar. Podr&iacute;an estar perdiendo 10, 20, 30 reservaciones al mes. Adem&aacute;s, el formulario no confirma autom&aacute;ticamente: la clienta queda esperando. Si alguien busca masaje de parejas a las 9pm y nadie contesta, reserva en otro lado.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan al instante, confirman la reservaci&oacute;n, mandan recordatorio 24h antes y reprograman sin que nadie intervenga. La clienta elige servicio, terapeuta y horario, y queda confirmada en segundos. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para iik&rsquo; SPA? &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Clientas no quieren bots.&rdquo;</div><div class="objection-a">&ldquo;59% de los consumidores esperan respuesta en menos de 5 segundos. El agente contesta cuando el equipo no puede, y pasa al humano cuando es necesario.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Las rese&ntilde;as hablan por s&iacute; solas.&rdquo;</div><div class="objection-a">&ldquo;Sin analytics no saben cu&aacute;nta gente llega y se va sin reservar. Les muestro c&oacute;mo medir eso y capturar las que se pierden.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro.&rdquo;</div><div class="objection-a">&ldquo;Un masaje de 60 min cuesta $1,100. Si el agente recupera 5 reservaciones al mes, ya cubri&oacute; la inversi&oacute;n.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 9:00 - 10:00 am (abren a las 11)</p><p><strong>Tono:</strong> C&aacute;lido y respetuoso. Spa boutique en Polanco.</p><p><strong>Dato:</strong> Tienen PostHog instalado. Si mencionan analytics, decir: &ldquo;PostHog es para comportamiento en sitio, lo que falta es cerrar el loop de reservaci&oacute;n.&rdquo;</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 15: Dental Arts ==================== -->
+<div class="card" data-name="dental arts" data-slug="dental-arts" data-vertical="clinica" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#15</span>
+<span class="card-name">Dental Arts<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">65</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Cl&iacute;nica dental &middot; Anzures</span>
+<a class="card-phone" href="tel:+525552030843" onclick="event.stopPropagation()">5552030843</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab active-call" data-ch="call">LLAMAR</div><div class="ch-tab" data-ch="wa">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando Dental Arts: 37 a&ntilde;os de trayectoria, m&aacute;s de 12,000 carillas colocadas, clientela de alto perfil. El Dr. Nader tiene una reputaci&oacute;n impecable. Pero me llam&oacute; la atenci&oacute;n que no tienen ning&uacute;n sistema de agendado en l&iacute;nea. Todo depende de una llamada o un WhatsApp manual.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;Cu&aacute;ntas consultas de Smile Design o carillas les llegan por WhatsApp a la semana?&rdquo;</li><li>&ldquo;&iquest;Qui&eacute;n contesta esos mensajes? &iquest;La recepcionista entre pacientes?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa con los mensajes despu&eacute;s de las 8pm o fines de semana que est&aacute;n cerrados?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Un caso de Smile Design puede valer entre $15,000 y $50,000 o m&aacute;s. Si la respuesta tarda m&aacute;s de una hora, ya mand&oacute; mensaje a otras tres cl&iacute;nicas. Cierran a las 8pm y no abren fines de semana. Son 14 horas al d&iacute;a donde un paciente de alto ticket puede escribir y no recibir respuesta.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que contestan al instante, precalifican por servicio, presupuesto y urgencia, y agendan la consulta. Responde a las 11pm, en s&aacute;bado, en domingo. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para consultas de Smile Design y carillas? &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;La recepcionista ya lo hace.&rdquo;</div><div class="objection-a">&ldquo;&iquest;De 8pm a 11am y todos los fines de semana? Son 14 horas diarias + 48h cada fin de semana donde nadie contesta. El agente cubre esas horas.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots para cl&iacute;nica premium.&rdquo;</div><div class="objection-a">&ldquo;El agente no da diagn&oacute;sticos ni cotiza. Solo contesta, pregunta qu&eacute; servicio busca, y agenda la consulta presencial. Como una recepcionista de noche.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro.&rdquo;</div><div class="objection-a">&ldquo;Un solo caso de Smile Design que se recupere al mes paga el sistema. Cada mensaje fuera de horario sin contestar es un paciente de $15K-$50K que se fue.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 8:30 - 9:30 am o 2:00 - 3:00 pm</p><p><strong>Tono:</strong> Muy respetuoso. 37 a&ntilde;os no es cualquier cosa. Admira el trabajo cl&iacute;nico.</p><p><strong>Dato:</strong> Ya tienen GTM y botones wa.me para Smile Design. Hay intenci&oacute;n de digitalizaci&oacute;n.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden"><p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p><div class="wa-box">Hola, buenas tardes. Dental Arts lleva 37 a&ntilde;os y m&aacute;s de 12,000 carillas colocadas -- es una instituci&oacute;n. Pero vi que no tienen sistema de agendado online, todo pasa por tel&eacute;fono y WhatsApp manual. Con clientela de alto perfil, la experiencia de agendar deber&iacute;a estar al nivel del servicio cl&iacute;nico. Nosotros hacemos un agente de WhatsApp que agenda consultas de smile design, manda portfolio de casos y confirma autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Dental Arts lleva 37 a&ntilde;os y m&aacute;s de 12,000 carillas colocadas -- es una instituci&oacute;n. Pero vi que no tienen sistema de agendado online, todo pasa por tel&eacute;fono y WhatsApp manual. Con clientela de alto perfil, la experiencia de agendar deber&iacute;a estar al nivel del servicio cl&iacute;nico. Nosotros hacemos un agente de WhatsApp que agenda consultas de smile design, manda portfolio de casos y confirma autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 16: GLOSS DENT ==================== -->
+<div class="card" data-name="gloss dent" data-slug="gloss-dent" data-vertical="clinica" data-strategy="call-first">
+<div class="card-header" role="button">
+<span class="card-rank">#16</span>
+<span class="card-name">GLOSS DENT<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">80</span>
+<span class="card-channel call">LLAMAR</span>
+<div class="card-sub">
+<span class="card-vertical">Cl&iacute;nica dental &middot; Polanco</span>
+<a class="card-phone" href="tel:+525552902388" onclick="event.stopPropagation()">5552902388</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab active-call" data-ch="call">LLAMAR</div><div class="ch-tab" data-ch="wa">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando GLOSS DENT y me impresion&oacute;: tres ubicaciones, cobertura en medios, posicionamiento como los dentistas de las estrellas. Con 3 sucursales y ese nivel de demanda, imagino que el volumen de consultas por WhatsApp es alto &mdash; y cada una se responde manualmente.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;&iquest;C&oacute;mo manejan citas entre las tres sucursales? &iquest;Cada una tiene su sistema o todo pasa por un n&uacute;mero central?&rdquo;</li><li>&ldquo;&iquest;Cu&aacute;ntos mensajes al d&iacute;a entre Polanco, WTC y M&eacute;rida?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa cuando un paciente de Instagram o TikTok manda mensaje fuera de horario?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Con tres sucursales y presencia en medios, las consultas llegan a toda hora. Si sus reels generan demanda, la mayor&iacute;a cae fuera de horario. Para cuando alguien contesta, el paciente ya habl&oacute; con 3 cl&iacute;nicas. Y eso pasa en las tres sedes al mismo tiempo.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Un solo agente de WhatsApp con IA que contesta al instante, detecta la zona del paciente, muestra disponibilidad de la sucursal m&aacute;s cercana y agenda directo. Un sistema para Polanco, WTC y M&eacute;rida. Precalifica por tratamiento, presupuesto y urgencia. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para las tres sucursales? &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;La recepcionista maneja las citas.&rdquo;</div><div class="objection-a">&ldquo;&iquest;En las tres sucursales al mismo tiempo? &iquest;A las 10pm cuando alguien ve un reel? El agente cubre esas horas y coordina entre las tres ubicaciones.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;No conf&iacute;o en bots.&rdquo;</div><div class="objection-a">&ldquo;El agente no da diagn&oacute;sticos. Contesta, identifica qu&eacute; busca el paciente, pregunta qu&eacute; sucursal le queda y agenda la valoraci&oacute;n. Como una recepcionista virtual en las tres sedes.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro.&rdquo;</div><div class="objection-a">&ldquo;Un solo agente centralizado para 3 sedes. Si recuperan 2-3 pacientes al mes que se perd&iacute;an, se paga solo. Le muestro los n&uacute;meros en 15 minutos.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 8:30 - 9:30 am o 2:00 - 3:00 pm</p><p><strong>Tono:</strong> Profesional y directo. Marca de medios multi-ubicaci&oacute;n. &Aacute;ngulo: eficiencia operativa.</p></div></div>
+</div>
+<div class="channel-content wa-content hidden"><p class="wa-note">Enviar despu&eacute;s de llamada si no contesta</p><div class="wa-box">Hola, buenas tardes. Vi que GLOSS DENT tiene 3 ubicaciones -- Polanco, WTC y M&eacute;rida. Con 3 sucursales, cada paciente que pregunta disponibilidad necesita que alguien revise agenda en las 3 antes de confirmar. Nosotros hacemos un agente de WhatsApp que pregunta sucursal y tratamiento, revisa disponibilidad en tiempo real y agenda directo con el doctor. Con 3 ubicaciones, la automatizaci&oacute;n se multiplica x3. &iquest;Les interesa ver un demo de 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que GLOSS DENT tiene 3 ubicaciones -- Polanco, WTC y M&eacute;rida. Con 3 sucursales, cada paciente que pregunta disponibilidad necesita que alguien revise agenda en las 3 antes de confirmar. Nosotros hacemos un agente de WhatsApp que pregunta sucursal y tratamiento, revisa disponibilidad en tiempo real y agenda directo con el doctor. Con 3 ubicaciones, la automatizaci&oacute;n se multiplica x3. &iquest;Les interesa ver un demo de 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+<!-- ==================== CARD 17: 9Round ==================== -->
+<div class="card" data-name="9round kickboxing" data-slug="9round-kickboxing" data-vertical="gym" data-strategy="wa-first">
+<div class="card-header" role="button">
+<span class="card-rank">#17</span>
+<span class="card-name">9Round Kickboxing<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-score">60</span>
+<span class="card-channel wa">WA</span>
+<div class="card-sub">
+<span class="card-vertical">Gym &middot; Sat&eacute;lite</span>
+<a class="card-phone" href="tel:+525555728434" onclick="event.stopPropagation()">5555728434</a>
+</div>
+</div>
+<div class="card-body">
+<div class="status-bar">
+<div class="status-pill pendiente" data-status="pendiente">Pendiente</div>
+<div class="status-pill contactado" data-status="contactado">Contactado</div>
+<div class="status-pill interesado" data-status="interesado">Interesado</div>
+<div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
+<div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
+<div class="day-content active" data-day="0">
+<div class="channel-tabs"><div class="ch-tab" data-ch="call">LLAMAR</div><div class="ch-tab active-wa" data-ch="wa">WA</div></div>
+<div class="channel-content call-content hidden"><p style="padding:12px 0;color:var(--text-muted)">Llamar solo si no tiene WhatsApp p&uacute;blico</p></div>
+<div class="channel-content wa-content"><div class="wa-box">Hola, buenas tardes. Vi que 9Round ya usa Glofox para agendar clases y tiene Meta Pixel configurado -- van por buen camino. Lo que falta es cerrar el loop: cuando alguien pide info por WhatsApp y no agenda, no hay seguimiento autom&aacute;tico. Nosotros conectamos Glofox con un agente de WhatsApp que hace follow-up a leads tibios, manda horarios personalizados y convierte trials en membres&iacute;as. &iquest;Les interesa ver c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div>
+</div>
+<div class="day-content" data-day="1">
+<div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div>
+<div class="channel-content call-content">
+<div class="script-section open"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Apertura</span><span class="script-time">15s</span></div><div class="script-content"><div class="quote">&ldquo;Hola, buenas tardes. Soy Igor de UPSIDE. Les escrib&iacute; por WhatsApp hace un par de d&iacute;as. Vi que 9Round Sat&eacute;lite ya tiene Glofox y Meta Pixel &mdash; est&aacute;n m&aacute;s avanzados que el 90% de los gyms en CDMX. Pero not&eacute; un hueco entre la clase muestra y la inscripci&oacute;n. Ese gap de conversi&oacute;n es donde est&aacute;n perdiendo membres&iacute;as.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Discovery</span><span class="script-time">30s</span></div><div class="script-content"><ol><li>&ldquo;De cada 10 personas que toman clase muestra, &iquest;cu&aacute;ntas se inscriben?&rdquo;</li><li>&ldquo;&iquest;Tienen seguimiento despu&eacute;s de la clase muestra? &iquest;Alguien manda mensaje al d&iacute;a siguiente?&rdquo;</li><li>&ldquo;&iquest;Qu&eacute; pasa cuando alguien pregunta precios por WhatsApp fuera de horario?&rdquo;</li></ol></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Agitar dolor</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Glofox es muy bueno para agendar clases, pero no cierra la venta. Cuando alguien toma clase muestra y le encanta, necesita un empuj&oacute;n en las siguientes 24-48h. Si nadie manda mensaje de seguimiento, la emoci&oacute;n se enfr&iacute;a. Cada trial que no se convierte es una membres&iacute;a mensual perdida para siempre.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Soluci&oacute;n</span><span class="script-time">20s</span></div><div class="script-content"><div class="quote">&ldquo;Agentes de WhatsApp con IA que responden precios y horarios al instante, agendan la clase muestra, y despu&eacute;s hacen seguimiento autom&aacute;tico para convertir a membres&iacute;a. Sabe qui&eacute;n tom&oacute; clase, con qu&eacute; entrenador, y manda el mensaje correcto en el momento correcto. Ya lo tenemos en MarioBox &mdash; bajamos no-shows 38%.&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">CTA</span><span class="script-time">10s</span></div><div class="script-content"><div class="quote">&ldquo;&iquest;Qu&eacute; les parece si les muestro en 15 minutos c&oacute;mo se ver&iacute;a para 9Round Sat&eacute;lite? El flujo completo: desde WhatsApp hasta inscripci&oacute;n. &iquest;Jueves o viernes?&rdquo;</div></div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Objeciones</span><span class="script-time"></span></div><div class="script-content">
+<div class="objection"><div class="objection-q">&ldquo;Ya tenemos Glofox.&rdquo;</div><div class="objection-a">&ldquo;Glofox agenda clases. No hace seguimiento post-trial, no contesta WhatsApp a las 10pm, no cierra la venta. El agente complementa a Glofox.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Los entrenadores hacen follow-up.&rdquo;</div><div class="objection-a">&ldquo;Los entrenadores son incre&iacute;bles para entrenar. El seguimiento comercial por WhatsApp no es su fuerte. El agente libera a los entrenadores.&rdquo;</div></div>
+<div class="objection"><div class="objection-q">&ldquo;Muy caro para un gym.&rdquo;</div><div class="objection-a">&ldquo;Si el agente convierte 3 trials al mes que hoy se pierden, ya se pag&oacute;. Y el costo de no hacer nada es seguir invirtiendo en Meta Ads para traer gente que nunca regresa.&rdquo;</div></div>
+</div></div>
+<div class="script-section"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">Notas</span><span class="script-time"></span></div><div class="script-content"><p><strong>Mejor hora:</strong> 10:00 - 11:00 am</p><p><strong>Tono:</strong> Energ&eacute;tico pero no agresivo. Entiende fitness y m&eacute;tricas de conversi&oacute;n.</p><p><strong>Dato:</strong> Es franquicia. Manager local decide operaciones, puede necesitar aprobaci&oacute;n de corporativo. Glofox oculta precios.</p></div></div>
+</div>
+</div>
+<div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
+</div>
+</div>
+</div>
+
+</div><!-- end cardList -->
+
+<div class="footer">UPSIDE &middot; Automatizaci&oacute;n Comercial &middot; Documento confidencial</div>
+
+<script>
+// ========== localStorage helpers ==========
+function getStatus(slug){return localStorage.getItem('igor_status_'+slug)||'pendiente'}
+function setStatus(slug,status){localStorage.setItem('igor_status_'+slug,status);updateAllUI()}
+function getNotes(slug){return localStorage.getItem('igor_notes_'+slug)||''}
+function setNotes(slug,notes){localStorage.setItem('igor_notes_'+slug,notes)}
+function getDay(slug){return parseInt(localStorage.getItem('igor_day_'+slug)||'0')}
+function setDay(slug,day){localStorage.setItem('igor_day_'+slug,String(day))}
+
+// ========== Status color map ==========
+var STATUS_COLORS={
+pendiente:'',
+contactado:'#F5C542',
+interesado:'#BFEA2E',
+'no-contesta':'#F5A623',
+rechazado:'#E85454'
+};
+var STATUS_ORDER=['pendiente','contactado','interesado','no-contesta','rechazado'];
+
+// ========== Original card order (for priority sort) ==========
+var originalOrder=[];
+
+// ========== UI update functions ==========
+function updateCardVisuals(card){
+var slug=card.getAttribute('data-slug');
+var status=getStatus(slug);
+var day=getDay(slug);
+// Set data-status attribute for CSS
+card.setAttribute('data-status',status);
+// Update status dot
+var dot=card.querySelector('.status-dot');
+if(dot){
+var color=STATUS_COLORS[status]||'';
+if(color){
+dot.style.backgroundColor=color;
+dot.style.width='8px';
+dot.style.height='8px';
+dot.style.borderRadius='50%';
+}else{
+dot.style.backgroundColor='';
+dot.style.width='0';
+dot.style.height='0';
+}
+}
+// Update day badge
+var badge=card.querySelector('.day-badge');
+if(badge){
+var dayTabs=card.querySelectorAll('.day-tab');
+if(dayTabs.length>0&&day<dayTabs.length){
+var dayText=dayTabs[day].textContent.trim();
+badge.textContent=dayText;
+}else{
+badge.textContent='';
+}
+}
+// Update status pills active state
+var pills=card.querySelectorAll('.status-pill');
+for(var i=0;i<pills.length;i++){
+if(pills[i].getAttribute('data-status')===status){
+pills[i].classList.add('active');
+}else{
+pills[i].classList.remove('active');
+}
+}
+// Update notes textarea
+var textarea=card.querySelector('.igor-notes');
+if(textarea&&!textarea.dataset.loaded){
+textarea.value=getNotes(slug);
+textarea.dataset.loaded='1';
+}
+// Update day tabs
+var dayTabsAll=card.querySelectorAll('.day-tab');
+var dayContents=card.querySelectorAll('.day-content');
+if(day<dayTabsAll.length){
+for(var i=0;i<dayTabsAll.length;i++){dayTabsAll[i].classList.remove('active')}
+for(var i=0;i<dayContents.length;i++){dayContents[i].classList.remove('active')}
+dayTabsAll[day].classList.add('active');
+if(dayContents[day]) dayContents[day].classList.add('active');
+}
+}
+
+function updateStatsCounter(){
+var cards=document.querySelectorAll('#cardList .card');
+var total=0,contactados=0,interesados=0;
+for(var i=0;i<cards.length;i++){
+if(cards[i].style.display==='none') continue;
+total++;
+var s=getStatus(cards[i].getAttribute('data-slug'));
+if(s==='contactado') contactados++;
+if(s==='interesado') interesados++;
+}
+var el=document.getElementById('statsCounts');
+if(el) el.textContent=total+' prospecto'+(total!==1?'s':'')+' \u00B7 '+contactados+' contactado'+(contactados!==1?'s':'')+' \u00B7 '+interesados+' interesado'+(interesados!==1?'s':'');
+}
+
+function updateAllUI(){
+var cards=document.querySelectorAll('#cardList .card');
+for(var i=0;i<cards.length;i++){updateCardVisuals(cards[i])}
+updateStatsCounter();
+}
+
+// ========== Sort ==========
+var currentSort='priority';
+function sortCards(mode){
+currentSort=mode;
+var cardList=document.getElementById('cardList');
+var cards=Array.prototype.slice.call(cardList.querySelectorAll('.card'));
+if(mode==='status'){
+cards.sort(function(a,b){
+var sa=STATUS_ORDER.indexOf(getStatus(a.getAttribute('data-slug')));
+var sb=STATUS_ORDER.indexOf(getStatus(b.getAttribute('data-slug')));
+if(sa!==sb) return sa-sb;
+// Same status: preserve original order
+return originalOrder.indexOf(a.getAttribute('data-slug'))-originalOrder.indexOf(b.getAttribute('data-slug'));
+});
+}else{
+// Priority: restore original order
+cards.sort(function(a,b){
+return originalOrder.indexOf(a.getAttribute('data-slug'))-originalOrder.indexOf(b.getAttribute('data-slug'));
+});
+}
+for(var i=0;i<cards.length;i++){cardList.appendChild(cards[i])}
+// Update sort button active state
+var btns=document.querySelectorAll('.sort-btn');
+for(var i=0;i<btns.length;i++){
+if(btns[i].getAttribute('data-sort')===mode){btns[i].classList.add('active')}
+else{btns[i].classList.remove('active')}
+}
+}
+
+// ========== Core interaction handlers ==========
+function toggleCard(header){
+var card=header.closest('.card');
+if(card) card.classList.toggle('expanded');
+}
+function switchDay(tab,dayIndex){
+var card=tab.closest('.card');
+var slug=card.getAttribute('data-slug');
+var tabs=card.querySelectorAll('.day-tab');
+var contents=card.querySelectorAll('.day-content');
+for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
+for(var i=0;i<contents.length;i++){contents[i].classList.remove('active')}
+tab.classList.add('active');
+contents[dayIndex].classList.add('active');
+// Save day
+setDay(slug,dayIndex);
+// Update badge
+var badge=card.querySelector('.day-badge');
+if(badge) badge.textContent=tab.textContent.trim();
+}
+function switchChannel(tab,type){
+var dayContent=tab.closest('.day-content');
+var chTabs=dayContent.querySelectorAll('.ch-tab');
+var callContent=dayContent.querySelectorAll('.call-content');
+var waContent=dayContent.querySelectorAll('.wa-content');
+for(var i=0;i<chTabs.length;i++){
+chTabs[i].classList.remove('active-call','active-wa');
+}
+if(type==='call'){
+tab.classList.add('active-call');
+for(var i=0;i<callContent.length;i++){callContent[i].classList.remove('hidden')}
+for(var i=0;i<waContent.length;i++){waContent[i].classList.add('hidden')}
+}else{
+tab.classList.add('active-wa');
+for(var i=0;i<callContent.length;i++){callContent[i].classList.add('hidden')}
+for(var i=0;i<waContent.length;i++){waContent[i].classList.remove('hidden')}
+}
+}
+function toggleScript(header){
+var section=header.closest('.script-section');
+if(section) section.classList.toggle('open');
+}
+function handleTap(e){
+var t=e.target;
+// Textarea -- let it through (don't collapse card)
+if(t.closest('.igor-notes')||t.classList.contains('igor-notes')) return;
+// Phone links -- let them through
+if(t.closest('a.card-phone')) return;
+// Status pill
+var sp=t.closest('.status-pill');
+if(sp){
+var card=sp.closest('.card');
+var slug=card.getAttribute('data-slug');
+var newStatus=sp.getAttribute('data-status');
+setStatus(slug,newStatus);
+if(currentSort==='status') sortCards('status');
+return;
+}
+// Sort button
+var sb=t.closest('.sort-btn');
+if(sb){
+sortCards(sb.getAttribute('data-sort'));
+return;
+}
+// Card header
+var ch=t.closest('.card-header');
+if(ch){e.preventDefault();e.stopPropagation();toggleCard(ch);return;}
+// Day tab
+var dt=t.closest('.day-tab');
+if(dt){var tabs=dt.parentElement.querySelectorAll('.day-tab');switchDay(dt,Array.prototype.indexOf.call(tabs,dt));return;}
+// Channel tab
+var ct=t.closest('.ch-tab');
+if(ct&&!ct.classList.contains('disabled')&&ct.getAttribute('data-ch')){switchChannel(ct,ct.getAttribute('data-ch'));return;}
+// Script accordion
+var sh=t.closest('.script-header');
+if(sh){toggleScript(sh);return;}
+// Copy button
+var cb=t.closest('[data-action="copy"]');
+if(cb){copyWA(cb);return;}
+}
+// Bind BOTH click and touchend for maximum iOS compatibility
+document.addEventListener('click',handleTap,false);
+// iOS Safari: touchend fires reliably on divs even without cursor:pointer
+var touchMoved=false;
+document.addEventListener('touchstart',function(){touchMoved=false;},{passive:true});
+document.addEventListener('touchmove',function(){touchMoved=true;},{passive:true});
+document.addEventListener('touchend',function(e){
+if(!touchMoved){
+// Prevent double-fire: skip if click will also fire
+e.preventDefault();
+handleTap(e);
+}
+},false);
+function copyWA(btn){
+var box=btn.previousElementSibling;
+var text=box.innerText||box.textContent;
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(text).then(function(){
+btn.textContent='COPIADO';
+btn.classList.add('copied');
+setTimeout(function(){btn.textContent='COPIAR';btn.classList.remove('copied')},2000);
+});
+}else{
+var ta=document.createElement('textarea');
+ta.value=text;
+ta.style.position='fixed';
+ta.style.left='-9999px';
+document.body.appendChild(ta);
+ta.select();
+document.execCommand('copy');
+document.body.removeChild(ta);
+btn.textContent='COPIADO';
+btn.classList.add('copied');
+setTimeout(function(){btn.textContent='COPIAR';btn.classList.remove('copied')},2000);
+}
+}
+
+// ========== Notes save on blur ==========
+document.addEventListener('focusout',function(e){
+if(e.target&&e.target.classList.contains('igor-notes')){
+var card=e.target.closest('.card');
+if(card){
+setNotes(card.getAttribute('data-slug'),e.target.value);
+}
+}
+},false);
+
+// ========== Search ==========
+var searchInput=document.getElementById('searchInput');
+searchInput.addEventListener('input',function(){
+var q=this.value.toLowerCase().trim();
+var cards=document.querySelectorAll('#cardList .card');
+for(var i=0;i<cards.length;i++){
+var name=cards[i].getAttribute('data-name')||'';
+var vertical=cards[i].getAttribute('data-vertical')||'';
+if(name.indexOf(q)!==-1||vertical.indexOf(q)!==-1){
+cards[i].style.display='';
+}else{
+cards[i].style.display='none';
+}
+}
+updateStatsCounter();
+});
+
+// ========== Init on load ==========
+(function(){
+// Store original order
+var cards=document.querySelectorAll('#cardList .card');
+for(var i=0;i<cards.length;i++){
+originalOrder.push(cards[i].getAttribute('data-slug'));
+}
+// Apply score classes
+var scores=document.querySelectorAll('.card-score');
+for(var i=0;i<scores.length;i++){
+var val=parseInt(scores[i].textContent,10);
+if(val>=80){scores[i].classList.add('score-high')}
+else if(val>=60){scores[i].classList.add('score-mid')}
+else{scores[i].classList.add('score-low')}
+}
+// Apply all saved states from localStorage
+updateAllUI();
+})();
+</script>
+</body>
+</html>
