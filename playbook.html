@@ -85,7 +85,7 @@ color:var(--text);
 outline:none;
 -webkit-appearance:none;
 }
-.search-input:focus{border-color:var(--primary)}
+.search-input:focus{border-color:var(--primary);background:rgba(191,234,46,0.05)}
 .search-input::placeholder{color:var(--muted)}
 
 /* CARDS */
@@ -326,7 +326,7 @@ justify-content:center;
 user-select:none;
 -webkit-user-select:none;
 text-align:center;
-transition:all 0.15s;
+transition:all 0.2s ease;
 border-radius:0;
 }
 .result-pill:not(:last-child){border-right:none}
@@ -354,8 +354,9 @@ resize:vertical;
 border-radius:0;
 -webkit-appearance:none;
 }
-.igor-notes:focus{border-color:var(--primary);outline:none}
+.igor-notes:focus{border-color:var(--primary);outline:none;background:rgba(191,234,46,0.05)}
 .igor-notes::placeholder{color:var(--muted)}
+.capture-input, .igor-notes, .search-input { min-height: 44px; }
 
 /* TOAST */
 .toast{
@@ -457,6 +458,20 @@ border-top:1px solid var(--border);
   flex-shrink: 0;
 }
 
+/* PHONE LINK IN CALL MODE */
+.call-phone-link {
+  display: block;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 4px 0 8px;
+  letter-spacing: 1px;
+}
+.call-phone-link:active { opacity: 0.7; }
+
 /* SCRIPT TEXT AREA */
 .call-text-area {
   flex: 1;
@@ -521,7 +536,7 @@ border-top:1px solid var(--border);
 }
 .capture-input:focus {
   border-color: var(--primary);
-  background: rgba(191,234,46,0.1);
+  background: rgba(191,234,46,0.08);
 }
 
 /* BUTTONS */
@@ -545,7 +560,7 @@ border-top:1px solid var(--border);
   justify-content: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .call-btn:active { transform: scale(0.97); }
@@ -587,7 +602,7 @@ border-top:1px solid var(--border);
   background: var(--surface);
   border-left: 3px solid var(--border);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 .objection-card:active { border-left-color: var(--primary); }
 .objection-card.expanded { border-left-color: var(--primary); background: var(--card); }
@@ -1340,6 +1355,7 @@ function renderStep() {
     '<div class="call-progress-dots">' + dots + '</div>' +
     '</div>' +
     '<div class="call-prospect-name">' + p.name + '</div>' +
+    '<a class="call-phone-link" href="tel:+52' + p.phone + '">' + p.phone + '</a>' +
     '<div class="call-text-area">' +
     '<div><div class="call-section-label">' + s.section + '</div>' +
     '<div class="call-text">' + s.text + '</div></div>' +
@@ -1553,6 +1569,9 @@ function handleCallAction(action) {
       }
       break;
     case 'back':
+      // Close objection panel if open
+      var panelBack = document.getElementById('objectionPanel');
+      if (panelBack) panelBack.classList.remove('show');
       // Save any note input before going back
       var noteInBack = document.getElementById('stepNoteInput');
       if (noteInBack && noteInBack.value.trim()) {
@@ -1611,6 +1630,9 @@ function handleCallAction(action) {
 // ==================== EVENT DELEGATION ====================
 document.addEventListener('click', function(e){
 var t = e.target;
+
+// Let phone link through without triggering call actions
+if (t.closest('.call-phone-link')) return;
 
 // Call mode actions
 var callAction = t.closest('[data-action]');
@@ -1789,13 +1811,16 @@ if(card) setN(card.getAttribute('data-slug'), e.target.value);
 }, false);
 
 // ==================== SEARCH ====================
+function normalizeText(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
 document.getElementById('searchInput').addEventListener('input', function(){
-var q = this.value.toLowerCase().trim();
+var q = normalizeText(this.value.trim());
 var cards = document.querySelectorAll('#cardList .card');
 for(var i=0;i<cards.length;i++){
 var slug = cards[i].getAttribute('data-slug');
 var p = getProspect(slug);
-if(!q || (p && (p.name.toLowerCase().indexOf(q)!==-1 || p.vertical.toLowerCase().indexOf(q)!==-1 || p.zone.toLowerCase().indexOf(q)!==-1))){
+if(!q || (p && (normalizeText(p.name).indexOf(q)!==-1 || normalizeText(p.vertical).indexOf(q)!==-1 || normalizeText(p.zone).indexOf(q)!==-1))){
 cards[i].style.display='';
 cards[i].classList.remove('hidden');
 }else{
