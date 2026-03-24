@@ -126,12 +126,18 @@ align-items:center;
 margin:12px 16px;
 background:var(--card-bg);
 border:1px solid var(--border);
+border-left:4px solid var(--border);
 box-shadow:0 2px 8px rgba(0,0,0,0.3);
 overflow:hidden;
-transition:border-color 0.2s ease, border-left 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+transition:border-color 0.2s ease, border-left-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
-.card.expanded{border-left:3px solid var(--primary);box-shadow:0 4px 16px rgba(0,0,0,0.4)}
-.card[data-status="rechazado"]{opacity:0.4}
+.card.expanded{box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.card[data-status="contactado"]{border-left-color:#F5C542}
+.card[data-status="interesado"]{border:1px solid var(--primary);border-left:4px solid var(--primary);box-shadow:0 0 16px rgba(191,234,46,0.15)}
+.card[data-status="interesado"] .card-name{color:var(--primary)}
+.card[data-status="no-contesta"]{border-left-color:#F5A623;opacity:0.7}
+.card[data-status="rechazado"]{border-left-color:#E85454;opacity:0.55}
+.card[data-status="rechazado"] .card-name{text-decoration:line-through;text-decoration-thickness:1px;color:var(--text-muted)}
 .card[data-status="rechazado"] .card-header:active{transform:none}
 .card-header{
 padding:12px 14px;
@@ -160,23 +166,19 @@ font-size:18px;
 flex:1;
 min-width:120px;
 color:var(--text);
-display:flex;
-align-items:center;
-gap:6px;
-}
-.status-dot{
-width:8px;
-height:8px;
-border-radius:50%;
-display:inline-block;
-flex-shrink:0;
+transition:color 0.2s ease;
 }
 .day-badge{
-font-family:'Space Grotesk',system-ui,sans-serif;
+font-size:10px;
 font-weight:600;
-font-size:11px;
 color:var(--text-muted);
+background:var(--surface);
+padding:2px 8px;
+border:1px solid var(--border);
 white-space:nowrap;
+display:flex;
+align-items:center;
+flex-shrink:0;
 }
 .card-score{
 display:inline-block;
@@ -228,21 +230,21 @@ background:var(--surface);
 }
 .card.expanded .card-body{display:block}
 
-/* STATUS BAR */
+/* STATUS BAR (Segmented Control) */
 .status-bar{
 display:flex;
-gap:6px;
+gap:0;
 padding:10px 14px;
 border-bottom:1px solid var(--border);
-overflow-x:auto;
--webkit-overflow-scrolling:touch;
+overflow:visible;
 }
 .status-pill{
-padding:8px 12px;
-font-size:12px;
+flex:1;
+padding:10px 4px;
+font-size:11px;
 font-family:'Space Grotesk',system-ui,sans-serif;
 font-weight:600;
-background:var(--card-bg);
+background:transparent;
 border:1px solid var(--border);
 color:var(--text-muted);
 cursor:pointer;
@@ -250,15 +252,19 @@ white-space:nowrap;
 min-height:44px;
 display:flex;
 align-items:center;
+justify-content:center;
 user-select:none;
 -webkit-user-select:none;
-transition:border-color 0.15s ease, color 0.15s ease;
+transition:all 0.15s ease;
+text-align:center;
 }
-.status-pill.active{border-color:var(--primary);color:var(--primary)}
-.status-pill.contactado.active{border-color:#F5C542;color:#F5C542}
-.status-pill.interesado.active{border-color:#BFEA2E;color:#BFEA2E}
-.status-pill.no-contesta.active{border-color:#F5A623;color:#F5A623}
-.status-pill.rechazado.active{border-color:#E85454;color:#E85454}
+.status-pill:not(:last-child){border-right:none}
+.status-pill:active{transform:scale(0.96);opacity:0.8}
+.status-pill.active{background:rgba(191,234,46,0.08);color:var(--primary);border-color:var(--primary);box-shadow:inset 0 -3px 0 var(--primary)}
+.status-pill.contactado.active{background:rgba(245,197,66,0.08);color:#F5C542;border-color:#F5C542;box-shadow:inset 0 -3px 0 #F5C542}
+.status-pill.interesado.active{background:rgba(191,234,46,0.08);color:#BFEA2E;border-color:#BFEA2E;box-shadow:inset 0 -3px 0 #BFEA2E}
+.status-pill.no-contesta.active{background:rgba(245,166,35,0.08);color:#F5A623;border-color:#F5A623;box-shadow:inset 0 -3px 0 #F5A623}
+.status-pill.rechazado.active{background:rgba(232,84,84,0.08);color:#E85454;border-color:#E85454;box-shadow:inset 0 -3px 0 #E85454}
 
 /* DAY TABS */
 .day-tabs{
@@ -434,10 +440,20 @@ border-left:2px solid var(--border);
 color:var(--text-muted);
 }
 
+/* PROGRESS BAR */
+.progress-bar-wrap{padding:0 16px 8px;background:var(--surface)}
+.progress-bar{display:flex;height:6px;gap:2px;background:var(--border);overflow:hidden}
+.progress-seg{height:100%;transition:flex 0.3s ease;min-width:0}
+#seg-pendiente{background:var(--border)}
+.seg-contactado{background:#F5C542}
+.seg-interesado{background:#BFEA2E}
+.seg-no-contesta{background:#F5A623}
+.seg-rechazado{background:#8A8A9E}
+
 /* IGOR NOTES */
 .igor-notes-wrap{
 padding:12px 14px;
-border-top:1px solid var(--border);
+border-bottom:1px solid var(--border);
 }
 .igor-notes-label{
 font-family:'Space Grotesk',system-ui,sans-serif;
@@ -496,13 +512,23 @@ border-top:1px solid var(--border);
 </div>
 </div>
 
+<div class="progress-bar-wrap">
+<div class="progress-bar" id="progressBar">
+<div class="progress-seg" id="seg-pendiente" style="flex:17"></div>
+<div class="progress-seg seg-contactado" id="seg-contactado" style="flex:0"></div>
+<div class="progress-seg seg-interesado" id="seg-interesado" style="flex:0"></div>
+<div class="progress-seg seg-no-contesta" id="seg-no-contesta" style="flex:0"></div>
+<div class="progress-seg seg-rechazado" id="seg-rechazado" style="flex:0"></div>
+</div>
+</div>
+
 <div id="cardList">
 
 <!-- ==================== CARD 1: Coraz&oacute;n de Maguey ==================== -->
 <div class="card" data-name="corazon de maguey" data-slug="corazon-de-maguey" data-vertical="restaurante" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#1</span>
-<span class="card-name">Coraz&oacute;n de Maguey<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Coraz&oacute;n de Maguey</span><span class="day-badge"></span>
 <span class="card-score">82</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -517,6 +543,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs">
 <div class="day-tab active">D&Iacute;A 0</div>
@@ -600,10 +630,6 @@ border-top:1px solid var(--border);
 <button class="wa-copy-btn" data-action="copy">COPIAR</button>
 </div>
 </div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -611,7 +637,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="vetme condesa" data-slug="vetme-condesa" data-vertical="veterinaria" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#2</span>
-<span class="card-name">VETME Condesa<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">VETME Condesa</span><span class="day-badge"></span>
 <span class="card-score">82</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -626,6 +652,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs">
 <div class="day-tab active">D&Iacute;A 0</div>
@@ -661,10 +691,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Mencionar: &ldquo;Le marqu&eacute; ayer/antes de ayer&rdquo;. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Estuve revisando las rese&ntilde;as de VETME y vi que tienen m&aacute;s de 1,100 en Google, pero varias mencionan tiempos de espera y llamadas sin respuesta. Siendo hospital 24/7, cada consulta de emergencia que se pierde es ingreso perdido. Nosotros implementamos un agente de WhatsApp que hace triaje autom&aacute;tico -- clasifica emergencias vs. consultas regulares, agenda citas y manda recordatorios de vacunas. &iquest;Les puedo mostrar c&oacute;mo funciona en 5 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -672,7 +698,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="leonora studio" data-slug="leonora-studio" data-vertical="salon" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#3</span>
-<span class="card-name">Leonora Studio<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Leonora Studio</span><span class="day-badge"></span>
 <span class="card-score">78</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -687,6 +713,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs">
 <div class="day-tab active">D&Iacute;A 0</div>
@@ -726,10 +756,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -737,7 +763,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="los danzantes" data-slug="los-danzantes" data-vertical="restaurante" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#4</span>
-<span class="card-name">Los Danzantes<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Los Danzantes</span><span class="day-badge"></span>
 <span class="card-score">78</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -752,6 +778,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
 <div class="day-content active" data-day="0">
@@ -773,10 +803,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. &ldquo;Le marqu&eacute; ayer/antes de ayer&rdquo;. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Los Danzantes lleva 26 a&ntilde;os y es uno de los restaurantes oaxaque&ntilde;os m&aacute;s reconocidos de CDMX -- excelentes rese&ntilde;as en TripAdvisor. Pero su &uacute;nica forma de reservar es llamar o mandar WhatsApp. Para un restaurante de ese nivel, cada reservaci&oacute;n de evento privado que se pierde por respuesta lenta son $50K-$100K MXN. Nosotros automatizamos reservaciones y cotizaciones de eventos con un agente de WhatsApp en espa&ntilde;ol e ingl&eacute;s (para turistas). &iquest;Les puedo mostrar c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -784,7 +810,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="centro dermatologico del valle" data-slug="centro-dermatologico-del-valle" data-vertical="clinica" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#5</span>
-<span class="card-name">Centro Dermatol&oacute;gico<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Centro Dermatol&oacute;gico</span><span class="day-badge"></span>
 <span class="card-score">78</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -799,6 +825,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
 <div class="day-content active" data-day="0">
@@ -820,10 +850,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. &ldquo;Le marqu&eacute; ayer&rdquo;. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que Centro Dermatol&oacute;gico del Valle maneja tratamientos de alto ticket como Botox, l&aacute;ser y cirug&iacute;a est&eacute;tica. Con ese tipo de servicios, cada consulta que llega por WhatsApp fuera de horario y no se responde es una cita de $5K-$15K que se va a otra cl&iacute;nica. Nosotros implementamos un agente de WhatsApp que responde 24/7, califica el tipo de tratamiento y agenda citas con el doctor disponible. Se paga solo con 2-3 citas extra al mes. &iquest;Les interesa ver c&oacute;mo funciona?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -831,7 +857,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="your home inmobiliaria" data-slug="your-home-inmobiliaria" data-vertical="inmobiliaria" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#6</span>
-<span class="card-name">YOUR HOME<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">YOUR HOME</span><span class="day-badge"></span>
 <span class="card-score">78</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -846,6 +872,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -870,10 +900,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -881,7 +907,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="rayo vende" data-slug="rayo-vende" data-vertical="inmobiliaria" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#7</span>
-<span class="card-name">Rayo Vende<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Rayo Vende</span><span class="day-badge"></span>
 <span class="card-score">76</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -896,6 +922,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -920,10 +950,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -931,7 +957,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="llave bienes raices" data-slug="llave-bienes-raices" data-vertical="inmobiliaria" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#8</span>
-<span class="card-name">Llave Bienes Ra&iacute;ces<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Llave Bienes Ra&iacute;ces</span><span class="day-badge"></span>
 <span class="card-score">76</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -946,6 +972,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -970,10 +1000,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -981,7 +1007,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="silvia galvan" data-slug="silvia-galvan" data-vertical="salon" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#9</span>
-<span class="card-name">Silvia Galv&aacute;n<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Silvia Galv&aacute;n</span><span class="day-badge"></span>
 <span class="card-score">75</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -996,6 +1022,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1020,10 +1050,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1031,7 +1057,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="helwe hair and makeup" data-slug="helwe-hair-and-makeup" data-vertical="salon" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#10</span>
-<span class="card-name">Helwe Hair &amp; Makeup<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Helwe Hair &amp; Makeup</span><span class="day-badge"></span>
 <span class="card-score">75</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -1046,6 +1072,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1070,10 +1100,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1081,7 +1107,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="omdental" data-slug="omdental" data-vertical="clinica" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#11</span>
-<span class="card-name">Omdental<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Omdental</span><span class="day-badge"></span>
 <span class="card-score">75</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -1096,6 +1122,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
 <div class="day-content active" data-day="0">
@@ -1117,10 +1147,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que Omdental es una cl&iacute;nica dental biling&uuml;e en Roma Sur -- eso les abre mercado con expats adem&aacute;s de pacientes locales. Pero cada consulta de precios y disponibilidad sigue llegando por WhatsApp y alguien del equipo tiene que responder manualmente. Nosotros construimos un agente de WhatsApp que responde en espa&ntilde;ol e ingl&eacute;s, da informaci&oacute;n del tratamiento, disponibilidad y agenda la cita autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a para Omdental?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1128,7 +1154,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="inmobiliaria cattori" data-slug="inmobiliaria-cattori" data-vertical="inmobiliaria" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#12</span>
-<span class="card-name">Inmobiliaria Cattori<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Inmobiliaria Cattori</span><span class="day-badge"></span>
 <span class="card-score">72</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -1143,6 +1169,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1167,10 +1197,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1178,7 +1204,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="rock your hair" data-slug="rock-your-hair" data-vertical="salon" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#13</span>
-<span class="card-name">Rock Your Hair<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Rock Your Hair</span><span class="day-badge"></span>
 <span class="card-score">70</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -1193,6 +1219,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1216,10 +1246,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1227,7 +1253,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="iik spa" data-slug="iik-spa" data-vertical="spa" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#14</span>
-<span class="card-name">iik&#39; SPA<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">iik&#39; SPA</span><span class="day-badge"></span>
 <span class="card-score">70</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -1242,6 +1268,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1266,10 +1296,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1277,7 +1303,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="dental arts" data-slug="dental-arts" data-vertical="clinica" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#15</span>
-<span class="card-name">Dental Arts<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">Dental Arts</span><span class="day-badge"></span>
 <span class="card-score">65</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -1292,6 +1318,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
 <div class="day-content active" data-day="0">
@@ -1313,10 +1343,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Dental Arts lleva 37 a&ntilde;os y m&aacute;s de 12,000 carillas colocadas -- es una instituci&oacute;n. Pero vi que no tienen sistema de agendado online, todo pasa por tel&eacute;fono y WhatsApp manual. Con clientela de alto perfil, la experiencia de agendar deber&iacute;a estar al nivel del servicio cl&iacute;nico. Nosotros hacemos un agente de WhatsApp que agenda consultas de smile design, manda portfolio de casos y confirma autom&aacute;ticamente. &iquest;Les interesa ver c&oacute;mo se ver&iacute;a?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1324,7 +1350,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="gloss dent" data-slug="gloss-dent" data-vertical="clinica" data-strategy="call-first">
 <div class="card-header" role="button">
 <span class="card-rank">#16</span>
-<span class="card-name">GLOSS DENT<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">GLOSS DENT</span><span class="day-badge"></span>
 <span class="card-score">80</span>
 <span class="card-channel call">LLAMAR</span>
 <div class="card-sub">
@@ -1339,6 +1365,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +3</div></div>
 <div class="day-content active" data-day="0">
@@ -1360,10 +1390,6 @@ border-top:1px solid var(--border);
 </div>
 <div class="day-content" data-day="1"><div class="channel-tabs"><div class="ch-tab active-call">LLAMAR</div><div class="ch-tab disabled">WA</div></div><div class="channel-content"><p style="padding:12px 0;color:var(--text-muted)">Segunda llamada. Misma estructura.</p></div></div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Hola, buenas tardes. Vi que GLOSS DENT tiene 3 ubicaciones -- Polanco, WTC y M&eacute;rida. Con 3 sucursales, cada paciente que pregunta disponibilidad necesita que alguien revise agenda en las 3 antes de confirmar. Nosotros hacemos un agente de WhatsApp que pregunta sucursal y tratamiento, revisa disponibilidad en tiempo real y agenda directo con el doctor. Con 3 ubicaciones, la automatizaci&oacute;n se multiplica x3. &iquest;Les interesa ver un demo de 2 minutos?</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1371,7 +1397,7 @@ border-top:1px solid var(--border);
 <div class="card" data-name="9round kickboxing" data-slug="9round-kickboxing" data-vertical="gym" data-strategy="wa-first">
 <div class="card-header" role="button">
 <span class="card-rank">#17</span>
-<span class="card-name">9Round Kickboxing<span class="status-dot"></span><span class="day-badge"></span></span>
+<span class="card-name">9Round Kickboxing</span><span class="day-badge"></span>
 <span class="card-score">60</span>
 <span class="card-channel wa">WA</span>
 <div class="card-sub">
@@ -1386,6 +1412,10 @@ border-top:1px solid var(--border);
 <div class="status-pill interesado" data-status="interesado">Interesado</div>
 <div class="status-pill no-contesta" data-status="no-contesta">No contesta</div>
 <div class="status-pill rechazado" data-status="rechazado">Rechazado</div>
+</div>
+<div class="igor-notes-wrap">
+<div class="igor-notes-label">Notas de Igor:</div>
+<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
 </div>
 <div class="day-tabs"><div class="day-tab active">D&Iacute;A 0</div><div class="day-tab">D&Iacute;A +2</div><div class="day-tab">D&Iacute;A +5</div></div>
 <div class="day-content active" data-day="0">
@@ -1410,10 +1440,6 @@ border-top:1px solid var(--border);
 </div>
 </div>
 <div class="day-content" data-day="2"><div class="channel-tabs"><div class="ch-tab disabled">LLAMAR</div><div class="ch-tab active-wa">WA</div></div><div class="channel-content"><div class="wa-box">Solo quer&iacute;a confirmar que les lleg&oacute; mi mensaje. Sin compromiso, es un demo de 2 minutos.</div><button class="wa-copy-btn" data-action="copy">COPIAR</button></div></div>
-<div class="igor-notes-wrap">
-<div class="igor-notes-label">Notas de Igor:</div>
-<textarea class="igor-notes" placeholder="Escribe notas sobre la llamada..."></textarea>
-</div>
 </div>
 </div>
 
@@ -1448,23 +1474,8 @@ function updateCardVisuals(card){
 var slug=card.getAttribute('data-slug');
 var status=getStatus(slug);
 var day=getDay(slug);
-// Set data-status attribute for CSS
+// Set data-status attribute for CSS (left border handles visual status)
 card.setAttribute('data-status',status);
-// Update status dot
-var dot=card.querySelector('.status-dot');
-if(dot){
-var color=STATUS_COLORS[status]||'';
-if(color){
-dot.style.backgroundColor=color;
-dot.style.width='8px';
-dot.style.height='8px';
-dot.style.borderRadius='50%';
-}else{
-dot.style.backgroundColor='';
-dot.style.width='0';
-dot.style.height='0';
-}
-}
 // Update day badge
 var badge=card.querySelector('.day-badge');
 if(badge){
@@ -1504,16 +1515,23 @@ if(dayContents[day]) dayContents[day].classList.add('active');
 
 function updateStatsCounter(){
 var cards=document.querySelectorAll('#cardList .card');
-var total=0,contactados=0,interesados=0;
+var counts={pendiente:0,contactado:0,interesado:0,'no-contesta':0,rechazado:0};
+var total=0;
 for(var i=0;i<cards.length;i++){
 if(cards[i].style.display==='none') continue;
 total++;
 var s=getStatus(cards[i].getAttribute('data-slug'));
-if(s==='contactado') contactados++;
-if(s==='interesado') interesados++;
+if(counts[s]!==undefined) counts[s]++;
+else counts.pendiente++;
 }
 var el=document.getElementById('statsCounts');
-if(el) el.textContent=total+' prospecto'+(total!==1?'s':'')+' \u00B7 '+contactados+' contactado'+(contactados!==1?'s':'')+' \u00B7 '+interesados+' interesado'+(interesados!==1?'s':'');
+if(el) el.innerHTML=total+' prospectos &middot; <span style="color:#F5C542">'+counts.contactado+'</span> contactados &middot; <span style="color:#BFEA2E">'+counts.interesado+'</span> interesados &middot; <span style="color:#F5A623">'+counts['no-contesta']+'</span> sin respuesta';
+// Update progress bar
+var segs=['pendiente','contactado','interesado','no-contesta','rechazado'];
+for(var j=0;j<segs.length;j++){
+var seg=document.getElementById('seg-'+segs[j]);
+if(seg) seg.style.flex=counts[segs[j]]||0;
+}
 }
 
 function updateAllUI(){
