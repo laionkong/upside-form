@@ -773,13 +773,8 @@ var notes = getN(p.slug);
 var savedCh = getCh(p.slug);
 var isCallFirst = p.strategy === 'call-first';
 
-// Determine active channel
-var channel;
-if(savedCh !== 'default'){
-channel = savedCh;
-} else {
-channel = isCallFirst ? 'call' : 'wa';
-}
+// Determine active channel based on saved day + strategy
+var channel = bestChannel(p, day);
 
 var chTag = isCallFirst ? '<span class="ch-tag call">LLAMAR</span>' : '<span class="ch-tag wa">WA</span>';
 
@@ -1042,6 +1037,12 @@ cards[i].classList.add('hidden');
 });
 
 // ==================== INIT ====================
+// Reset day and channel to defaults (HOY + strategy-based channel)
+// Status and notes are preserved
+for(var i=0;i<PROSPECTS.length;i++){
+localStorage.removeItem(PREFIX+'d_'+PROSPECTS[i].slug);
+localStorage.removeItem(PREFIX+'ch_'+PROSPECTS[i].slug);
+}
 renderAll();
 </script>
 </body>
