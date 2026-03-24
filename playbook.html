@@ -489,6 +489,41 @@ border-top:1px solid var(--border);
   margin-bottom: 12px;
 }
 
+/* INLINE CAPTURE */
+.call-capture {
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+.capture-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'Space Grotesk', system-ui;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+.capture-input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(191,234,46,0.06);
+  border: 1px solid rgba(191,234,46,0.2);
+  color: var(--text);
+  font-family: 'Manrope', system-ui;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.capture-input::placeholder {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+}
+.capture-input:focus {
+  border-color: var(--primary);
+  background: rgba(191,234,46,0.1);
+}
+
 /* BUTTONS */
 .call-buttons {
   display: flex;
@@ -1238,6 +1273,24 @@ function buildSteps(p) {
   return steps;
 }
 
+function getCallNote(slug, step) {
+  return localStorage.getItem(PREFIX + 'cn_' + slug + '_' + step) || '';
+}
+function setCallNote(slug, step, val) {
+  if (val && val.trim()) localStorage.setItem(PREFIX + 'cn_' + slug + '_' + step, val.trim());
+}
+function getAllCallNotes(slug) {
+  var notes = [];
+  for (var i = 0; i < 20; i++) {
+    var n = localStorage.getItem(PREFIX + 'cn_' + slug + '_' + i);
+    if (n) notes.push(n);
+  }
+  return notes;
+}
+function clearCallNotes(slug) {
+  for (var i = 0; i < 20; i++) localStorage.removeItem(PREFIX + 'cn_' + slug + '_' + i);
+}
+
 function renderStep() {
   if (callState.step < 0 || callState.step >= callState.steps.length) {
     renderOutcome('book');
@@ -1261,6 +1314,26 @@ function renderStep() {
     btns += '<button class="call-btn ' + s.buttons[b].type + '" data-action="' + s.buttons[b].action + '">' + s.buttons[b].label + '</button>';
   }
 
+  // Detect if this is a discovery or pitch step
+  var isQuestion = s.section && s.section.toLowerCase().indexOf('pregunta') !== -1;
+  var isPitchStep = s.section && (s.section.toLowerCase().indexOf('problema') !== -1 || s.section.toLowerCase().indexOf('soluci') !== -1);
+
+  var captureHtml = '';
+  if (isQuestion || isPitchStep) {
+    var saved = getCallNote(callState.slug, callState.step);
+    var ph = isQuestion ?
+      'Ej: 30 consultas al d&iacute;a, nadie responde despu&eacute;s de las 8pm' :
+      'Reacci&oacute;n del prospecto (opcional)';
+    var label = isQuestion ? 'RESPUESTA DEL PROSPECTO' : 'NOTA R&Aacute;PIDA';
+    captureHtml = '<div class="call-capture">' +
+      '<div class="capture-label">' + label + '</div>' +
+      '<input type="text" class="capture-input" id="stepNoteInput" ' +
+      'placeholder="' + ph + '" ' +
+      'value="' + (saved || '').replace(/"/g, '&quot;') + '" ' +
+      'autocomplete="off" />' +
+      '</div>';
+  }
+
   var html = '<div class="call-top">' +
     '<div class="call-back" data-action="back">&lsaquo; Atr&aacute;s</div>' +
     '<div class="call-step-label">' + (callState.step + 1) + '/' + totalSteps + '</div>' +
@@ -1271,6 +1344,7 @@ function renderStep() {
     '<div><div class="call-section-label">' + s.section + '</div>' +
     '<div class="call-text">' + s.text + '</div></div>' +
     '</div>' +
+    captureHtml +
     '<div class="call-buttons">' + btns + '</div>';
 
   document.getElementById('callMode').innerHTML = html;
@@ -1291,6 +1365,22 @@ function renderOutcome(type) {
   var cls = classMap[type] || 'neutral';
   var autoNote = noteMap[type] || '';
 
+  // Save any note from the last step before outcome
+  var noteInLast = document.getElementById('stepNoteInput');
+  if (noteInLast && noteInLast.value.trim()) {
+    setCallNote(callState.slug, callState.step, noteInLast.value);
+  }
+
+  // Gather captured notes
+  var captured = getAllCallNotes(callState.slug);
+  var capturedSummary = '';
+  if (captured.length > 0) {
+    capturedSummary = '\n\nRESPUESTAS:\n';
+    for (var ci = 0; ci < captured.length; ci++) {
+      capturedSummary += '- ' + captured[ci] + '\n';
+    }
+  }
+
   // Set status
   setS(p.slug, status);
 
@@ -1301,7 +1391,7 @@ function renderOutcome(type) {
     '<div class="call-outcome">' +
     '<div class="outcome-status ' + cls + '">' + title + '</div>' +
     '<div class="outcome-prospect">' + p.name + '</div>' +
-    '<textarea class="outcome-notes" id="outcomeNotes" placeholder="Notas de la llamada...">' + autoNote + '</textarea>' +
+    '<textarea class="outcome-notes" id="outcomeNotes" placeholder="Notas de la llamada...">' + autoNote + capturedSummary + '</textarea>' +
     '</div>' +
     '<div class="call-buttons">' +
     '<button class="call-btn primary" data-action="nextprospect">SIGUIENTE PROSPECTO</button>' +
@@ -1309,6 +1399,7 @@ function renderOutcome(type) {
 
   document.getElementById('callMode').innerHTML = html;
   localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
+  clearCallNotes(callState.slug);
 }
 
 function showObjections() {
@@ -1449,6 +1540,11 @@ function handleCallAction(action) {
 
   switch(action) {
     case 'next':
+      // Save any note input before advancing
+      var noteIn = document.getElementById('stepNoteInput');
+      if (noteIn && noteIn.value.trim()) {
+        setCallNote(callState.slug, callState.step, noteIn.value);
+      }
       callState.step++;
       if (callState.step >= callState.steps.length) {
         renderOutcome('book'); // Reached end = assume booking
@@ -1457,6 +1553,11 @@ function handleCallAction(action) {
       }
       break;
     case 'back':
+      // Save any note input before going back
+      var noteInBack = document.getElementById('stepNoteInput');
+      if (noteInBack && noteInBack.value.trim()) {
+        setCallNote(callState.slug, callState.step, noteInBack.value);
+      }
       if (callState.step > 0) {
         callState.step--;
         renderStep();
@@ -1538,8 +1639,9 @@ if (callModeBtn) {
   return;
 }
 
-// Textarea
+// Textarea / capture input
 if(t.closest('.igor-notes')) return;
+if(t.closest('.capture-input')) return;
 
 // WA copy button
 var copyBtn = t.closest('[data-action="copy"]');
