@@ -749,16 +749,19 @@ return '<div class="wa-content">' +
 }
 }
 
-function renderDayContent(p, day, channel){
-if(channel==='call'){
-// Call channel
-if(day===2){
-// +3 DIAS: calls disabled
-return '<div class="wa-content"><div class="wa-disabled">D\u00eda +3: usar WhatsApp follow-up</div></div>';
+function bestChannel(p, day){
+if(day===2) return 'wa';
+if(day===0) return p.strategy==='call-first' ? 'call' : 'wa';
+if(day===1) return p.strategy==='call-first' ? 'wa' : 'call';
+return 'call';
 }
+
+function renderDayContent(p, day, channel){
+var correct = bestChannel(p, day);
+if(channel !== correct) channel = correct;
+if(channel==='call'){
 return buildCallContent(p, day);
 } else {
-// WA channel
 return buildWaContent(p, day);
 }
 }
@@ -974,11 +977,23 @@ e.preventDefault();
 e.stopPropagation();
 var card = dt.closest('.card');
 var slug = card.getAttribute('data-slug');
+var p = getProspect(slug);
 var di = parseInt(dt.getAttribute('data-di'));
 setD(slug,di);
+// Auto-select best channel for this day
+var best = bestChannel(p, di);
+card.setAttribute('data-channel', best);
+setCh(slug, best);
+// Update day tabs
 var tabs = card.querySelectorAll('.day-tab');
 for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
 dt.classList.add('active');
+// Update channel tabs visually
+var chTabs = card.querySelectorAll('.channel-tab');
+for(var i=0;i<chTabs.length;i++){
+chTabs[i].classList.remove('active');
+if(chTabs[i].getAttribute('data-ch')===best) chTabs[i].classList.add('active');
+}
 refreshDayContent(card);
 return;
 }
