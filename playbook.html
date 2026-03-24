@@ -1105,18 +1105,25 @@ toastTimer = setTimeout(function(){t.classList.remove('show')},1500);
 
 // ==================== CALL MODE ====================
 var callState = { slug: null, step: 0, steps: [], prospect: null };
+var callProcessing = false;
 
 // Helper: strip HTML tags and return plain text
 function stripHtml(html) {
+  if (!html) return '';
   var tmp = document.createElement('div');
   tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || '';
+  var text = tmp.textContent || tmp.innerText || '';
+  // Clean up extra whitespace
+  text = text.replace(/\s+/g, ' ').trim();
+  return text;
 }
 
 // Helper: extract individual questions from Discovery HTML content
 function extractQuestions(html) {
+  if (!html) return [''];
   var tmp = document.createElement('div');
   tmp.innerHTML = html;
+  // Try <li> elements first
   var items = tmp.querySelectorAll('li');
   if (items.length > 0) {
     var qs = [];
@@ -1126,12 +1133,27 @@ function extractQuestions(html) {
     }
     if (qs.length > 0) return qs;
   }
-  // Fallback: split by numbered pattern
+  // Try splitting by question marks followed by whitespace
   var text = stripHtml(html);
-  var parts = text.split(/(?:\d+\.\s*)/);
+  var byQuestion = text.split(/\?\s+/);
+  if (byQuestion.length >= 2) {
+    var qs2 = [];
+    for (var j = 0; j < byQuestion.length; j++) {
+      var q = byQuestion[j].trim();
+      if (q.length > 15) qs2.push(q + '?');
+    }
+    // Remove trailing ? from last if it was already there
+    if (qs2.length > 0) {
+      var last = qs2[qs2.length - 1];
+      if (last.endsWith('??')) qs2[qs2.length - 1] = last.slice(0, -1);
+    }
+    if (qs2.length >= 2) return qs2;
+  }
+  // Fallback: split by numbered pattern
+  var parts = text.split(/(?:\d+[\.\)]\s*)/);
   parts = parts.filter(function(p) { return p.trim().length > 15; });
   if (parts.length >= 2) return parts;
-  // Last fallback: return whole text as single question
+  // Last fallback: return whole text
   return [text];
 }
 
@@ -1217,8 +1239,12 @@ function buildSteps(p) {
 }
 
 function renderStep() {
+  if (callState.step < 0 || callState.step >= callState.steps.length) {
+    renderOutcome('book');
+    return;
+  }
   var s = callState.steps[callState.step];
-  if (!s) return;
+  if (!s) { renderOutcome('book'); return; }
   var totalSteps = callState.steps.length;
   var p = callState.prospect;
 
@@ -1309,8 +1335,38 @@ function showObjections() {
       ],
       'veterinaria': [
         { q: '&ldquo;Mi recepcionista ya lo hace.&rdquo;', a: '&iquest;Y a las 2am cuando llama alguien con un perro envenenado? El agente cubre las horas que la recepcionista no est&aacute;.' },
-        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente hace triaje b&aacute;sico y agenda. Emergencias reales se escalan directo a ustedes con notificaci&oacute;n inmediata.' },
-        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una sola emergencia que no pierden al mes ya paga el sistema. Les muestro los n&uacute;meros.' }
+        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente hace triaje b&aacute;sico y agenda. Emergencias reales se escalan directo a ustedes.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una sola emergencia que no pierden al mes ya paga el sistema.' }
+      ],
+      'inmobiliaria': [
+        { q: '&ldquo;Ya respondemos r&aacute;pido.&rdquo;', a: '&iquest;A las 10pm un s&aacute;bado? 78% de compradores trabajan con quien responde primero. El agente cubre las horas que ustedes no.' },
+        { q: '&ldquo;Ya tenemos CRM.&rdquo;', a: 'El CRM guarda datos. El agente act&uacute;a antes de que el dato llegue: responde, califica y agenda la visita.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una comisi&oacute;n de venta paga la inversi&oacute;n 5 veces. Solo necesitan cerrar una venta extra al trimestre.' }
+      ],
+      'sal': [
+        { q: '&ldquo;Mis clientas no quieren bots.&rdquo;', a: '59% de las personas esperan respuesta en menos de 5 segundos. Prefieren velocidad a esperar.' },
+        { q: '&ldquo;No necesito automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntas horas al d&iacute;a pasan contestando cu&aacute;nto cuesta un corte o un tinte? El agente se encarga de eso.' },
+        { q: '&ldquo;No tengo tiempo para esto.&rdquo;', a: 'Nosotros hacemos todo. Solo necesitamos acceso al WhatsApp y en 2-3 semanas est&aacute; funcionando.' }
+      ],
+      'cl': [
+        { q: '&ldquo;Mi recepcionista ya lo hace.&rdquo;', a: '&iquest;Y a las 10pm? El agente cubre noches, fines de semana y hora de comida. La recepcionista se enfoca en pacientes presenciales.' },
+        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente no diagnostica. Contesta preguntas frecuentes de precios y horarios, y agenda. Lo cl&iacute;nico sigue siendo 100% del doctor.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Se paga solo con 2-3 citas extra al mes. Un paciente de tratamiento recurrente vale miles al a&ntilde;o.' }
+      ],
+      'spa': [
+        { q: '&ldquo;Un bot afecta la experiencia premium.&rdquo;', a: 'El agente responde fuera de horario cuando nadie atiende. Durante el d&iacute;a, su equipo sigue dando el trato personal. Es complemento, no reemplazo.' },
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n.&rdquo;', a: 'Cada mensaje fuera de horario que no se responde es una cita de $2K-$5K que se va a otro spa.' },
+        { q: '&ldquo;No tengo tiempo.&rdquo;', a: 'Nosotros hacemos toda la implementaci&oacute;n. En 2-3 semanas est&aacute; funcionando sin que ustedes cambien nada.' }
+      ],
+      'gym': [
+        { q: '&ldquo;Ya tenemos sistema de booking.&rdquo;', a: 'El booking agenda clases. El agente cierra el gap entre &ldquo;pidi&oacute; info&rdquo; y &ldquo;se inscribi&oacute;&rdquo; con seguimiento autom&aacute;tico.' },
+        { q: '&ldquo;No necesito automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntos leads de Instagram piden info y nunca regresan? Ah&iacute; est&aacute; el dinero.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Con 3 membres&iacute;as nuevas al mes, el sistema se paga solo en 30 d&iacute;as.' }
+      ],
+      'contab': [
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n para un despacho.&rdquo;', a: 'En temporada fiscal, cada prospecto que no recibe respuesta r&aacute;pida busca otro contador. El agente captura esos leads 24/7.' },
+        { q: '&ldquo;Nuestros clientes prefieren llamar.&rdquo;', a: 'Perfecto. El agente contesta por WhatsApp a los que no llaman. Son dos canales, no uno reemplazando al otro.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Un solo cliente nuevo de declaraci&oacute;n anual paga el sistema. Y se queda a&ntilde;os.' }
       ]
     };
     // Default objections
@@ -1321,10 +1377,15 @@ function showObjections() {
     ];
 
     var v = (p.vertical || '').toLowerCase();
+    var matched = false;
     for (var key in verticalObj) {
-      if (v.indexOf(key) !== -1) { objections = verticalObj[key]; break; }
+      if (v.indexOf(key) !== -1) {
+        objections = verticalObj[key];
+        matched = true;
+        break;
+      }
     }
-    if (objections.length === 0) objections = defaultObj;
+    if (!matched) objections = defaultObj;
   }
 
   var html = '<div class="objection-panel-title">OBJECIONES COMUNES</div>';
@@ -1369,12 +1430,8 @@ function closeCallMode() {
 
   // Save any outcome notes
   var notesEl = document.getElementById('outcomeNotes');
-  if (notesEl && callState.slug) {
-    var existing = getN(callState.slug);
-    var newNote = notesEl.value.trim();
-    if (newNote && newNote !== existing) {
-      setN(callState.slug, newNote);
-    }
+  if (notesEl && callState.slug && notesEl.value.trim()) {
+    setN(callState.slug, notesEl.value.trim());
   }
 
   localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
@@ -1385,6 +1442,9 @@ function closeCallMode() {
 }
 
 function handleCallAction(action) {
+  if (action !== 'closeobjection' && callProcessing) return;
+  callProcessing = true;
+  setTimeout(function(){ callProcessing = false; }, 300);
   var panel = document.getElementById('objectionPanel');
 
   switch(action) {
@@ -1425,7 +1485,7 @@ function handleCallAction(action) {
     case 'nextprospect':
       // Save notes
       var notesEl = document.getElementById('outcomeNotes');
-      if (notesEl && callState.slug) {
+      if (notesEl && callState.slug && notesEl.value.trim()) {
         setN(callState.slug, notesEl.value.trim());
       }
       closeCallMode();
