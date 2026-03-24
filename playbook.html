@@ -390,6 +390,238 @@ letter-spacing:0.3px;
 border-top:1px solid var(--border);
 }
 .hidden{display:none!important}
+
+/* CALL MODE MODAL */
+.call-mode {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  height: 100dvh;
+  height: -webkit-fill-available;
+  z-index: 1000;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  overflow: hidden;
+}
+.call-mode.hidden { display: none; }
+
+/* TOP BAR: back + progress */
+.call-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+.call-back {
+  font-size: 14px;
+  color: var(--muted);
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px 8px 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.call-back:active { color: var(--primary); }
+.call-progress-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.call-dot {
+  width: 8px; height: 8px;
+  background: var(--border);
+  transition: all 0.2s ease;
+}
+.call-dot.active { background: var(--primary); transform: scale(1.3); }
+.call-dot.done { background: var(--muted); }
+.call-step-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* PROSPECT NAME */
+.call-prospect-name {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 8px;
+  font-family: 'Space Grotesk', system-ui;
+  flex-shrink: 0;
+}
+
+/* SCRIPT TEXT AREA */
+.call-text-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 0;
+}
+.call-text {
+  font-family: 'Manrope', system-ui;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: center;
+  max-width: 100%;
+}
+.call-text strong { color: var(--primary); font-weight: 700; }
+
+/* SECTION LABEL */
+.call-section-label {
+  font-size: 11px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* BUTTONS */
+.call-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+.call-btn {
+  padding: 18px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  border: none;
+  cursor: pointer;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.call-btn:active { transform: scale(0.97); }
+.call-btn.primary { background: var(--primary); color: var(--surface); }
+.call-btn.primary:active { background: #A8D624; }
+.call-btn.secondary { background: transparent; border: 2px solid var(--border); color: var(--muted); }
+.call-btn.secondary:active { background: var(--border); color: var(--text); }
+.call-btn.danger { background: var(--red); color: var(--text); }
+.call-btn.danger:active { background: #D64545; }
+.call-btn.gold { background: var(--gold); color: var(--surface); }
+
+/* OBJECTION OVERLAY */
+.objection-panel {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 2px solid var(--primary);
+  padding: 20px 16px;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  max-height: 75dvh;
+  overflow-y: auto;
+  z-index: 1001;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.objection-panel.show { transform: translateY(0); }
+.objection-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+.objection-card {
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  border-left: 3px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.objection-card:active { border-left-color: var(--primary); }
+.objection-card.expanded { border-left-color: var(--primary); background: var(--card); }
+.objection-card-q { font-weight: 700; font-size: 14px; color: var(--text); }
+.objection-card-a { display: none; font-size: 14px; color: var(--text); line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.objection-card.expanded .objection-card-a { display: block; }
+.objection-close-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  cursor: pointer;
+}
+
+/* OUTCOME SCREEN */
+.call-outcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+.outcome-status {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.outcome-status.success { color: var(--primary); }
+.outcome-status.fail { color: var(--red); }
+.outcome-status.neutral { color: var(--gold); }
+.outcome-prospect { font-size: 16px; color: var(--muted); }
+.outcome-notes {
+  width: 100%;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Manrope', system-ui;
+  font-size: 16px;
+  min-height: 80px;
+  resize: none;
+}
+.outcome-notes:focus { border-color: var(--primary); outline: none; }
+
+/* MODO LLAMADA BUTTON (inside card) */
+.btn-call-mode {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+.btn-call-mode:active { background: #A8D624; }
 </style>
 </head>
 <body>
@@ -411,6 +643,9 @@ border-top:1px solid var(--border);
 <div class="footer">UPSIDE &middot; Automatizaci&oacute;n Comercial</div>
 
 <div class="toast" id="toast"></div>
+
+<div id="callMode" class="call-mode hidden"></div>
+<div id="objectionPanel" class="objection-panel"></div>
 
 <script>
 // ==================== FOLLOW-UP TEMPLATES BY VERTICAL ====================
@@ -702,7 +937,8 @@ var sec = p.callScript[i];
 var openClass = i===0 ? ' open' : '';
 scriptHtml += '<div class="script-section'+openClass+'"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">'+sec.label+'</span><span class="script-time">'+sec.time+'</span></div><div class="script-content">'+sec.content+'</div></div>';
 }
-return note + '<div class="script-area">'+scriptHtml+'</div>';
+return note + '<div class="script-area">'+scriptHtml+'</div>' +
+  '<button class="btn-call-mode" data-slug="'+p.slug+'">MODO LLAMADA</button>';
 }
 
 function buildWaContent(p, day){
@@ -867,9 +1103,349 @@ if(toastTimer) clearTimeout(toastTimer);
 toastTimer = setTimeout(function(){t.classList.remove('show')},1500);
 }
 
+// ==================== CALL MODE ====================
+var callState = { slug: null, step: 0, steps: [], prospect: null };
+
+function buildSteps(p) {
+  var steps = [];
+  var cs = p.callScript;
+
+  // Step 0: Apertura
+  steps.push({
+    section: 'Apertura', time: '15s',
+    text: cs[0] ? cs[0].content : '',
+    buttons: [{ label: 'SIGUIENTE', type: 'primary', action: 'next' }]
+  });
+
+  // Step 1: Permiso
+  steps.push({
+    section: 'Permiso', time: '5s',
+    text: '&ldquo;&iquest;Le robo 2 minutos? Es r&aacute;pido.&rdquo;',
+    buttons: [
+      { label: 'S&Iacute;, CONTIN&Uacute;A', type: 'primary', action: 'next' },
+      { label: 'OTRO D&Iacute;A', type: 'gold', action: 'reschedule' }
+    ]
+  });
+
+  // Steps 2-4: Discovery (questions from cs[1] if exists)
+  var discoveryContent = cs[1] ? cs[1].content : '';
+  // Split discovery into individual questions if possible
+  var questions = discoveryContent.split(/(?=\d\.\s|&ldquo;)/);
+  questions = questions.filter(function(q) { return q.trim().length > 20; });
+  if (questions.length === 0) questions = [discoveryContent];
+
+  for (var qi = 0; qi < Math.min(questions.length, 3); qi++) {
+    steps.push({
+      section: 'Discovery ' + (qi+1) + '/' + Math.min(questions.length, 3), time: '30s',
+      text: questions[qi],
+      buttons: [
+        { label: 'SIGUIENTE', type: 'primary', action: 'next' },
+        { label: qi === 0 ? 'NO LE INTERESA' : 'SALTAR', type: 'secondary', action: qi === 0 ? 'objection' : 'next' }
+      ]
+    });
+  }
+
+  // Agitar dolor
+  if (cs[2]) {
+    steps.push({
+      section: 'Agitar Dolor', time: '20s',
+      text: cs[2].content,
+      buttons: [
+        { label: 'SIGUIENTE', type: 'primary', action: 'next' },
+        { label: 'OBJECI&Oacute;N', type: 'secondary', action: 'objection' }
+      ]
+    });
+  }
+
+  // Solucion
+  if (cs[3]) {
+    steps.push({
+      section: 'Soluci&oacute;n', time: '20s',
+      text: cs[3].content,
+      buttons: [
+        { label: 'SIGUIENTE', type: 'primary', action: 'next' },
+        { label: 'NO GRACIAS', type: 'danger', action: 'reject' }
+      ]
+    });
+  }
+
+  // CTA
+  if (cs[4]) {
+    steps.push({
+      section: 'CTA', time: '10s',
+      text: cs[4].content,
+      buttons: [
+        { label: 'AGENDAR DEMO', type: 'primary', action: 'book' },
+        { label: 'M&Aacute;NDAME INFO', type: 'gold', action: 'info' },
+        { label: 'NO GRACIAS', type: 'danger', action: 'reject' }
+      ]
+    });
+  }
+
+  return steps;
+}
+
+function renderStep() {
+  var s = callState.steps[callState.step];
+  if (!s) return;
+  var totalSteps = callState.steps.length;
+  var p = callState.prospect;
+
+  // Progress dots
+  var dots = '';
+  for (var d = 0; d < totalSteps; d++) {
+    var cls = d < callState.step ? 'done' : d === callState.step ? 'active' : '';
+    dots += '<div class="call-dot ' + cls + '"></div>';
+  }
+
+  // Buttons
+  var btns = '';
+  for (var b = 0; b < s.buttons.length; b++) {
+    btns += '<button class="call-btn ' + s.buttons[b].type + '" data-action="' + s.buttons[b].action + '">' + s.buttons[b].label + '</button>';
+  }
+
+  var html = '<div class="call-top">' +
+    '<div class="call-back" data-action="back">&lsaquo; Atr&aacute;s</div>' +
+    '<div class="call-step-label">' + (callState.step + 1) + '/' + totalSteps + '</div>' +
+    '<div class="call-progress-dots">' + dots + '</div>' +
+    '</div>' +
+    '<div class="call-prospect-name">' + p.name + '</div>' +
+    '<div class="call-text-area">' +
+    '<div><div class="call-section-label">' + s.section + ' <span style="color:var(--muted);font-weight:400">' + s.time + '</span></div>' +
+    '<div class="call-text">' + s.text + '</div></div>' +
+    '</div>' +
+    '<div class="call-buttons">' + btns + '</div>';
+
+  document.getElementById('callMode').innerHTML = html;
+
+  // Save current step
+  localStorage.setItem(PREFIX + 'cm_' + callState.slug, String(callState.step));
+}
+
+function renderOutcome(type) {
+  var p = callState.prospect;
+  var statusMap = { book: 'interesado', info: 'contactado', reject: 'rechazado', reschedule: 'contactado' };
+  var titleMap = { book: 'DEMO AGENDADA', info: 'INFO SOLICITADA', reject: 'RECHAZADO', reschedule: 'REAGENDAR' };
+  var classMap = { book: 'success', info: 'neutral', reject: 'fail', reschedule: 'neutral' };
+  var noteMap = { book: 'Demo agendada via llamada', info: 'Pidio info, enviar por WhatsApp', reject: 'Rechazado en llamada', reschedule: 'Reagendar - pidio otro dia' };
+
+  var status = statusMap[type] || 'contactado';
+  var title = titleMap[type] || 'CONTACTADO';
+  var cls = classMap[type] || 'neutral';
+  var autoNote = noteMap[type] || '';
+
+  // Set status
+  setS(p.slug, status);
+
+  var html = '<div class="call-top">' +
+    '<div class="call-back" data-action="close">&times; Cerrar</div>' +
+    '<div></div><div></div>' +
+    '</div>' +
+    '<div class="call-outcome">' +
+    '<div class="outcome-status ' + cls + '">' + title + '</div>' +
+    '<div class="outcome-prospect">' + p.name + '</div>' +
+    '<textarea class="outcome-notes" id="outcomeNotes" placeholder="Notas de la llamada...">' + autoNote + '</textarea>' +
+    '</div>' +
+    '<div class="call-buttons">' +
+    '<button class="call-btn primary" data-action="nextprospect">SIGUIENTE PROSPECTO</button>' +
+    '</div>';
+
+  document.getElementById('callMode').innerHTML = html;
+  localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
+}
+
+function showObjections() {
+  var p = callState.prospect;
+  // Find objections from callScript (usually last section)
+  var objections = [];
+  for (var i = 0; i < p.callScript.length; i++) {
+    if (p.callScript[i].label && p.callScript[i].label.toLowerCase().indexOf('objecion') !== -1) {
+      // Parse objection content - look for Q&A patterns
+      var content = p.callScript[i].content;
+      var parts = content.split(/(?=<div class="objection"|"[^"]{10,}")/);
+      // Simplified: just show the whole content
+      objections.push({ q: 'Ver objeciones comunes', a: content });
+    }
+  }
+
+  // Fallback: use vertical-based common objections
+  if (objections.length === 0) {
+    var verticalObj = {
+      'restaurante': [
+        { q: '&ldquo;No tengo tiempo ahorita.&rdquo;', a: 'Lo entiendo perfecto. La demo es de 15 minutos. &iquest;Le funciona el jueves a las 10?' },
+        { q: '&ldquo;No conf&iacute;o en bots.&rdquo;', a: 'El agente no reemplaza al equipo. Contesta a las 11pm cuando nadie puede y pasa al humano los que valen la pena.' },
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntas solicitudes de eventos se fueron el mes pasado porque nadie contest&oacute; a tiempo? Les muestro los n&uacute;meros en 15 min.' }
+      ],
+      'veterinaria': [
+        { q: '&ldquo;Mi recepcionista ya lo hace.&rdquo;', a: '&iquest;Y a las 2am cuando llama alguien con un perro envenenado? El agente cubre las horas que la recepcionista no est&aacute;.' },
+        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente hace triaje b&aacute;sico y agenda. Emergencias reales se escalan directo a ustedes con notificaci&oacute;n inmediata.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una sola emergencia que no pierden al mes ya paga el sistema. Les muestro los n&uacute;meros.' }
+      ]
+    };
+    // Default objections
+    var defaultObj = [
+      { q: '&ldquo;No tengo tiempo.&rdquo;', a: 'Son 15 minutos. Si no les convence, no les quito m&aacute;s tiempo. &iquest;Jueves o viernes?' },
+      { q: '&ldquo;No conf&iacute;o en bots.&rdquo;', a: 'No es un men&uacute; de opciones. Es un agente que conversa. Le muestro en 5 minutos y usted juzga.' },
+      { q: '&ldquo;Es muy caro.&rdquo;', a: 'Se paga solo con 2-3 citas extra al mes. Les muestro los n&uacute;meros en la demo.' }
+    ];
+
+    var v = (p.vertical || '').toLowerCase();
+    for (var key in verticalObj) {
+      if (v.indexOf(key) !== -1) { objections = verticalObj[key]; break; }
+    }
+    if (objections.length === 0) objections = defaultObj;
+  }
+
+  var html = '<div class="objection-panel-title">OBJECIONES COMUNES</div>';
+  for (var o = 0; o < objections.length; o++) {
+    html += '<div class="objection-card" data-oi="' + o + '">' +
+      '<div class="objection-card-q">' + objections[o].q + '</div>' +
+      '<div class="objection-card-a">' + objections[o].a + '</div>' +
+      '</div>';
+  }
+  html += '<button class="objection-close-btn" data-action="closeobjection">VOLVER AL SCRIPT</button>';
+
+  var panel = document.getElementById('objectionPanel');
+  panel.innerHTML = html;
+  panel.classList.add('show');
+}
+
+function startCallMode(slug) {
+  var p = getProspect(slug);
+  if (!p) return;
+
+  callState.slug = slug;
+  callState.prospect = p;
+  callState.steps = buildSteps(p);
+
+  // Check for saved step
+  var savedStep = localStorage.getItem(PREFIX + 'cm_' + slug);
+  callState.step = savedStep ? parseInt(savedStep) : 0;
+
+  var modal = document.getElementById('callMode');
+  modal.classList.remove('hidden');
+  renderStep();
+
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCallMode() {
+  var modal = document.getElementById('callMode');
+  modal.classList.add('hidden');
+  modal.innerHTML = '';
+  document.body.style.overflow = '';
+
+  // Save any outcome notes
+  var notesEl = document.getElementById('outcomeNotes');
+  if (notesEl && callState.slug) {
+    var existing = getN(callState.slug);
+    var newNote = notesEl.value.trim();
+    if (newNote && newNote !== existing) {
+      setN(callState.slug, newNote);
+    }
+  }
+
+  localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
+  callState = { slug: null, step: 0, steps: [], prospect: null };
+
+  // Re-render cards to reflect status changes
+  renderAll();
+}
+
+function handleCallAction(action) {
+  var panel = document.getElementById('objectionPanel');
+
+  switch(action) {
+    case 'next':
+      callState.step++;
+      if (callState.step >= callState.steps.length) {
+        renderOutcome('book'); // Reached end = assume booking
+      } else {
+        renderStep();
+      }
+      break;
+    case 'back':
+      if (callState.step > 0) {
+        callState.step--;
+        renderStep();
+      } else {
+        closeCallMode();
+      }
+      break;
+    case 'objection':
+      showObjections();
+      break;
+    case 'closeobjection':
+      panel.classList.remove('show');
+      break;
+    case 'book':
+      renderOutcome('book');
+      break;
+    case 'info':
+      renderOutcome('info');
+      break;
+    case 'reject':
+      renderOutcome('reject');
+      break;
+    case 'reschedule':
+      renderOutcome('reschedule');
+      break;
+    case 'nextprospect':
+      // Save notes
+      var notesEl = document.getElementById('outcomeNotes');
+      if (notesEl && callState.slug) {
+        setN(callState.slug, notesEl.value.trim());
+      }
+      closeCallMode();
+      // Scroll to next pending card
+      setTimeout(function() {
+        var cards = document.querySelectorAll('#cardList .card');
+        for (var i = 0; i < cards.length; i++) {
+          var s = getS(cards[i].getAttribute('data-slug'));
+          if (s === 'pendiente') {
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            break;
+          }
+        }
+      }, 300);
+      break;
+    case 'close':
+      closeCallMode();
+      break;
+  }
+}
+
 // ==================== EVENT DELEGATION ====================
 document.addEventListener('click', function(e){
 var t = e.target;
+
+// Call mode actions
+var callAction = t.closest('[data-action]');
+if (callAction && (t.closest('.call-mode') || t.closest('.objection-panel'))) {
+  e.preventDefault();
+  e.stopPropagation();
+  var action = callAction.getAttribute('data-action');
+  handleCallAction(action);
+  return;
+}
+
+// Objection card expand
+var objCard = t.closest('.objection-card');
+if (objCard && !t.closest('.objection-close-btn')) {
+  objCard.classList.toggle('expanded');
+  return;
+}
+
+// MODO LLAMADA button
+var callModeBtn = t.closest('.btn-call-mode');
+if (callModeBtn) {
+  e.preventDefault();
+  e.stopPropagation();
+  var slug = callModeBtn.closest('.card').getAttribute('data-slug');
+  startCallMode(slug);
+  return;
+}
 
 // Textarea
 if(t.closest('.igor-notes')) return;
