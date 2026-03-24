@@ -170,35 +170,32 @@ border-top:1px solid var(--border);
 }
 .card.expanded .card-body{display:block}
 
-/* ACTION BUTTONS */
-.action-buttons{
+/* CHANNEL TABS */
+.channel-tabs{
 display:flex;
-gap:8px;
-padding:14px;
+background:var(--surface);
 border-bottom:1px solid var(--border);
 }
-.action-btn{
+.channel-tab{
 flex:1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:4px;
-padding:12px;
-min-height:56px;
+padding:12px 8px;
 font-family:'Space Grotesk',system-ui,sans-serif;
 font-weight:700;
-font-size:14px;
-text-decoration:none;
+font-size:13px;
+color:var(--muted);
 cursor:pointer;
-border:1px solid var(--border);
-transition:all 0.15s ease;
+border-bottom:3px solid transparent;
+text-align:center;
+min-height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+user-select:none;
+-webkit-user-select:none;
 }
-.action-btn.primary{background:var(--primary);color:var(--surface);border-color:var(--primary)}
-.action-btn.secondary{background:transparent;color:var(--muted);border-color:var(--border)}
-.action-btn.primary:active{opacity:0.85;transform:scale(0.98)}
-.action-btn.secondary:active{background:var(--border);color:var(--text)}
-.action-btn-label{font-size:11px;font-weight:400;opacity:0.7}
+.channel-tab:active{opacity:0.7}
+.channel-tab.active{color:var(--text);border-bottom-color:var(--primary)}
 
 /* DAY TABS */
 .day-tabs{
@@ -292,8 +289,17 @@ line-height:1.6;
 .objection-q{font-weight:700;font-size:13px;margin-bottom:4px;color:var(--text)}
 .objection-a{font-style:italic;padding-left:10px;border-left:2px solid var(--border);color:var(--muted)}
 
-/* WA SCRIPT (hidden, for clipboard copy) */
-.wa-script-text{display:none}
+/* WA CONTENT */
+.wa-content{padding:14px}
+.wa-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-family:'Space Grotesk',system-ui}
+.wa-script-box{background:var(--card);border-left:3px solid var(--primary);padding:14px;font-size:15px;line-height:1.6;color:var(--text);margin-bottom:12px}
+.wa-actions{display:flex;gap:8px}
+.wa-copy-btn{flex:1;padding:14px;background:var(--card);border:1px solid var(--primary);color:var(--primary);font-family:'Space Grotesk',system-ui;font-weight:700;font-size:13px;cursor:pointer;min-height:48px;border-radius:0}
+.wa-send-btn{flex:1;padding:14px;background:var(--primary);color:var(--surface);font-family:'Space Grotesk',system-ui;font-weight:700;font-size:13px;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:0}
+.wa-copy-btn:active{background:var(--primary);color:var(--surface)}
+.wa-disabled{padding:14px;color:var(--muted);font-size:13px;font-style:italic}
+.wa-note{font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic}
+.call-note{font-size:12px;color:var(--muted);font-style:italic;padding:10px 14px;border-bottom:1px solid var(--border)}
 
 /* RESULT PILLS */
 .result-bar{
@@ -321,6 +327,7 @@ user-select:none;
 -webkit-user-select:none;
 text-align:center;
 transition:all 0.15s;
+border-radius:0;
 }
 .result-pill:not(:last-child){border-right:none}
 .result-pill:active{transform:scale(0.96);opacity:0.8}
@@ -366,6 +373,7 @@ z-index:200;
 opacity:0;
 transition:transform 0.3s,opacity 0.3s;
 pointer-events:none;
+border-radius:0;
 }
 .toast.show{
 transform:translateX(-50%) translateY(0);
@@ -405,12 +413,26 @@ border-top:1px solid var(--border);
 <div class="toast" id="toast"></div>
 
 <script>
+// ==================== FOLLOW-UP TEMPLATES BY VERTICAL ====================
+var FOLLOWUPS = {
+"Sal\u00f3n": "Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
+"Spa": "Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
+"Gym": "Hola, retomo mi mensaje. Cada trial que no recibe follow-up autom\u00e1tico es una membres\u00eda perdida. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo funciona el sistema? Sin compromiso.",
+"Restaurante": "Hola, retomo mi mensaje sobre las reservaciones. Cada solicitud de evento que llega fuera de horario y no se responde r\u00e1pido se va con la competencia. \u00bfTienen 15 minutos para una demo r\u00e1pida?",
+"Inmobiliaria": "Hola, retomo mi mensaje. En bienes ra\u00edces, el primer agente que responde se queda con el deal. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo el agente responde con fotos y agenda visitas autom\u00e1ticamente?",
+"Veterinaria": "Hola, retomo mi mensaje sobre las emergencias. Un agente de WhatsApp que haga triaje a las 2am les proteger\u00eda pacientes que hoy se van al competidor m\u00e1s cercano. \u00bfTienen 10 minutos para una demo?",
+"Cl\u00ednica": "Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
+"Cl\u00ednica dental": "Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
+"Contable": "Hola, retomo mi mensaje. En temporada de declaraciones, cada prospecto que no recibe respuesta r\u00e1pida busca otro contador. \u00bfTienen 15 minutos para que les muestre c\u00f3mo funciona?"
+};
+
 // ==================== DATA ====================
 var PROSPECTS = [
 {
 rank:1, name:"Coraz\u00f3n de Maguey", slug:"corazon-de-maguey", vertical:"Restaurante", zone:"Coyoac\u00e1n", score:82, strategy:"call-first",
 phone:"5574068199", wa:"https://wa.me/525574068199",
 waScript:"Hola, buenas tardes. Vi que Coraz\u00f3n de Maguey tiene m\u00e1s de 1,800 rese\u00f1as y es top 30 en CDMX, pero las reservaciones de eventos privados siguen siendo por llamada o WhatsApp manual. Nosotros ayudamos a restaurantes como ustedes a automatizar reservaciones y cotizaciones de eventos con un agente de WhatsApp que responde 24/7, califica el tipo de evento y propone fechas disponibles. \u00bfLes puedo mandar un demo de 2 minutos para que vean c\u00f3mo funciona?",
+waFollowUp:"Hola, retomo mi mensaje sobre las reservaciones. Cada solicitud de evento que llega fuera de horario y no se responde r\u00e1pido se va con la competencia. \u00bfTienen 15 minutos para una demo r\u00e1pida?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve viendo que Coraz\u00f3n de Maguey tiene casi 1,900 rese\u00f1as en Google y est\u00e1n en el top 30 de restaurantes en CDMX. Muy impresionante. Pero not\u00e9 que todo su proceso de eventos corporativos es 100% manual, y creo que ah\u00ed est\u00e1n dejando dinero en la mesa.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas solicitudes de reservaci\u00f3n para eventos corporativos les llegan por WhatsApp al mes?\u201d</li><li>\u201c\u00bfLes llegan consultas despu\u00e9s de las 10 de la noche? \u00bfQui\u00e9n las atiende?\u201d</li><li>\u201c\u00bfTienen alg\u00fan sistema de reservaci\u00f3n en l\u00ednea o todo es por tel\u00e9fono y WhatsApp?\u201d</li></ol>'},
@@ -424,6 +446,7 @@ callScript:[
 rank:2, name:"VETME Condesa", slug:"vetme-condesa", vertical:"Veterinaria", zone:"Condesa", score:82, strategy:"call-first",
 phone:"5556363605", wa:"https://wa.me/525556363605",
 waScript:"Hola, buenas tardes. Estuve revisando las rese\u00f1as de VETME y vi que tienen m\u00e1s de 1,100 en Google, pero varias mencionan tiempos de espera y llamadas sin respuesta. Siendo hospital 24/7, cada consulta de emergencia que se pierde es ingreso perdido. Nosotros implementamos un agente de WhatsApp que hace triaje autom\u00e1tico -- clasifica emergencias vs. consultas regulares, agenda citas y manda recordatorios de vacunas. \u00bfLes puedo mostrar c\u00f3mo funciona en 5 minutos?",
+waFollowUp:"Hola, retomo mi mensaje sobre las emergencias. Un agente de WhatsApp que haga triaje a las 2am les proteger\u00eda pacientes que hoy se van al competidor m\u00e1s cercano. \u00bfTienen 10 minutos para una demo?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando las rese\u00f1as de VETME y tienen m\u00e1s de 1,100 con muy buena calificaci\u00f3n. Pero encontr\u00e9 varias quejas recurrentes: \u2018no contestan\u2019, \u2018me cuelgan\u2019, \u2018imposible comunicarse\u2019. Y s\u00e9 que ustedes atienden 24/7, entonces el problema no es de voluntad, es de capacidad.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas emergencias les llegan fuera de horario o en la madrugada? \u00bfQui\u00e9n las filtra?\u201d</li><li>\u201c\u00bfHacen alg\u00fan tipo de triaje antes de que el due\u00f1o llegue con la mascota, o todo se clasifica en recepci\u00f3n?\u201d</li><li>\u201cLos domingos y d\u00edas festivos, \u00bfcu\u00e1ntos WhatsApps se quedan sin contestar?\u201d</li></ol>'},
@@ -437,6 +460,7 @@ callScript:[
 rank:3, name:"Leonora Studio", slug:"leonora-studio", vertical:"Sal\u00f3n", zone:"Polanco", score:78, strategy:"wa-first",
 phone:"5575778358", wa:"https://wa.me/525575778358",
 waScript:"Hola, buenas tardes. Vi que Leonora Studio tiene 7 sucursales en CDMX. Con ese volumen, imagino que coordinar citas entre ubicaciones es un reto -- cada clienta que pregunta disponibilidad en una sucursal y no hay espacio, hay que revisar las otras manualmente. Nosotros hacemos un agente de WhatsApp que detecta en qu\u00e9 zona est\u00e1 la clienta, muestra disponibilidad en tiempo real de esa sucursal y agenda directo. \u00bfLes interesa ver un demo de 2 minutos?",
+waFollowUp:"Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas sobre la coordinaci\u00f3n de citas entre las 7 sucursales de Leonora Studio. Con ese volumen, imagino que es un reto que alguien revise las otras manualmente.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201cDel total de citas que agendan al mes, \u00bfqu\u00e9 porcentaje llega por WhatsApp versus por tel\u00e9fono?\u201d</li><li>\u201c\u00bfLes llegan DMs de Instagram pidiendo citas fuera de horario? \u00bfQui\u00e9n los atiende?\u201d</li><li>\u201cCuando una clienta quiere cita en una sucursal espec\u00edfica pero no hay espacio, \u00bfle ofrecen disponibilidad en otra?\u201d</li></ol>'},
@@ -450,6 +474,7 @@ callScript:[
 rank:4, name:"Los Danzantes", slug:"los-danzantes", vertical:"Restaurante", zone:"Coyoac\u00e1n", score:78, strategy:"call-first",
 phone:"5543567185", wa:"https://wa.me/525543567185",
 waScript:"Hola, buenas tardes. Los Danzantes lleva 26 a\u00f1os y es uno de los restaurantes oaxaque\u00f1os m\u00e1s reconocidos de CDMX -- excelentes rese\u00f1as en TripAdvisor. Pero su \u00fanica forma de reservar es llamar o mandar WhatsApp. Para un restaurante de ese nivel, cada reservaci\u00f3n de evento privado que se pierde por respuesta lenta son $50K-$100K MXN. Nosotros automatizamos reservaciones y cotizaciones de eventos con un agente de WhatsApp en espa\u00f1ol e ingl\u00e9s (para turistas). \u00bfLes puedo mostrar c\u00f3mo funciona?",
+waFollowUp:"Hola, retomo mi mensaje sobre las reservaciones. Cada solicitud de evento que llega fuera de horario y no se responde r\u00e1pido se va con la competencia. \u00bfTienen 15 minutos para una demo r\u00e1pida?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve investigando Los Danzantes y la verdad es impresionante: 26 a\u00f1os de historia, excelentes rese\u00f1as en TripAdvisor, uno de los mejores restaurantes oaxaque\u00f1os de CDMX. Pero not\u00e9 algo que no cuadra con ese nivel: no tienen ning\u00fan sistema de reservaci\u00f3n en l\u00ednea.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas solicitudes de reservaci\u00f3n para eventos privados les llegan al mes?\u201d</li><li>\u201cCon la menci\u00f3n en la Gu\u00eda Michelin, \u00bfles llegan consultas de turistas extranjeros fuera de horario?\u201d</li><li>\u201c\u00bfTienen alg\u00fan sistema de reservaci\u00f3n digital o todo es tel\u00e9fono y WhatsApp?\u201d</li></ol>'},
@@ -463,6 +488,7 @@ callScript:[
 rank:5, name:"Centro Dermatol\u00f3gico", slug:"centro-dermatologico-del-valle", vertical:"Cl\u00ednica", zone:"Del Valle", score:78, strategy:"call-first",
 phone:"5555595418", wa:"https://wa.me/525555595418",
 waScript:"Hola, buenas tardes. Vi que Centro Dermatol\u00f3gico del Valle maneja tratamientos de alto ticket como Botox, l\u00e1ser y cirug\u00eda est\u00e9tica. Con ese tipo de servicios, cada consulta que llega por WhatsApp fuera de horario y no se responde es una cita de $5K-$15K que se va a otra cl\u00ednica. Nosotros implementamos un agente de WhatsApp que responde 24/7, califica el tipo de tratamiento y agenda citas con el doctor disponible. Se paga solo con 2-3 citas extra al mes. \u00bfLes interesa ver c\u00f3mo funciona?",
+waFollowUp:"Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve investigando Centro Dermatol\u00f3gico del Valle y vi que manejan tratamientos de alto ticket como Botox, l\u00e1ser y cirug\u00eda dermatol\u00f3gica. Con ese tipo de servicios, las consultas no paran despu\u00e9s de las 8 de la noche \u2014 justo a esa hora es cuando la gente se pone a investigar tratamientos.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas citas pierden al mes por no-shows? \u00bfTienen sistema de recordatorios?\u201d</li><li>\u201cDespu\u00e9s de las 8pm, \u00bfles llegan WhatsApps preguntando por tratamientos?\u201d</li><li>\u201c\u00bfCu\u00e1nto tiempo al d\u00eda invierte su equipo respondiendo preguntas repetitivas sobre precios y cuidados post-tratamiento?\u201d</li></ol>'},
@@ -476,6 +502,7 @@ callScript:[
 rank:6, name:"YOUR HOME", slug:"your-home-inmobiliaria", vertical:"Inmobiliaria", zone:"Interlomas", score:78, strategy:"wa-first",
 phone:"5516440769", wa:"https://wa.me/525516440769",
 waScript:"Hola, buenas tardes. Vi que YOUR HOME tiene 50+ propiedades en EasyBroker pero manejan las consultas de WhatsApp manual entre 4 agentes. Eso significa que despu\u00e9s de las 6pm nadie responde, y los leads del fin de semana se pierden. Nosotros hacemos un agente de WhatsApp que califica al prospecto (presupuesto, zona, tipo de propiedad), le manda fotos y agenda visitas autom\u00e1ticamente. Se integra con EasyBroker. \u00bfLes puedo mostrar un demo de 2 minutos?",
+waFollowUp:"Hola, retomo mi mensaje. En bienes ra\u00edces, el primer agente que responde se queda con el deal. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo el agente responde con fotos y agenda visitas autom\u00e1ticamente?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que YOUR HOME tiene m\u00e1s de 50 propiedades en EasyBroker con 4 agentes compartiendo un solo WhatsApp. Con ese volumen, se les est\u00e1n escapando prospectos.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntos leads nuevos les llegan al mes entre portales, redes y WhatsApp?\u201d</li><li>\u201cCuando entra un lead nuevo, \u00bfcu\u00e1nto tiempo pasa antes de que alguien le conteste?\u201d</li><li>\u201cLos fines de semana, \u00bfqui\u00e9n atiende las consultas?\u201d</li></ol>'},
@@ -489,6 +516,7 @@ callScript:[
 rank:7, name:"Rayo Vende", slug:"rayo-vende", vertical:"Inmobiliaria", zone:"Pedregal", score:76, strategy:"wa-first",
 phone:"5555131010", wa:"https://wa.me/525555131010",
 waScript:"Hola, buenas tardes. Vi que Rayo Vende maneja m\u00e1s de 80 propiedades de lujo en Pedregal y Polanco con m\u00e1s de 15 brokers. Con ese volumen, el reto cl\u00e1sico es responder r\u00e1pido -- en bienes ra\u00edces de lujo, el primer agente que responde se queda con el deal. Nosotros implementamos un agente de WhatsApp que responde en segundos con fotos de la propiedad, califica al comprador y agenda visita. Con propiedades de $25M-$60M, una sola venta extra justifica la inversi\u00f3n. \u00bfLes puedo mostrar c\u00f3mo funciona?",
+waFollowUp:"Hola, retomo mi mensaje. En bienes ra\u00edces, el primer agente que responde se queda con el deal. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo el agente responde con fotos y agenda visitas autom\u00e1ticamente?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que Rayo Vende maneja m\u00e1s de 80 propiedades de lujo con m\u00e1s de 15 brokers. Impresionante la operaci\u00f3n.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntos leads les llegan al mes de portales y redes?\u201d</li><li>\u201cCuando un prospecto manda mensaje un s\u00e1bado a las 10pm pidiendo info de una propiedad de $30M, \u00bfen cu\u00e1nto le contestan?\u201d</li><li>\u201c\u00bfC\u00f3mo distribuyen esos leads entre los 15 brokers?\u201d</li></ol>'},
@@ -502,6 +530,7 @@ callScript:[
 rank:8, name:"Llave Bienes Ra\u00edces", slug:"llave-bienes-raices", vertical:"Inmobiliaria", zone:"Del Valle", score:76, strategy:"wa-first",
 phone:"5590354634", wa:"https://wa.me/525590354634",
 waScript:"Hola, buenas tardes. Vi que Llave Bienes Ra\u00edces tiene m\u00e1s de 40 a\u00f1os en el mercado con 5 l\u00edneas corporativas, pero cierran fines de semana. Los s\u00e1bados son el d\u00eda con m\u00e1s b\u00fasquedas de propiedades en portales. Un agente de WhatsApp que responda 24/7 con informaci\u00f3n de propiedades, fotos y agende visitas les recuperar\u00eda ese 20-30% de leads que hoy se van con la competencia. \u00bfLes interesa ver un demo?",
+waFollowUp:"Hola, retomo mi mensaje. En bienes ra\u00edces, el primer agente que responde se queda con el deal. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo el agente responde con fotos y agenda visitas autom\u00e1ticamente?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Investig\u00e9 Llave Bienes Ra\u00edces y llevan m\u00e1s de 40 a\u00f1os en el mercado con 5 l\u00edneas corporativas. Es una trayectoria muy s\u00f3lida.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntos leads les llegan al mes entre portales, redes y las 5 l\u00edneas?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa con los mensajes que llegan s\u00e1bados y domingos?\u201d</li><li>\u201c\u00bfC\u00f3mo distribuyen las consultas entre agentes?\u201d</li></ol>'},
@@ -515,6 +544,7 @@ callScript:[
 rank:9, name:"Silvia Galv\u00e1n", slug:"silvia-galvan", vertical:"Sal\u00f3n", zone:"Condesa", score:75, strategy:"wa-first",
 phone:"5547370133", wa:"https://wa.me/525547370133",
 waScript:"Hola, buenas tardes. Vi que Silvia Galv\u00e1n Image Studio tiene 8 sucursales y m\u00e1s de 117K seguidores en Instagram. Con ese volumen, imagino que su equipo pasa horas al d\u00eda contestando las mismas preguntas por WhatsApp: precios, disponibilidad por sucursal, qu\u00e9 estilista tiene espacio. Nosotros hacemos un agente de WhatsApp que responde autom\u00e1ticamente, muestra disponibilidad en cualquiera de las 8 sucursales y agenda la cita con confirmaci\u00f3n instant\u00e1nea. \u00bfLes puedo mostrar c\u00f3mo funciona en 2 minutos?",
+waFollowUp:"Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que Silvia Galv\u00e1n tiene 8 sucursales y 117 mil seguidores en Instagram. Con ese volumen, imagino que su equipo pasa horas contestando las mismas preguntas.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201cDe las citas, \u00bfcu\u00e1ntas son por WhatsApp y cu\u00e1ntas por tel\u00e9fono?\u201d</li><li>\u201cCon 117K seguidores, \u00bfcu\u00e1ntos DMs reciben al d\u00eda pidiendo cita?\u201d</li><li>\u201cCuando alguien quiere agendar con preferencia de sucursal, \u00bfc\u00f3mo manejan disponibilidad entre las 8?\u201d</li></ol>'},
@@ -528,6 +558,7 @@ callScript:[
 rank:10, name:"Helwe Hair & Makeup", slug:"helwe-hair-and-makeup", vertical:"Sal\u00f3n", zone:"Polanco", score:75, strategy:"wa-first",
 phone:"5567325072", wa:"https://wa.me/525567325072",
 waScript:"Hola, buenas tardes. Vi que Helwe tiene m\u00e1s de 950 rese\u00f1as en Google -- impresionante para un sal\u00f3n en Polanco. Con ese nivel de demanda, imagino que las consultas por WhatsApp son constantes: precios, disponibilidad, si hay espacio hoy. Nosotros hacemos un agente de WhatsApp que responde autom\u00e1ticamente, agenda citas directo y manda confirmaciones y recordatorios. En un sal\u00f3n con servicios de $2,000-$10,000, se paga solo con las citas que hoy se pierden por respuesta lenta. \u00bfLes interesa ver un demo de 2 minutos?",
+waFollowUp:"Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que Helwe tiene m\u00e1s de 950 rese\u00f1as en Google. Claramente hacen un trabajo incre\u00edble. Con ese nivel de demanda, las consultas por WhatsApp son constantes.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfQu\u00e9 porcentaje de citas entra por WhatsApp vs. plataformas de terceros?\u201d</li><li>\u201c\u00bfTienen a alguien dedicado a DMs de Instagram y WhatsApp?\u201d</li><li>\u201cCon servicios de $2,000 a $10,000, \u00bfcu\u00e1ntos mensajes de consulta reciben al d\u00eda?\u201d</li></ol>'},
@@ -541,6 +572,7 @@ callScript:[
 rank:11, name:"Omdental", slug:"omdental", vertical:"Cl\u00ednica dental", zone:"Roma Sur", score:75, strategy:"call-first",
 phone:"5527141844", wa:"https://wa.me/525527141844",
 waScript:"Hola, buenas tardes. Vi que Omdental es una cl\u00ednica dental biling\u00fce en Roma Sur -- eso les abre mercado con expats adem\u00e1s de pacientes locales. Pero cada consulta de precios y disponibilidad sigue llegando por WhatsApp y alguien del equipo tiene que responder manualmente. Nosotros construimos un agente de WhatsApp que responde en espa\u00f1ol e ingl\u00e9s, da informaci\u00f3n del tratamiento, disponibilidad y agenda la cita autom\u00e1ticamente. \u00bfLes interesa ver c\u00f3mo se ver\u00eda para Omdental?",
+waFollowUp:"Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve viendo la p\u00e1gina de Omdental y me llam\u00f3 la atenci\u00f3n que son una cl\u00ednica biling\u00fce en Roma Sur \u2014 eso les abre mercado con expats adem\u00e1s de pacientes locales. Con esa combinaci\u00f3n, imagino que el volumen de consultas por WhatsApp es alto, y cada una se responde manualmente.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201cCuando un paciente escribe por WhatsApp preguntando por implantes, \u00bfqui\u00e9n contesta y en cu\u00e1nto tiempo?\u201d</li><li>\u201c\u00bfCu\u00e1ntos mensajes reciben al d\u00eda pidiendo cita o info de tratamientos?\u201d</li><li>\u201c\u00bfEst\u00e1n midiendo cu\u00e1ntos pacientes llegan por la p\u00e1gina vs. cu\u00e1ntos agendan?\u201d</li></ol>'},
@@ -554,6 +586,7 @@ callScript:[
 rank:12, name:"Inmobiliaria Cattori", slug:"inmobiliaria-cattori", vertical:"Inmobiliaria", zone:"Pedregal", score:72, strategy:"wa-first",
 phone:"5555502946", wa:"https://wa.me/525555502946",
 waScript:"Hola, buenas tardes. Vi que Inmobiliaria Cattori tiene 299 propiedades de lujo listadas entre iCasas y EasyBroker, pero todas las consultas pasan por llamada o WhatsApp manual. Con propiedades de $6M a $59M, cada lead que se enfr\u00eda por respuesta lenta es una comisi\u00f3n importante. Nosotros hacemos un agente de WhatsApp que califica compradores (presupuesto, zona, tipo), les manda fotos y agenda visitas. Pilar se dedica a cerrar, no a filtrar. \u00bfLes interesa ver un demo?",
+waFollowUp:"Hola, retomo mi mensaje. En bienes ra\u00edces, el primer agente que responde se queda con el deal. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo el agente responde con fotos y agenda visitas autom\u00e1ticamente?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que Inmobiliaria Cattori tiene casi 300 propiedades de lujo, desde $6.5 hasta $59 millones. Impresionante. Not\u00e9 que Pilar Cattori coordina pr\u00e1cticamente toda la operaci\u00f3n.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201cCon 299 propiedades, \u00bfcu\u00e1ntos leads nuevos al mes?\u201d</li><li>\u201cUn lead de $40M, \u00bfen cu\u00e1nto tiempo recibe respuesta?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa con consultas viernes en la noche o fines de semana?\u201d</li></ol>'},
@@ -567,6 +600,7 @@ callScript:[
 rank:13, name:"Rock Your Hair", slug:"rock-your-hair", vertical:"Sal\u00f3n", zone:"Condesa", score:70, strategy:"wa-first",
 phone:"5547543945", wa:"https://wa.me/525547543945",
 waScript:"Hola, buenas tardes. Rock Your Hair es top 10 en CDMX con 9.2 en Saloon y 482 rese\u00f1as en Google. Pero varias rese\u00f1as mencionan que la atenci\u00f3n por WhatsApp es un \u00e1rea de mejora. Un agente de WhatsApp que responda amablemente 24/7, con disponibilidad de estilistas y confirmaci\u00f3n instant\u00e1nea, protege esa reputaci\u00f3n que tanto les cost\u00f3 construir. \u00bfLes puedo mostrar c\u00f3mo funciona?",
+waFollowUp:"Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que Rock Your Hair tiene m\u00e1s de 1,400 rese\u00f1as combinadas y est\u00e1n en el Top 10 de salones en CDMX. La calidad t\u00e9cnica se nota. Pero encontr\u00e9 algo: varias clientas mencionan que el personal de WhatsApp es poco amable.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntos mensajes de WhatsApp les llegan al d\u00eda para agendar o reprogramar?\u201d</li><li>\u201c\u00bfTienen a alguien dedicado a WhatsApp o lo hace recepci\u00f3n entre cortes?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa con los mensajes despu\u00e9s de las 8pm o en domingo?\u201d</li></ol>'},
@@ -580,6 +614,7 @@ callScript:[
 rank:14, name:"iik' SPA", slug:"iik-spa", vertical:"Spa", zone:"Polanco", score:70, strategy:"wa-first",
 phone:"5611139225", wa:"https://wa.me/525611139225",
 waScript:"Hola, buenas tardes. Vi que iik SPA tiene 4.8 estrellas con rese\u00f1as que dicen \"f\u00e1cil reservar por WhatsApp\" -- pero ese proceso es 100% manual. Sin analytics en la web, no saben cu\u00e1ntos clientes los visitan sin reservar. Nosotros hacemos un agente de WhatsApp que agenda citas, sugiere tratamientos complementarios y manda recordatorios. Con clientes de Polanco, una sola cita extra al d\u00eda paga el sistema. \u00bfLes interesa verlo?",
+waFollowUp:"Hola de nuevo, retomo mi mensaje anterior. Con el volumen de consultas que manejan, creo que el agente de WhatsApp les ahorrar\u00eda varias horas al d\u00eda. \u00bfTienen 15 minutos esta semana para que les muestre c\u00f3mo funciona?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que iik\u2019 SPA tiene rese\u00f1as incre\u00edbles: 4.8 en Google, clientas que dicen que es el mejor masaje de su vida. Lo que me llam\u00f3 la atenci\u00f3n es que todo el proceso de reservaci\u00f3n es manual.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas reservaciones al d\u00eda por WhatsApp vs. formulario del sitio?\u201d</li><li>\u201c\u00bfQui\u00e9n procesa las solicitudes del formulario y cu\u00e1nto tarda en confirmar?\u201d</li><li>\u201c\u00bfSaben cu\u00e1ntas personas visitan su p\u00e1gina al mes sin reservar?\u201d</li></ol>'},
@@ -593,6 +628,7 @@ callScript:[
 rank:15, name:"Dental Arts", slug:"dental-arts", vertical:"Cl\u00ednica dental", zone:"Anzures", score:65, strategy:"call-first",
 phone:"5552030843", wa:"https://wa.me/525552030843",
 waScript:"Hola, buenas tardes. Dental Arts lleva 37 a\u00f1os y m\u00e1s de 12,000 carillas colocadas -- es una instituci\u00f3n. Pero vi que no tienen sistema de agendado online, todo pasa por tel\u00e9fono y WhatsApp manual. Con clientela de alto perfil, la experiencia de agendar deber\u00eda estar al nivel del servicio cl\u00ednico. Nosotros hacemos un agente de WhatsApp que agenda consultas de smile design, manda portfolio de casos y confirma autom\u00e1ticamente. \u00bfLes interesa ver c\u00f3mo se ver\u00eda?",
+waFollowUp:"Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando Dental Arts: 37 a\u00f1os de trayectoria, m\u00e1s de 12,000 carillas colocadas, clientela de alto perfil. El Dr. Nader tiene una reputaci\u00f3n impecable. Pero me llam\u00f3 la atenci\u00f3n que no tienen ning\u00fan sistema de agendado en l\u00ednea. Todo depende de una llamada o un WhatsApp manual.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfCu\u00e1ntas consultas de Smile Design o carillas les llegan por WhatsApp a la semana?\u201d</li><li>\u201c\u00bfQui\u00e9n contesta esos mensajes? \u00bfLa recepcionista entre pacientes?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa con los mensajes despu\u00e9s de las 8pm o fines de semana que est\u00e1n cerrados?\u201d</li></ol>'},
@@ -606,6 +642,7 @@ callScript:[
 rank:16, name:"GLOSS DENT", slug:"gloss-dent", vertical:"Cl\u00ednica dental", zone:"Polanco", score:80, strategy:"call-first",
 phone:"5552902388", wa:"https://wa.me/525552902388",
 waScript:"Hola, buenas tardes. Vi que GLOSS DENT tiene 3 ubicaciones -- Polanco, WTC y M\u00e9rida. Con 3 sucursales, cada paciente que pregunta disponibilidad necesita que alguien revise agenda en las 3 antes de confirmar. Nosotros hacemos un agente de WhatsApp que pregunta sucursal y tratamiento, revisa disponibilidad en tiempo real y agenda directo con el doctor. Con 3 ubicaciones, la automatizaci\u00f3n se multiplica x3. \u00bfLes interesa ver un demo de 2 minutos?",
+waFollowUp:"Hola, retomo mi mensaje. Cada consulta de tratamiento que llega fuera de horario y no se responde es ingreso perdido. \u00bfTienen 15 minutos esta semana para ver el sistema en acci\u00f3n?",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Estuve revisando GLOSS DENT y me impresion\u00f3: tres ubicaciones, cobertura en medios, posicionamiento como los dentistas de las estrellas. Con 3 sucursales y ese nivel de demanda, imagino que el volumen de consultas por WhatsApp es alto \u2014 y cada una se responde manualmente.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201c\u00bfC\u00f3mo manejan citas entre las tres sucursales? \u00bfCada una tiene su sistema o todo pasa por un n\u00famero central?\u201d</li><li>\u201c\u00bfCu\u00e1ntos mensajes al d\u00eda entre Polanco, WTC y M\u00e9rida?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa cuando un paciente de Instagram o TikTok manda mensaje fuera de horario?\u201d</li></ol>'},
@@ -619,6 +656,7 @@ callScript:[
 rank:17, name:"9Round Kickboxing", slug:"9round-kickboxing", vertical:"Gym", zone:"Sat\u00e9lite", score:60, strategy:"wa-first",
 phone:"5555728434", wa:"https://wa.me/525555728434",
 waScript:"Hola, buenas tardes. Vi que 9Round ya usa Glofox para agendar clases y tiene Meta Pixel configurado -- van por buen camino. Lo que falta es cerrar el loop: cuando alguien pide info por WhatsApp y no agenda, no hay seguimiento autom\u00e1tico. Nosotros conectamos Glofox con un agente de WhatsApp que hace follow-up a leads tibios, manda horarios personalizados y convierte trials en membres\u00edas. \u00bfLes interesa ver c\u00f3mo funciona?",
+waFollowUp:"Hola, retomo mi mensaje. Cada trial que no recibe follow-up autom\u00e1tico es una membres\u00eda perdida. \u00bfLes puedo mostrar en 15 minutos c\u00f3mo funciona el sistema? Sin compromiso.",
 callScript:[
 {label:"Apertura",time:"15s",content:'<div class="quote">\u201cHola, buenas tardes. Soy Igor de UPSIDE. Les escrib\u00ed por WhatsApp hace un par de d\u00edas. Vi que 9Round Sat\u00e9lite ya tiene Glofox y Meta Pixel \u2014 est\u00e1n m\u00e1s avanzados que el 90% de los gyms en CDMX. Pero not\u00e9 un hueco entre la clase muestra y la inscripci\u00f3n. Ese gap de conversi\u00f3n es donde est\u00e1n perdiendo membres\u00edas.\u201d</div>'},
 {label:"Discovery",time:"30s",content:'<ol><li>\u201cDe cada 10 personas que toman clase muestra, \u00bfcu\u00e1ntas se inscriben?\u201d</li><li>\u201c\u00bfTienen seguimiento despu\u00e9s de la clase muestra? \u00bfAlguien manda mensaje al d\u00eda siguiente?\u201d</li><li>\u201c\u00bfQu\u00e9 pasa cuando alguien pregunta precios por WhatsApp fuera de horario?\u201d</li></ol>'},
@@ -638,24 +676,117 @@ function getN(slug){return localStorage.getItem(PREFIX+'n_'+slug)||''}
 function setN(slug,n){localStorage.setItem(PREFIX+'n_'+slug,n)}
 function getD(slug){return parseInt(localStorage.getItem(PREFIX+'d_'+slug)||'0')}
 function setD(slug,d){localStorage.setItem(PREFIX+'d_'+slug,String(d))}
+function getCh(slug){return localStorage.getItem(PREFIX+'ch_'+slug)||'default'}
+function setCh(slug,ch){localStorage.setItem(PREFIX+'ch_'+slug,ch)}
 
 // ==================== RENDER ====================
 function scoreClass(s){return s>=80?'high':s>=70?'mid':'low'}
 
-function renderCard(p){
-var status = getS(p.slug);
-var day = getD(p.slug);
-var notes = getN(p.slug);
-var isCallFirst = p.strategy === 'call-first';
-var chTag = isCallFirst ? '<span class="ch-tag call">LLAMAR</span>' : '<span class="ch-tag wa">WA</span>';
+function getProspect(slug){
+for(var i=0;i<PROSPECTS.length;i++){if(PROSPECTS[i].slug===slug) return PROSPECTS[i]}
+return null;
+}
 
-// Build call script sections
+function buildCallContent(p, day){
+var note = '';
+if(day===1){
+if(p.strategy==='wa-first'){
+note = '<div class="call-note">Mencionar: le escrib\u00ed por WhatsApp hace 2 d\u00edas</div>';
+} else {
+note = '<div class="call-note">Segunda llamada. Mencionar que llamaste antes. Misma estructura de script.</div>';
+}
+}
 var scriptHtml = '';
 for(var i=0;i<p.callScript.length;i++){
 var sec = p.callScript[i];
 var openClass = i===0 ? ' open' : '';
 scriptHtml += '<div class="script-section'+openClass+'"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">'+sec.label+'</span><span class="script-time">'+sec.time+'</span></div><div class="script-content">'+sec.content+'</div></div>';
 }
+return note + '<div class="script-area">'+scriptHtml+'</div>';
+}
+
+function buildWaContent(p, day){
+// day 0 = HOY, day 1 = +2 DIAS, day 2 = +3 DIAS
+if(day===0){
+// HOY: show waScript
+var noteHtml = '';
+if(p.strategy==='call-first'){
+noteHtml = '<div class="wa-note">Enviar si no contesta la llamada</div>';
+}
+return '<div class="wa-content">' +
+noteHtml +
+'<div class="wa-label">Mensaje WhatsApp</div>' +
+'<div class="wa-script-box">'+p.waScript+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+} else if(day===1){
+// +2 DIAS
+if(p.strategy==='wa-first'){
+// wa-first +2: disabled WA
+return '<div class="wa-content"><div class="wa-disabled">Esperar a d\u00eda +3 para segundo WhatsApp</div></div>';
+} else {
+// call-first +2: now try WA if calls failed
+return '<div class="wa-content">' +
+'<div class="wa-label">Mensaje WhatsApp</div>' +
+'<div class="wa-script-box">'+p.waScript+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+}
+} else {
+// +3 DIAS: ALL get waFollowUp
+var followUp = p.waFollowUp || FOLLOWUPS[p.vertical] || '';
+return '<div class="wa-content">' +
+'<div class="wa-label">Follow-up WhatsApp</div>' +
+'<div class="wa-script-box">'+followUp+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+}
+}
+
+function renderDayContent(p, day, channel){
+if(channel==='call'){
+// Call channel
+if(day===2){
+// +3 DIAS: calls disabled
+return '<div class="wa-content"><div class="wa-disabled">D\u00eda +3: usar WhatsApp follow-up</div></div>';
+}
+return buildCallContent(p, day);
+} else {
+// WA channel
+return buildWaContent(p, day);
+}
+}
+
+function renderCard(p){
+var status = getS(p.slug);
+var day = getD(p.slug);
+var notes = getN(p.slug);
+var savedCh = getCh(p.slug);
+var isCallFirst = p.strategy === 'call-first';
+
+// Determine active channel
+var channel;
+if(savedCh !== 'default'){
+channel = savedCh;
+} else {
+channel = isCallFirst ? 'call' : 'wa';
+}
+
+var chTag = isCallFirst ? '<span class="ch-tag call">LLAMAR</span>' : '<span class="ch-tag wa">WA</span>';
+
+// Channel tabs
+var callActive = channel==='call' ? ' active' : '';
+var waActive = channel==='wa' ? ' active' : '';
+var channelTabsHtml = '<div class="channel-tabs">' +
+'<div class="channel-tab'+callActive+'" data-ch="call">LLAMAR</div>' +
+'<div class="channel-tab'+waActive+'" data-ch="wa">WA</div>' +
+'</div>';
 
 // Day tabs
 var dayLabels = ['HOY','+2 D\u00cdAS','+3 D\u00cdAS'];
@@ -664,18 +795,8 @@ for(var d=0;d<3;d++){
 dayTabsHtml += '<div class="day-tab'+(d===day?' active':'')+'" data-di="'+d+'">'+dayLabels[d]+'</div>';
 }
 
-// Action buttons: determine primary
-var callPrimary = (day===0 && isCallFirst);
-var waPrimary = (day===0 && !isCallFirst) || day>0;
-if(day===0 && isCallFirst){callPrimary=true;waPrimary=false}
-if(day===0 && !isCallFirst){callPrimary=false;waPrimary=true}
-if(day>0){callPrimary=false;waPrimary=true}
-
-var callClass = callPrimary ? 'action-btn primary action-call' : 'action-btn secondary action-call';
-var waClass = waPrimary ? 'action-btn primary action-wa' : 'action-btn secondary action-wa';
-
-var callLabel = callPrimary ? p.phone : (waPrimary ? 'si no contesta' : p.phone);
-var waLabel = waPrimary ? 'Copiar y abrir' : 'enviar si no contesta';
+// Day content
+var dayContentHtml = renderDayContent(p, day, channel);
 
 // Result pills
 var statuses = ['contactado','interesado','no-contesta','rechazado'];
@@ -686,7 +807,7 @@ var active = status===statuses[r] ? ' active' : '';
 resultHtml += '<div class="result-pill '+statuses[r]+active+'" data-rs="'+statuses[r]+'">'+statusLabels[r]+'</div>';
 }
 
-return '<div class="card" data-slug="'+p.slug+'" data-status="'+status+'" data-strategy="'+p.strategy+'" data-score="'+p.score+'">' +
+return '<div class="card" data-slug="'+p.slug+'" data-status="'+status+'" data-strategy="'+p.strategy+'" data-score="'+p.score+'" data-channel="'+channel+'">' +
 '<div class="card-header">' +
 '<span class="card-rank">#'+p.rank+'</span>' +
 '<span class="card-name">'+p.name+'</span>' +
@@ -694,13 +815,9 @@ return '<div class="card" data-slug="'+p.slug+'" data-status="'+status+'" data-s
 '<div class="card-line2">'+chTag+'<span class="card-vertical">'+p.vertical+' &middot; '+p.zone+'</span></div>' +
 '</div>' +
 '<div class="card-body">' +
-'<div class="action-buttons">' +
-'<a href="tel:+52'+p.phone+'" class="'+callClass+'" data-type="call">LLAMAR<span class="action-btn-label">'+callLabel+'</span></a>' +
-'<a href="'+p.wa+'" target="_blank" class="'+waClass+'" data-type="wa">WA<span class="action-btn-label">'+waLabel+'</span></a>' +
-'</div>' +
+channelTabsHtml +
 '<div class="day-tabs">'+dayTabsHtml+'</div>' +
-'<div class="script-area">'+scriptHtml+'</div>' +
-'<div class="wa-script-text">'+p.waScript+'</div>' +
+'<div class="day-content">'+dayContentHtml+'</div>' +
 '<div class="result-bar">'+resultHtml+'</div>' +
 '<div class="notes-wrap"><textarea class="igor-notes" placeholder="Notas...">'+notes+'</textarea></div>' +
 '</div>' +
@@ -732,29 +849,14 @@ if(interested>0) txt += ' &middot; <span class="hl">'+interested+' interesados</
 el.innerHTML = txt;
 }
 
-function updateActionButtons(card){
-var strategy = card.getAttribute('data-strategy');
-var activeTab = card.querySelector('.day-tab.active');
-var di = activeTab ? parseInt(activeTab.getAttribute('data-di')) : 0;
-var callBtn = card.querySelector('.action-call');
-var waBtn = card.querySelector('.action-wa');
-var isCallFirst = strategy === 'call-first';
-var callPrimary = (di===0 && isCallFirst);
-var waPrimary = (di===0 && !isCallFirst) || di>0;
-
-callBtn.className = callPrimary ? 'action-btn primary action-call' : 'action-btn secondary action-call';
-waBtn.className = waPrimary ? 'action-btn primary action-wa' : 'action-btn secondary action-wa';
-
-// Find prospect data for phone label
+function refreshDayContent(card){
 var slug = card.getAttribute('data-slug');
-var p = null;
-for(var i=0;i<PROSPECTS.length;i++){if(PROSPECTS[i].slug===slug){p=PROSPECTS[i];break;}}
-if(p){
-var callLabel = callPrimary ? p.phone : 'si no contesta';
-var waLabel = waPrimary ? 'Copiar y abrir' : 'enviar si no contesta';
-callBtn.querySelector('.action-btn-label').textContent = callLabel;
-waBtn.querySelector('.action-btn-label').textContent = waLabel;
-}
+var p = getProspect(slug);
+if(!p) return;
+var day = getD(slug);
+var channel = card.getAttribute('data-channel') || 'call';
+var container = card.querySelector('.day-content');
+if(container) container.innerHTML = renderDayContent(p, day, channel);
 }
 
 // ==================== TOAST ====================
@@ -774,6 +876,41 @@ var t = e.target;
 // Textarea
 if(t.closest('.igor-notes')) return;
 
+// WA copy button
+var copyBtn = t.closest('[data-action="copy"]');
+if(copyBtn){
+e.preventDefault();
+e.stopPropagation();
+var waContent = copyBtn.closest('.wa-content');
+var waBox = waContent ? waContent.querySelector('.wa-script-box') : null;
+if(waBox){
+var text = waBox.textContent;
+if(navigator.clipboard && navigator.clipboard.writeText){
+navigator.clipboard.writeText(text).then(function(){
+copyBtn.textContent = 'COPIADO';
+showToast('Script copiado');
+setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+});
+} else {
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.style.position='fixed';
+ta.style.left='-9999px';
+document.body.appendChild(ta);
+ta.select();
+document.execCommand('copy');
+document.body.removeChild(ta);
+copyBtn.textContent = 'COPIADO';
+showToast('Script copiado');
+setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+}
+}
+return;
+}
+
+// WA send button - let it through (it's an <a> tag)
+if(t.closest('.wa-send-btn')) return;
+
 // Result pill
 var rp = t.closest('.result-pill');
 if(rp){
@@ -783,7 +920,6 @@ var card = rp.closest('.card');
 var slug = card.getAttribute('data-slug');
 var newStatus = rp.getAttribute('data-rs');
 var oldStatus = getS(slug);
-// Toggle off if same
 if(oldStatus === newStatus){
 setS(slug,'pendiente');
 card.setAttribute('data-status','pendiente');
@@ -791,18 +927,15 @@ card.setAttribute('data-status','pendiente');
 setS(slug,newStatus);
 card.setAttribute('data-status',newStatus);
 }
-// Update active state on pills
 var pills = card.querySelectorAll('.result-pill');
 var cur = getS(slug);
 for(var i=0;i<pills.length;i++){
 if(pills[i].getAttribute('data-rs')===cur) pills[i].classList.add('active');
 else pills[i].classList.remove('active');
 }
-// Update card name style
 var nameEl = card.querySelector('.card-name');
 if(nameEl){nameEl.style=''}
 updateStats();
-// Auto-scroll to next pending
 if(cur!=='pendiente'){
 setTimeout(function(){
 var cards = document.querySelectorAll('#cardList .card');
@@ -817,44 +950,28 @@ break;
 return;
 }
 
-// WA button - copy script then open link
-var waBtn = t.closest('.action-wa');
-if(waBtn){
+// Channel tab
+var chTab = t.closest('.channel-tab');
+if(chTab){
 e.preventDefault();
 e.stopPropagation();
-var card = waBtn.closest('.card');
-var scriptEl = card.querySelector('.wa-script-text');
-if(scriptEl){
-var text = scriptEl.textContent;
-if(navigator.clipboard&&navigator.clipboard.writeText){
-navigator.clipboard.writeText(text).then(function(){
-showToast('Script copiado');
-setTimeout(function(){window.open(waBtn.href,'_blank')},400);
-});
-}else{
-var ta = document.createElement('textarea');
-ta.value = text;
-ta.style.position='fixed';
-ta.style.left='-9999px';
-document.body.appendChild(ta);
-ta.select();
-document.execCommand('copy');
-document.body.removeChild(ta);
-showToast('Script copiado');
-setTimeout(function(){window.open(waBtn.href,'_blank')},400);
-}
-}
+var card = chTab.closest('.card');
+var slug = card.getAttribute('data-slug');
+var ch = chTab.getAttribute('data-ch');
+setCh(slug, ch);
+card.setAttribute('data-channel', ch);
+var tabs = card.querySelectorAll('.channel-tab');
+for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
+chTab.classList.add('active');
+refreshDayContent(card);
 return;
 }
-
-// Call button - let tel: links through
-var callBtn = t.closest('.action-call');
-if(callBtn) return;
 
 // Day tab
 var dt = t.closest('.day-tab');
 if(dt){
 e.preventDefault();
+e.stopPropagation();
 var card = dt.closest('.card');
 var slug = card.getAttribute('data-slug');
 var di = parseInt(dt.getAttribute('data-di'));
@@ -862,7 +979,7 @@ setD(slug,di);
 var tabs = card.querySelectorAll('.day-tab');
 for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
 dt.classList.add('active');
-updateActionButtons(card);
+refreshDayContent(card);
 return;
 }
 
@@ -898,8 +1015,7 @@ var q = this.value.toLowerCase().trim();
 var cards = document.querySelectorAll('#cardList .card');
 for(var i=0;i<cards.length;i++){
 var slug = cards[i].getAttribute('data-slug');
-var p = null;
-for(var j=0;j<PROSPECTS.length;j++){if(PROSPECTS[j].slug===slug){p=PROSPECTS[j];break;}}
+var p = getProspect(slug);
 if(!q || (p && (p.name.toLowerCase().indexOf(q)!==-1 || p.vertical.toLowerCase().indexOf(q)!==-1 || p.zone.toLowerCase().indexOf(q)!==-1))){
 cards[i].style.display='';
 cards[i].classList.remove('hidden');
