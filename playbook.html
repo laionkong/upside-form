@@ -1735,6 +1735,9 @@ navigator.clipboard.writeText(text).then(function(){
 copyBtn.textContent = 'COPIADO';
 showToast('Script copiado');
 setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+// Auto-mark as contactado on copy
+var copyCard = copyBtn.closest('.card');
+if(copyCard){ var cSlug = copyCard.getAttribute('data-slug'); if(getS(cSlug)==='pendiente'){setS(cSlug,'contactado');renderAll();}}
 });
 } else {
 var ta = document.createElement('textarea');
@@ -1748,13 +1751,20 @@ document.body.removeChild(ta);
 copyBtn.textContent = 'COPIADO';
 showToast('Script copiado');
 setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+// Auto-mark as contactado on copy
+var copyCard2 = copyBtn.closest('.card');
+if(copyCard2){ var cSlug2 = copyCard2.getAttribute('data-slug'); if(getS(cSlug2)==='pendiente'){setS(cSlug2,'contactado');renderAll();}}
 }
 }
 return;
 }
 
-// WA send button - let it through (it's an <a> tag)
-if(t.closest('.wa-send-btn')) return;
+// WA send button - auto-mark as contactado then let through
+if(t.closest('.wa-send-btn')){
+var waCard = t.closest('.card');
+if(waCard){ var wSlug = waCard.getAttribute('data-slug'); if(getS(wSlug)==='pendiente'){setS(wSlug,'contactado');renderAll();}}
+return;
+}
 
 // Result pill
 var rp = t.closest('.result-pill');
