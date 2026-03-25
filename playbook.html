@@ -955,14 +955,52 @@ callScript:[
 
 // ==================== STORAGE ====================
 var PREFIX = 'igor2_';
+var SYNC_URL = 'https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/playbook-sync';
+var noteTimers = {};
+var serverLoaded = false;
+
+// --- Supabase sync layer ---
+function syncToServer(slug, data) {
+  data.slug = slug;
+  try {
+    fetch(SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function(){});
+  } catch(e) {}
+}
+
+function loadFromServer() {
+  if (serverLoaded) return;
+  fetch(SYNC_URL).then(function(r){ return r.json(); }).then(function(resp) {
+    if (!resp.states) return;
+    var states = resp.states;
+    for (var slug in states) {
+      var s = states[slug];
+      if (s.status && s.status !== 'pendiente') localStorage.setItem(PREFIX+'s_'+slug, s.status);
+      if (s.notes) localStorage.setItem(PREFIX+'n_'+slug, s.notes);
+      if (s.day != null) localStorage.setItem(PREFIX+'d_'+slug, String(s.day));
+      if (s.channel && s.channel !== 'default') localStorage.setItem(PREFIX+'ch_'+slug, s.channel);
+    }
+    serverLoaded = true;
+    renderAll();
+  }).catch(function(){});
+}
+
+// --- State getters/setters with sync ---
 function getS(slug){return localStorage.getItem(PREFIX+'s_'+slug)||'pendiente'}
-function setS(slug,s){localStorage.setItem(PREFIX+'s_'+slug,s)}
+function setS(slug,s){localStorage.setItem(PREFIX+'s_'+slug,s); syncToServer(slug, {status: s, notes: getN(slug)})}
 function getN(slug){return localStorage.getItem(PREFIX+'n_'+slug)||''}
-function setN(slug,n){localStorage.setItem(PREFIX+'n_'+slug,n)}
+function setN(slug,n){
+  localStorage.setItem(PREFIX+'n_'+slug,n);
+  if (noteTimers[slug]) clearTimeout(noteTimers[slug]);
+  noteTimers[slug] = setTimeout(function(){ syncToServer(slug, {notes: n}); }, 2000);
+}
 function getD(slug){return parseInt(localStorage.getItem(PREFIX+'d_'+slug)||'0')}
-function setD(slug,d){localStorage.setItem(PREFIX+'d_'+slug,String(d))}
+function setD(slug,d){localStorage.setItem(PREFIX+'d_'+slug,String(d)); syncToServer(slug, {day: d})}
 function getCh(slug){return localStorage.getItem(PREFIX+'ch_'+slug)||'default'}
-function setCh(slug,ch){localStorage.setItem(PREFIX+'ch_'+slug,ch)}
+function setCh(slug,ch){localStorage.setItem(PREFIX+'ch_'+slug,ch); syncToServer(slug, {channel: ch})}
 
 // ==================== RENDER ====================
 function scoreClass(s){return s>=80?'high':s>=70?'mid':'low'}
@@ -1856,6 +1894,7 @@ localStorage.removeItem(PREFIX+'d_'+PROSPECTS[i].slug);
 localStorage.removeItem(PREFIX+'ch_'+PROSPECTS[i].slug);
 }
 renderAll();
+loadFromServer();
 </script>
 </body>
 </html>
