@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#131319">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Book a Demo | UPSIDE</title>
+  <meta name="description" content="Book a 15-minute demo with UPSIDE. Your business answering customers 24/7 on WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #131319;
+      color: #F2F2EE;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: #BFEA2E;
+    }
+
+    .header-subtitle {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      color: #8A8A9E;
+      margin-top: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Value section */
+    .value-section {
+      padding: 0 0 32px;
+    }
+
+    .value-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    .value-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .value-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: #F2F2EE;
+    }
+
+    .value-list li::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      min-width: 6px;
+      background: #BFEA2E;
+      margin-top: 8px;
+    }
+
+    .value-list .case-study {
+      color: #8A8A9E;
+      font-size: 14px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #2A2A34;
+      margin-bottom: 32px;
+    }
+
+    /* Form */
+    .form-card {
+      background: #1E1E26;
+      border: 1px solid #2A2A34;
+      padding: 32px 24px;
+      margin-bottom: 32px;
+    }
+
+    .form-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field:last-of-type {
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8A8A9E;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    label .required {
+      color: #BFEA2E;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: #131319;
+      border: 1px solid #2A2A34;
+      color: #F2F2EE;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      padding: 12px 14px;
+      border-radius: 0;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #BFEA2E;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #4A4A5E;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .field-error {
+      font-size: 13px;
+      color: #FF6B6B;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .field-error.visible {
+      display: block;
+    }
+
+    input.invalid {
+      border-color: #FF6B6B;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #BFEA2E;
+      color: #131319;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 1px;
+      padding: 16px;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-transform: uppercase;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .submit-btn:active {
+      opacity: 0.8;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .submit-btn .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #131319;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    .submit-btn.loading .btn-text {
+      display: none;
+    }
+
+    .submit-btn.loading .spinner {
+      display: block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success state */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .success-message.visible {
+      display: block;
+    }
+
+    .success-check {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+
+    .success-check .circle {
+      width: 64px;
+      height: 64px;
+      border: 2px solid #BFEA2E;
+      border-radius: 50%;
+      animation: scaleIn 0.3s ease-out;
+    }
+
+    .success-check .check {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 28px;
+      height: 28px;
+    }
+
+    .success-check .check path {
+      stroke: #BFEA2E;
+      stroke-width: 3;
+      stroke-linecap: square;
+      fill: none;
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: drawCheck 0.4s ease-out 0.2s forwards;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .success-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .success-detail {
+      font-size: 15px;
+      color: #8A8A9E;
+      line-height: 1.6;
+    }
+
+    /* Error state */
+    .error-message {
+      display: none;
+      text-align: center;
+      padding: 24px;
+      background: #1E1E26;
+      border: 1px solid #2A2A34;
+      margin-bottom: 24px;
+    }
+
+    .error-message.visible {
+      display: block;
+    }
+
+    .error-text {
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .error-wa-link {
+      color: #BFEA2E;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .error-wa-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 32px 0 48px;
+      border-top: 1px solid #2A2A34;
+      margin-top: auto;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .footer-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: #8A8A9E;
+      margin-bottom: 8px;
+    }
+
+    .footer-promise {
+      font-size: 13px;
+      color: #4A4A5E;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">UPSIDE</div>
+      <div class="header-subtitle">Book your demo</div>
+    </header>
+
+    <!-- Value section -->
+    <section class="value-section">
+      <h1 class="value-headline">Your business answering customers 24/7 on WhatsApp</h1>
+      <ul class="value-list">
+        <li>Responds to enquiries, quotes, and books appointments automatically</li>
+        <li>Works while your team is off the clock</li>
+        <li class="case-study">Real result: MarioBox cut no-shows by 38% in 3 weeks</li>
+      </ul>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Error message -->
+    <div class="error-message" id="errorMessage">
+      <p class="error-text">Something went wrong. Message us on WhatsApp:</p>
+      <a href="https://wa.me/525562144415" target="_blank" class="error-wa-link">wa.me/525562144415</a>
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+      <div class="success-check">
+        <div class="circle"></div>
+        <svg class="check" viewBox="0 0 28 28">
+          <path d="M6 14 L12 20 L22 8" />
+        </svg>
+      </div>
+      <h2 class="success-title">Demo booked</h2>
+      <p class="success-detail">We'll confirm via WhatsApp within 2 hours.</p>
+    </div>
+
+    <!-- Form -->
+    <form class="form-card" id="bookingForm" novalidate>
+      <h2 class="form-title">Book 15 minutes</h2>
+
+      <div class="field">
+        <label for="nombre">Full name <span class="required">*</span></label>
+        <input type="text" id="nombre" name="nombre" autocomplete="name" required>
+        <div class="field-error" id="nombreError">Enter your name</div>
+      </div>
+
+      <div class="field">
+        <label for="negocio">Business name <span class="required">*</span></label>
+        <input type="text" id="negocio" name="negocio" autocomplete="organization" required>
+        <div class="field-error" id="negocioError">Enter your business name</div>
+      </div>
+
+      <div class="field">
+        <label for="telefono">Phone / WhatsApp <span class="required">*</span></label>
+        <input type="tel" id="telefono" name="telefono" autocomplete="tel" placeholder="Australian mobile (04XX XXX XXX)" required>
+        <div class="field-error" id="telefonoError">Enter a valid Australian phone number</div>
+      </div>
+
+      <div class="field">
+        <label for="horario">Preferred day and time</label>
+        <input type="text" id="horario" name="horario" placeholder="e.g. Thursday 10am AEST">
+      </div>
+
+      <div class="field">
+        <label for="mensaje">Optional message</label>
+        <textarea id="mensaje" name="mensaje" placeholder="Anything you'd like us to cover in the demo"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span class="btn-text">BOOK DEMO</span>
+        <div class="spinner"></div>
+      </button>
+    </form>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">UPSIDE &mdash; AI automation for SMBs</div>
+    <div class="footer-promise">We respond within 2 hours</div>
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById('bookingForm');
+      var btn = document.getElementById('submitBtn');
+      var successEl = document.getElementById('successMessage');
+      var errorEl = document.getElementById('errorMessage');
+
+      function cleanPhone(val) {
+        return val.replace(/\D/g, '');
+      }
+
+      function validateAUPhone(digits) {
+        // Accept: 04XXXXXXXX (10 digits) or 614XXXXXXXX (11 digits) or 61XXXXXXXX (10+ digits with country code)
+        if (digits.length === 10 && digits.startsWith('04')) return true;
+        if (digits.length === 11 && digits.startsWith('614')) return true;
+        if (digits.length === 11 && digits.startsWith('610')) return true;
+        // Also accept generic 10+ digit international numbers
+        if (digits.length >= 10 && digits.length <= 15) return true;
+        return false;
+      }
+
+      function validate() {
+        var valid = true;
+        var nombre = document.getElementById('nombre');
+        var negocio = document.getElementById('negocio');
+        var telefono = document.getElementById('telefono');
+
+        // Reset
+        [nombre, negocio, telefono].forEach(function (el) {
+          el.classList.remove('invalid');
+        });
+        document.querySelectorAll('.field-error').forEach(function (el) {
+          el.classList.remove('visible');
+        });
+
+        if (!nombre.value.trim()) {
+          nombre.classList.add('invalid');
+          document.getElementById('nombreError').classList.add('visible');
+          valid = false;
+        }
+
+        if (!negocio.value.trim()) {
+          negocio.classList.add('invalid');
+          document.getElementById('negocioError').classList.add('visible');
+          valid = false;
+        }
+
+        var phone = cleanPhone(telefono.value);
+        if (!validateAUPhone(phone)) {
+          telefono.classList.add('invalid');
+          document.getElementById('telefonoError').classList.add('visible');
+          valid = false;
+        }
+
+        return valid;
+      }
+
+      // Read ref param from URL for tracking
+      function getRefParam() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('ref') || 'direct';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorEl.classList.remove('visible');
+
+        if (!validate()) return;
+
+        btn.disabled = true;
+        btn.classList.add('loading');
+
+        var data = {
+          nombre: document.getElementById('nombre').value.trim(),
+          negocio: document.getElementById('negocio').value.trim(),
+          telefono: cleanPhone(document.getElementById('telefono').value),
+          horario: document.getElementById('horario').value.trim(),
+          mensaje: document.getElementById('mensaje').value.trim(),
+          source: 'demo_form_au',
+          referrer: getRefParam()
+        };
+
+        fetch('https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/demo-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error('Request failed');
+            form.style.display = 'none';
+            successEl.classList.add('visible');
+          })
+          .catch(function () {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            errorEl.classList.add('visible');
+          });
+      });
+    })();
+  </script>
+</body>
+</html>
