@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#131319">
+<title>UPSIDE Playbook -- Fumigadoras CDMX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{-webkit-tap-highlight-color:transparent}
+:root{
+--surface:#131319;
+--card:#1E1E26;
+--border:#2A2A34;
+--primary:#BFEA2E;
+--text:#F2F2EE;
+--muted:#8A8A9E;
+--gold:#F5C542;
+--orange:#F5A623;
+--red:#E85454;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+font-family:'Manrope',system-ui,-apple-system,sans-serif;
+font-size:15px;
+line-height:1.5;
+color:var(--text);
+background:var(--surface);
+-webkit-font-smoothing:antialiased;
+padding-bottom:80px;
+}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif}
+
+/* HEADER */
+.header{
+position:sticky;
+top:0;
+z-index:100;
+background:var(--surface);
+padding:12px 16px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:1px solid var(--border);
+}
+.header-brand{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:17px;
+letter-spacing:0.5px;
+}
+.header-brand span{color:var(--primary)}
+.header-sub{font-size:13px;color:var(--muted);font-weight:500;margin-left:8px}
+.header-stats{
+font-size:12px;
+color:var(--muted);
+text-align:right;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+}
+.header-stats .hl{color:var(--primary)}
+
+/* SEARCH */
+.search-wrap{
+position:sticky;
+top:47px;
+z-index:99;
+background:var(--surface);
+padding:8px 16px 8px;
+}
+.search-input{
+width:100%;
+padding:10px 14px;
+font-size:16px;
+font-family:'Manrope',system-ui,sans-serif;
+border:1px solid var(--border);
+border-radius:0;
+background:var(--border);
+color:var(--text);
+outline:none;
+-webkit-appearance:none;
+}
+.search-input:focus{border-color:var(--primary);background:rgba(191,234,46,0.05)}
+.search-input::placeholder{color:var(--muted)}
+
+/* CARDS */
+.card{
+margin:8px 16px;
+background:var(--card);
+border:1px solid var(--border);
+border-left:4px solid var(--border);
+overflow:hidden;
+transition:border-color 0.2s,opacity 0.2s;
+}
+.card[data-status="contactado"]{border-left-color:var(--gold)}
+.card[data-status="interesado"]{border-left-color:var(--primary);border-color:var(--primary)}
+.card[data-status="no-contesta"]{border-left-color:var(--orange);opacity:0.7}
+.card[data-status="rechazado"]{border-left-color:var(--red);opacity:0.5}
+
+/* COLLAPSED HEADER */
+.card-header{
+padding:12px 14px;
+cursor:pointer;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+gap:6px;
+min-height:44px;
+user-select:none;
+-webkit-user-select:none;
+}
+.card-header:active{opacity:0.8}
+.card-rank{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:13px;
+color:var(--muted);
+min-width:26px;
+}
+.card-name{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:17px;
+flex:1;
+min-width:100px;
+color:var(--text);
+}
+.card[data-status="rechazado"] .card-name{text-decoration:line-through;color:var(--muted)}
+.card[data-status="interesado"] .card-name{color:var(--primary)}
+.score-pill{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:11px;
+padding:2px 8px;
+min-width:28px;
+text-align:center;
+}
+.score-pill.high{background:var(--primary);color:var(--surface)}
+.score-pill.mid{background:var(--border);color:var(--text)}
+.score-pill.low{background:var(--border);color:var(--muted)}
+.card-line2{
+width:100%;
+padding-left:26px;
+display:flex;
+align-items:center;
+gap:8px;
+margin-top:2px;
+}
+.ch-tag{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:10px;
+padding:1px 6px;
+text-transform:uppercase;
+letter-spacing:0.5px;
+}
+.ch-tag.call{background:var(--primary);color:var(--surface)}
+.ch-tag.wa{background:transparent;color:var(--primary);border:1px solid var(--primary)}
+.card-vertical{font-size:12px;color:var(--muted)}
+
+/* EXPANDED BODY */
+.card-body{
+display:none;
+border-top:1px solid var(--border);
+}
+.card.expanded .card-body{display:block}
+
+/* CHANNEL TABS */
+.channel-tabs{
+display:flex;
+background:var(--surface);
+border-bottom:1px solid var(--border);
+}
+.channel-tab{
+flex:1;
+padding:12px 8px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:13px;
+color:var(--muted);
+cursor:pointer;
+border-bottom:3px solid transparent;
+text-align:center;
+min-height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+user-select:none;
+-webkit-user-select:none;
+}
+.channel-tab:active{opacity:0.7}
+.channel-tab.active{color:var(--text);border-bottom-color:var(--primary)}
+
+/* DAY TABS */
+.day-tabs{
+display:flex;
+background:var(--card);
+border-bottom:1px solid var(--border);
+}
+.day-tab{
+flex:1;
+padding:12px 8px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:12px;
+color:var(--muted);
+cursor:pointer;
+border-bottom:3px solid transparent;
+text-align:center;
+min-height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+user-select:none;
+-webkit-user-select:none;
+}
+.day-tab:active{opacity:0.7}
+.day-tab.active{color:var(--text);border-bottom-color:var(--primary)}
+
+/* SCRIPT ACCORDION */
+.script-area{
+padding:0 14px 14px;
+}
+.script-section{
+border-bottom:1px solid var(--border);
+}
+.script-section:last-child{border-bottom:none}
+.script-header{
+padding:10px 0;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+min-height:44px;
+user-select:none;
+-webkit-user-select:none;
+}
+.script-arrow{
+font-size:10px;
+color:var(--muted);
+transition:transform 0.2s,color 0.2s;
+width:14px;
+text-align:center;
+flex-shrink:0;
+}
+.script-section.open .script-arrow{transform:rotate(90deg);color:var(--primary)}
+.script-label{
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+font-size:13px;
+color:var(--muted);
+transition:color 0.2s;
+}
+.script-section.open .script-label{color:var(--primary)}
+.script-time{
+font-size:11px;
+color:var(--muted);
+margin-left:auto;
+}
+.script-content{
+display:none;
+padding:0 0 12px 22px;
+font-size:15px;
+font-family:'Manrope',system-ui,sans-serif;
+line-height:1.7;
+color:var(--text);
+}
+.script-section.open .script-content{display:block}
+.script-content p{margin-bottom:8px}
+.script-content ol,.script-content ul{padding-left:18px;margin-bottom:8px}
+.script-content li{margin-bottom:4px}
+.script-content strong{font-weight:600}
+.quote{
+font-style:italic;
+background:var(--card);
+padding:14px;
+margin:6px 0;
+border-left:3px solid var(--primary);
+font-size:15px;
+line-height:1.6;
+}
+.objection{margin-bottom:10px}
+.objection-q{font-weight:700;font-size:13px;margin-bottom:4px;color:var(--text)}
+.objection-a{font-style:italic;padding-left:10px;border-left:2px solid var(--border);color:var(--muted)}
+
+/* WA CONTENT */
+.wa-content{padding:14px}
+.wa-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-family:'Space Grotesk',system-ui}
+.wa-script-box{background:var(--card);border-left:3px solid var(--primary);padding:14px;font-size:15px;line-height:1.6;color:var(--text);margin-bottom:12px}
+.wa-actions{display:flex;gap:8px}
+.wa-copy-btn{flex:1;padding:14px;background:var(--card);border:1px solid var(--primary);color:var(--primary);font-family:'Space Grotesk',system-ui;font-weight:700;font-size:13px;cursor:pointer;min-height:48px;border-radius:0}
+.wa-send-btn{flex:1;padding:14px;background:var(--primary);color:var(--surface);font-family:'Space Grotesk',system-ui;font-weight:700;font-size:13px;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:0}
+.wa-copy-btn:active{background:var(--primary);color:var(--surface)}
+.wa-disabled{padding:14px;color:var(--muted);font-size:13px;font-style:italic}
+.wa-note{font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic}
+.call-note{font-size:12px;color:var(--muted);font-style:italic;padding:10px 14px;border-bottom:1px solid var(--border)}
+
+/* RESULT PILLS */
+.result-bar{
+display:flex;
+gap:0;
+padding:10px 14px;
+border-top:1px solid var(--border);
+}
+.result-pill{
+flex:1;
+padding:10px 4px;
+font-size:11px;
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:600;
+background:transparent;
+border:1px solid var(--border);
+color:var(--muted);
+cursor:pointer;
+white-space:nowrap;
+min-height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+user-select:none;
+-webkit-user-select:none;
+text-align:center;
+transition:all 0.2s ease;
+border-radius:0;
+}
+.result-pill:not(:last-child){border-right:none}
+.result-pill:active{transform:scale(0.96);opacity:0.8}
+.result-pill.active.contactado{background:rgba(245,197,66,0.08);color:var(--gold);border-color:var(--gold);box-shadow:inset 0 -3px 0 var(--gold)}
+.result-pill.active.interesado{background:rgba(191,234,46,0.08);color:var(--primary);border-color:var(--primary);box-shadow:inset 0 -3px 0 var(--primary)}
+.result-pill.active.no-contesta{background:rgba(245,166,35,0.08);color:var(--orange);border-color:var(--orange);box-shadow:inset 0 -3px 0 var(--orange)}
+.result-pill.active.rechazado{background:rgba(232,84,84,0.08);color:var(--red);border-color:var(--red);box-shadow:inset 0 -3px 0 var(--red)}
+
+/* NOTES */
+.notes-wrap{
+padding:10px 14px;
+border-top:1px solid var(--border);
+}
+.igor-notes{
+width:100%;
+background:var(--surface);
+border:1px solid var(--border);
+color:var(--text);
+font-family:'Manrope',system-ui,sans-serif;
+font-size:16px;
+padding:10px;
+min-height:50px;
+resize:vertical;
+border-radius:0;
+-webkit-appearance:none;
+}
+.igor-notes:focus{border-color:var(--primary);outline:none;background:rgba(191,234,46,0.05)}
+.igor-notes::placeholder{color:var(--muted)}
+.capture-input, .igor-notes, .search-input { min-height: 44px; }
+
+/* TOAST */
+.toast{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%) translateY(80px);
+background:var(--primary);
+color:var(--surface);
+font-family:'Space Grotesk',system-ui,sans-serif;
+font-weight:700;
+font-size:14px;
+padding:10px 24px;
+z-index:200;
+opacity:0;
+transition:transform 0.3s,opacity 0.3s;
+pointer-events:none;
+border-radius:0;
+}
+.toast.show{
+transform:translateX(-50%) translateY(0);
+opacity:1;
+}
+
+/* FOOTER */
+.footer{
+text-align:center;
+padding:24px 16px;
+font-size:11px;
+color:var(--muted);
+letter-spacing:0.3px;
+border-top:1px solid var(--border);
+}
+.hidden{display:none!important}
+
+/* CALL MODE MODAL */
+.call-mode {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  height: 100dvh;
+  height: -webkit-fill-available;
+  z-index: 1000;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  overflow: hidden;
+}
+.call-mode.hidden { display: none; }
+
+/* TOP BAR: back + progress */
+.call-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+.call-back {
+  font-size: 14px;
+  color: var(--muted);
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px 8px 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.call-back:active { color: var(--primary); }
+.call-progress-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.call-dot {
+  width: 8px; height: 8px;
+  background: var(--border);
+  transition: all 0.2s ease;
+}
+.call-dot.active { background: var(--primary); transform: scale(1.3); }
+.call-dot.done { background: var(--muted); }
+.call-step-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* PROSPECT NAME */
+.call-prospect-name {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 8px;
+  font-family: 'Space Grotesk', system-ui;
+  flex-shrink: 0;
+}
+
+/* PHONE LINK IN CALL MODE */
+.call-phone-link {
+  display: block;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  padding: 4px 0 8px;
+  letter-spacing: 1px;
+}
+.call-phone-link:active { opacity: 0.7; }
+
+/* SCRIPT TEXT AREA */
+.call-text-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 0;
+}
+.call-text {
+  font-family: 'Manrope', system-ui;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: center;
+  max-width: 100%;
+}
+.call-text strong { color: var(--primary); font-weight: 700; }
+
+/* SECTION LABEL */
+.call-section-label {
+  font-size: 11px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Space Grotesk', system-ui;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* INLINE CAPTURE */
+.call-capture {
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+.capture-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'Space Grotesk', system-ui;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+.capture-input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(191,234,46,0.06);
+  border: 1px solid rgba(191,234,46,0.2);
+  color: var(--text);
+  font-family: 'Manrope', system-ui;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.capture-input::placeholder {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+}
+.capture-input:focus {
+  border-color: var(--primary);
+  background: rgba(191,234,46,0.08);
+}
+
+/* BUTTONS */
+.call-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+.call-btn {
+  padding: 18px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  border: none;
+  cursor: pointer;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.call-btn:active { transform: scale(0.97); }
+.call-btn.primary { background: var(--primary); color: var(--surface); }
+.call-btn.primary:active { background: #A8D624; }
+.call-btn.secondary { background: transparent; border: 2px solid var(--border); color: var(--muted); }
+.call-btn.secondary:active { background: var(--border); color: var(--text); }
+.call-btn.danger { background: var(--red); color: var(--text); }
+.call-btn.danger:active { background: #D64545; }
+.call-btn.gold { background: var(--gold); color: var(--surface); }
+
+/* OBJECTION OVERLAY */
+.objection-panel {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 2px solid var(--primary);
+  padding: 20px 16px;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  max-height: 75dvh;
+  overflow-y: auto;
+  z-index: 1001;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.objection-panel.show { transform: translateY(0); }
+.objection-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+.objection-card {
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--surface);
+  border-left: 3px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.objection-card:active { border-left-color: var(--primary); }
+.objection-card.expanded { border-left-color: var(--primary); background: var(--card); }
+.objection-card-q { font-weight: 700; font-size: 14px; color: var(--text); }
+.objection-card-a { display: none; font-size: 14px; color: var(--text); line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.objection-card.expanded .objection-card-a { display: block; }
+.objection-close-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  cursor: pointer;
+}
+
+/* OUTCOME SCREEN */
+.call-outcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+.outcome-status {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.outcome-status.success { color: var(--primary); }
+.outcome-status.fail { color: var(--red); }
+.outcome-status.neutral { color: var(--gold); }
+.outcome-prospect { font-size: 16px; color: var(--muted); }
+.outcome-notes {
+  width: 100%;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Manrope', system-ui;
+  font-size: 16px;
+  min-height: 80px;
+  resize: none;
+}
+.outcome-notes:focus { border-color: var(--primary); outline: none; }
+
+/* MODO LLAMADA BUTTON (inside card) */
+.btn-call-mode {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', system-ui;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+.btn-call-mode:active { background: #A8D624; }
+</style>
+</head>
+<body>
+
+<div class="header">
+<div>
+<span class="header-brand">UPSIDE<span>.</span></span>
+<span class="header-sub">Fumigadoras CDMX</span>
+</div>
+<div class="header-stats" id="headerStats">0/10</div>
+</div>
+
+<div class="search-wrap">
+<input type="text" class="search-input" id="searchInput" placeholder="Buscar prospecto...">
+</div>
+
+<div id="cardList"></div>
+
+<div class="footer">UPSIDE &middot; Automatizaci&oacute;n Comercial</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="callMode" class="call-mode hidden"></div>
+<div id="objectionPanel" class="objection-panel"></div>
+
+<script>
+// ==================== FOLLOW-UP TEMPLATES BY VERTICAL ====================
+var FOLLOWUPS = {
+  "Fumigadora": "Hola, retomo mi mensaje sobre los clientes de fumigacion. En esta temporada hay mucha gente buscando servicio en su zona y se van con quien responde primero. Los primeros 5 leads son gratis. \u00bfLe interesa probar?"
+};
+
+// ==================== DATA ====================
+var PROSPECTS = [
+  {
+    rank: 1,
+    name: "Fumigaciones Espinoza",
+    slug: "fumigaciones-espinoza",
+    vertical: "Fumigadora",
+    zone: "CDMX amplia (Naucalpan, Huixquilucan)",
+    score: 80,
+    strategy: "call-first",
+    phone: "5554692167",
+    wa: "https://wa.me/525554692167",
+    waScript: "Hola, buenas tardes. Soy Leon de UPSIDE. Vi que cubren Naucalpan, Huixquilucan y varias zonas premium -- buena cobertura para residencial y comercial.\nEstoy mandando clientes a fumigadoras en CDMX con publicidad digital. La propuesta: 5 clientes de prueba gratis. Si les sirven, despues cobro por cada cliente que les llega.\n\u00bfLes interesa recibir leads sin riesgo?",
+    waFollowUp: "Hola, le doy seguimiento. Dato relevante para su zona: PlagaZero y FumiZone estan captando clientes en Naucalpan y Huixquilucan con publicidad en linea. La mayoria de fumigadoras locales no estan compitiendo ahi.\nLes puedo generar clientes de esas zonas premium directo a su WhatsApp. \u00bf5 de prueba sin costo?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con Fumigaciones Espinoza? Mi nombre es Leon. Vi que cubren varias zonas incluyendo Tecamachalco y Huixquilucan -- zonas de alto poder adquisitivo donde la gente paga bien por fumigacion. Pero cuando busco 'fumigacion Tecamachalco' o 'fumigacion Huixquilucan' en Google, no aparecen. Esos clientes los esta agarrando alguien mas.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy sus clientes los contactan directo por telefono y WhatsApp, o tienen alguna otra forma de conseguir trabajo?</li><li>De todas las zonas que cubren, cual les deja mas trabajo -- CDMX centro o las zonas como Naucalpan y Huixquilucan?</li><li>Si les llegaran 5 clientes nuevos esta semana de zonas premium como Tecamachalco, podrian cubrirlos sin problema?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, el tema es este: Tecamachalco, Huixquilucan, Naucalpan -- ahi la gente busca 'fumigacion' en Google, no en Facebook ni en postes. Una fumigacion residencial en esas zonas se cobra entre $1,500 y $3,000 pesos facil. Fumicity cobra desde $699 y aparece primero en Google en casi todas las zonas. Ustedes tienen la cobertura para llegar, pero si los clientes no los encuentran, ese dinero se va con la competencia. Cada lead que pierden en zona premium es un servicio de $2,000 o mas.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que buscan fumigacion en zonas especificas -- Tecamachalco, Huixquilucan, Naucalpan, las que ustedes cubran. Se los mando directo por WhatsApp con nombre, colonia y tipo de plaga. Los primeros 5 son gratis, sin costo, sin compromiso. Si cierran trabajo, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Los primeros 5 leads son gratis. Arranco esta semana. Me confirma que el 55 5469 2167 es su WhatsApp para mandarle los detalles?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tengo suficientes clientes</div><div class=\"objection-a\">Que bueno. Pero digame: en zonas como Tecamachalco, donde un servicio les deja $2,000 o mas, rechazarian 5 clientes adicionales? Los primeros son gratis -- si no los quieren, no pasa nada.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta?</div><div class=\"objection-a\">Los primeros 5 son gratis. Despues, si le sirven, cada lead cuesta entre $200 y $300 pesos. Un servicio en zona premium les deja $1,500 a $3,000. Es un retorno de 5 a 10 veces.</div></div><div class=\"objection\"><div class=\"objection-q\">No confio en internet / ya lo intente y no funciono</div><div class=\"objection-a\">Entiendo perfectamente. Por eso no le estoy vendiendo una pagina web ni publicidad. Yo hago el trabajo de generar el cliente y se lo mando a su WhatsApp. Usted solo contesta y cierra. Los primeros 5 sin costo para que vea la calidad.</div></div>"}],
+    notes: "Mejor hora para llamar: 8:00-9:00 am o 2:00-3:00 pm. Digital gap alto (8/10). Probablemente operacion familiar. Cubren zonas premium pero solo tienen telefono/WA como contacto -- dependen 100% de boca a boca. Angulo fuerte: ya cubren la zona, solo falta que los clientes los encuentren."
+  },
+  {
+    rank: 2,
+    name: "SOS Fumigacion",
+    slug: "sos-fumigacion",
+    vertical: "Fumigadora",
+    zone: "CDMX / Pachuca",
+    score: 80,
+    strategy: "call-first",
+    phone: "5574403674",
+    wa: "https://wa.me/525574403674",
+    waScript: "Hola, buen dia. Soy Leon de UPSIDE. Vi que se especializan en chinches y cubren CDMX y Pachuca con servicio 24/7 -- buen nicho.\nGenero clientes para fumigadoras con anuncios digitales. La oferta: 5 clientes de prueba totalmente gratis. Despues, solo pagan por cada lead que les mande.\n\u00bfLes interesaria recibir clientes nuevos?",
+    waFollowUp: "Hola, seguimiento al mensaje. Dato interesante: \u201cfumigacion chinches CDMX\u201d tiene demanda alta y poca competencia real en publicidad digital. Es un nicho donde 5-10 leads al mes cambian el ingreso.\nPuedo mandarles clientes de ese nicho directo a su telefono. \u00bfLes interesa probar gratis?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con el encargado de SOS Fumigacion? Mi nombre es Leon. Vi su pagina sosfumigacionescdmx.com y que se especializan en chinches. Le llamo porque genero clientes que buscan exactamente ese servicio en CDMX y queria ver si les interesa recibir algunos.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy como les llegan la mayoria de sus clientes? Recomendaciones, Google, volantes?</li><li>Cuantos servicios de chinches hacen al mes, mas o menos?</li><li>Si manana les cayeran 5 clientes nuevos buscando fumigacion de chinches, tienen capacidad para atenderlos?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, chinches es el servicio mas urgente que existe en fumigacion. La gente busca en Google con panico a las 2 de la manana. El ticket va de $700 a $3,000 pesos por servicio. Pero ahora mismo su pagina tiene texto de plantilla sin personalizar, dice '[Nombre de tu empresa]' en una seccion. El cliente que llega con urgencia y ve eso, se va al siguiente resultado. Fumicity ya domina Google desde $699. Sin presencia digital fuerte, esos clientes urgentes se los esta llevando la competencia.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Yo me dedico a generar clientes que buscan fumigacion en zonas especificas de CDMX. Lo que hago es mandarle esos contactos directo a su WhatsApp, listos para agendar servicio. Los primeros 5 son completamente gratis, sin costo, sin compromiso, sin contrato. Si le sirven y cierra aunque sea uno, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Me confirma su WhatsApp para mandarle los detalles y arrancar con los 5 leads gratis esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tenemos suficientes clientes</div><div class=\"objection-a\">Que bueno, eso habla bien del negocio. Pero imaginate: un servicio de chinches son $1,500-$3,000 pesos. Si con 5 leads gratis cierras 2, son $3,000-$6,000 sin gastar un peso. No le quita nada probarlo.</div></div><div class=\"objection\"><div class=\"objection-q\">No creo en la publicidad digital</div><div class=\"objection-a\">Totalmente entiendo. Por eso los primeros 5 son gratis. No le pido que invierta nada. Yo pongo todo, usted solo recibe el contacto en su WhatsApp y decide si le sirve.</div></div><div class=\"objection\"><div class=\"objection-q\">Como se que los leads son reales?</div><div class=\"objection-a\">Son personas que estan buscando fumigacion en Google en su zona ahora mismo. Le llegan con nombre y numero por WhatsApp. Si no le sirven, no me paga nada. El riesgo es cero.</div></div>"}],
+    notes: "Mejor horario: 8-9am o 2-3pm. Chinches es el servicio con mas urgencia emocional. Usa eso: la gente no puede dormir, busca a las 2am. El dolor es inmediato y el ticket alto."
+  },
+  {
+    rank: 3,
+    name: "Check Gestion de Plagas",
+    slug: "check-gestion-de-plagas",
+    vertical: "Fumigadora",
+    zone: "Venustiano Carranza / Iztacalco",
+    score: 80,
+    strategy: "call-first",
+    phone: "5519020405",
+    wa: "https://wa.me/525519020405",
+    waScript: "Hola, buenas tardes. Soy Leon de UPSIDE. Vi que manejan 2 sucursales en Venustiano Carranza e Iztacalco con enfoque en bioseguridad -- eso da confianza.\nEstoy mandando clientes a fumigadoras en CDMX con publicidad digital. Les ofrezco 5 clientes de prueba sin costo. Si les sirven, despues cobro por cada lead.\n\u00bfEstarian abiertos a una prueba sin riesgo?",
+    waFollowUp: "Hola, le doy seguimiento. Dato de mercado: la cotizacion por WhatsApp ya es el estandar en fumigacion -- el 80%+ de los clientes piden presupuesto por ahi antes de contratar. Las fumigadoras que responden rapido cierran mas.\nYo genero leads que llegan listos para cotizar. \u00bf5 de prueba sin costo les interesa?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de Check Gestion de Plagas? Mi nombre es Leon. Vi que tienen 2 sucursales, una en Iztacalco y otra en Venustiano Carranza, y que se posicionan en alta especialidad y bioseguridad. Les llamo porque genero clientes que buscan fumigacion en esas zonas y queria ver si les interesa recibir algunos.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Con 2 sucursales, como les llegan los clientes hoy? Recomendaciones, telefono, Google?</li><li>Tienen la misma demanda en las dos sucursales o una jala mas que la otra?</li><li>Si esta semana les cayeran 5 clientes nuevos buscando fumigacion en Venustiano Carranza, los pueden atender?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, ustedes ya dieron el paso mas dificil: abrir una segunda sucursal. Eso cuesta dinero y requiere volumen. Pero su pagina no tiene WhatsApp, no tiene formulario, no tiene redes. Es decir, quien los busca en Google solo puede llamar por telefono, y si no contestan en ese momento, se fue al de abajo. Fumicity cobra desde $699 y domina los primeros resultados. El costo por conseguir un cliente en fumigacion anda entre $50 y $150 pesos. Con 2 sucursales, cada lead que pierden lo pierden doble.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que estan buscando fumigacion en zonas especificas, como Venustiano Carranza e Iztacalco. Se los mando directo por WhatsApp con nombre y numero, listos para que les agenden. Los primeros 5 son gratis, sin costo, sin compromiso. Si les funcionan, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Me confirma el WhatsApp de la sucursal donde quiere recibir los leads y arrancamos esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Nosotros trabajamos por recomendacion y nos va bien</div><div class=\"objection-a\">Eso es excelente y habla de la calidad de su trabajo. Pero la recomendacion no se controla: unos meses llegan muchos, otros pocos. Con leads constantes, las 2 sucursales tienen flujo parejo. Y los primeros 5 son gratis, asi que no arriesga nada.</div></div><div class=\"objection\"><div class=\"objection-q\">No tenemos tiempo para atender mas clientes</div><div class=\"objection-a\">Y si en vez de mas clientes, fueran mejores clientes? Lo que mando son personas buscando activamente fumigacion en su zona. No son curiosos, son gente con plaga que necesita solucion hoy. Cierra mas rapido que un referido.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta despues de los 5 gratis?</div><div class=\"objection-a\">Depende del volumen, pero estamos hablando de $200-$300 pesos por contacto. Si su servicio promedio vale $800 a $2,500, con que cierre 1 de cada 5 ya salio ganando. Pero primero probamos con los 5 gratis y usted decide.</div></div>"}],
+    notes: "Mejor horario: 8-9am o 2-3pm. Con 2 sucursales probablemente haya alguien en oficina. La palanca principal es que ya invirtieron en crecer (2 sucursales) pero no tienen captacion digital. Cada lead perdido lo pierden doble."
+  },
+  {
+    rank: 4,
+    name: "Fumigaciones Garantizadas",
+    slug: "fumigaciones-garantizadas",
+    vertical: "Fumigadora",
+    zone: "Gustavo A. Madero, CDMX",
+    score: 70,
+    strategy: "call-first",
+    phone: "5541380935",
+    wa: "https://wa.me/525541380935",
+    waScript: "Hola, buenas tardes. Soy Leon de UPSIDE. Vi que manejan servicio 24h y tienen licencia sanitaria -- eso los diferencia de muchas fumigadoras en GAM.\nEstoy generando clientes para fumigadoras en CDMX con publicidad digital. La propuesta es simple: les mando 5 clientes de prueba gratis, y si les sirven, despues cobro por lead.\n\u00bfLes interesaria recibir clientes nuevos sin costo inicial?",
+    waFollowUp: "Hola, le doy seguimiento al mensaje del lunes. Un dato que encontre: Fumicity esta dominando Google en CDMX con precios desde $699. La mayoria de las fumigadoras estan perdiendo esos clientes porque no aparecen en busquedas.\nLos leads que genero llegan directo por WhatsApp -- listos para cotizar. \u00bfLes interesa que les mande 5 de prueba?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con el encargado de Fumigaciones Garantizadas? Mi nombre es Leon. Vi que tienen 3 sitios web -- fumigacionesgarantizadas, fumigadorescdmx y controldeplagascdmx -- pero cuando busco 'fumigacion CDMX' en Google, Fumicity aparece primero que los tres. Eso significa que los clientes que buscan en internet los estan encontrando a ellos, no a ustedes.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy sus clientes los encuentran por recomendacion, por las llamadas que entran, o tienen otra forma de conseguir trabajo?</li><li>Si manana les cayeran 5 clientes nuevos de fumigacion residencial esta semana, tienen capacidad para atenderlos?</li><li>Han intentado algo para aparecer mas arriba en Google o en redes? O todo ha sido por telefono?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, el problema es que Fumicity cobra desde $699 y tiene mas de 20 sucursales. Ellos dominan Google porque invierten en eso. Ustedes cobran desde $1,100 con productos Bayer y licencia sanitaria -- servicio superior. Pero si nadie los encuentra en internet, esos clientes se van con Fumicity aunque el servicio sea peor. En CDMX, una fumigacion residencial promedio cuesta entre $800 y $2,500 pesos. Esos leads estan buscando en Google todos los dias.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que buscan fumigacion en su zona -- Gustavo A. Madero y alrededores. Se los mando directo por WhatsApp con nombre, colonia y tipo de plaga. Los primeros 5 son gratis, sin costo, sin compromiso. Si les sirven y cierran trabajo, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Me confirma su WhatsApp para mandarle los detalles? Los primeros 5 leads los arranco esta semana.</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tengo suficientes clientes</div><div class=\"objection-a\">Perfecto, eso habla bien del servicio. Pero digame: si tuviera 5 clientes mas esta semana en zonas que ya cubren, los rechazaria? Los primeros 5 son gratis. Si no le sirven, no pierde nada.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta?</div><div class=\"objection-a\">Los primeros 5 son 100% gratis. Despues, si le funcionan, cobramos entre $200 y $300 por lead -- un cliente de fumigacion residencial les deja $1,100 minimo. El retorno es inmediato.</div></div><div class=\"objection\"><div class=\"objection-q\">No confio en internet / ya lo intente y no funciono</div><div class=\"objection-a\">Entiendo. Por eso los primeros 5 son gratis: usted ve la calidad del cliente antes de pagar un peso. No le estoy vendiendo una pagina web ni publicidad. Le mando clientes reales por WhatsApp. Si no cierran, no me paga.</div></div>"}],
+    notes: "Mejor hora para llamar: 8:00-9:00 am o 2:00-3:00 pm. Tienen 3 dominios -- ya intentaron posicionarse en internet varias veces sin exito. Buena senal: entienden el problema, solo no han encontrado la solucion. Ojo: Fumigaciones DF Sur puede ser el mismo operador."
+  },
+  {
+    rank: 5,
+    name: "Biofumigaciones de Mexico",
+    slug: "biofumigaciones-de-mexico",
+    vertical: "Fumigadora",
+    zone: "Benito Juarez (Napoles), CDMX",
+    score: 70,
+    strategy: "call-first",
+    phone: "5543927552",
+    wa: "https://wa.me/525543927552",
+    waScript: "Hola, buen dia. Soy Leon de UPSIDE. Vi que estan en Napoles y manejan precios competitivos desde $950 con descuentos por volumen -- buen posicionamiento.\nGenero clientes para fumigadoras en CDMX con anuncios en linea. La oferta: les envio 5 clientes de prueba sin costo. Si les funcionan, despues cobramos por lead.\n\u00bfEstarian abiertos a probar?",
+    waFollowUp: "Hola, seguimiento al mensaje de hace unos dias. Dato interesante: el 70% de las fumigadoras en CDMX dependen solo de telefono y referidos. Las que reciben clientes por digital estan cerrando 3-4x mas.\nYo puedo mandarles clientes de la zona Napoles directo a su WhatsApp. \u00bfQuieren probar con 5 gratis?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de Biofumigaciones de Mexico? Mi nombre es Leon. Vi que estan en la zona de Napoles y manejan precios desde $950 pesos -- bastante competitivos para la zona. Pero cuando busco 'fumigacion Benito Juarez' o 'fumigacion Napoles' en Google, no aparecen. Los clientes de esa zona estan buscando en internet y los esta encontrando la competencia.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy como les llegan la mayoria de sus clientes? Recomendacion, llamadas directas, o tienen alguna otra fuente?</li><li>Si les cayeran 5 clientes nuevos de fumigacion residencial esta semana en zona Benito Juarez, tienen capacidad para cubrirlos?</li><li>Han hecho algo para que los encuentren en Google o en redes sociales? O todo ha sido boca a boca?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">El detalle es este: Napoles, Del Valle, Narvarte -- son colonias con alto poder adquisitivo. La gente ahi busca fumigacion en Google, no en el poste de la esquina. Fumicity cobra desde $699 y aparece primero en todas esas busquedas. Ustedes tienen mejor estructura -- son SA de CV, dan descuentos por volumen, manejan polizas -- pero si el cliente no los encuentra, se va con el primero que aparece. Un lead de fumigacion en CDMX cuesta entre $50 y $150 pesos generarlo. Cada uno que se va es dinero que dejan en la mesa.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que buscan fumigacion en la zona de Benito Juarez y colonias cercanas. Se los mando directo por WhatsApp con nombre, tipo de plaga y colonia. Los primeros 5 son completamente gratis, sin compromiso. Si cierran trabajo con ellos, seguimos. Si no les sirven, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Me confirma el WhatsApp que termina en 7552 para mandarle los detalles? Arranco esta semana.</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tengo suficientes clientes</div><div class=\"objection-a\">Que bueno, significa que el servicio es bueno. Pero en temporada baja, cuando se pone flojo, le conviene tener un flujo constante. Los primeros 5 son gratis -- es como un seguro de clientes. Si no los necesita, no pierde nada.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta?</div><div class=\"objection-a\">Los primeros 5 son gratis. Si le funcionan, despues cada lead cuesta entre $200 y $300 pesos. Un cliente residencial les deja $950 minimo -- con poliza o descuento por volumen, el ticket sube mas. El retorno es de 3 a 5 veces lo invertido.</div></div><div class=\"objection\"><div class=\"objection-q\">No confio en internet / ya lo intente y no funciono</div><div class=\"objection-a\">Totalmente entiendo. Por eso no le estoy vendiendo publicidad ni una pagina web. Le mando clientes reales a su WhatsApp -- gente que ya quiere fumigar. Los primeros 5 sin costo. Usted juzga por los resultados, no por promesas.</div></div>"}],
+    notes: "Mejor hora para llamar: 8:00-9:00 am o 2:00-3:00 pm. Son SA de CV -- estructura formal, decisiones mas lentas. Preguntar quien toma la decision. Especialidad: Cucarachas y chinches."
+  },
+  {
+    rank: 6,
+    name: "FUMOM",
+    slug: "fumom",
+    vertical: "Fumigadora",
+    zone: "CDMX / Estado de Mexico",
+    score: 60,
+    strategy: "call-first",
+    phone: "5513995371",
+    wa: "https://wa.me/525513995371",
+    waScript: "Hola, buen dia. Soy Leon de UPSIDE. Vi su pagina -- me gusto que son 100% mexicanos y manejan productos ecologicos con MIP. Eso vende bien.\nGenero clientes para fumigadoras en CDMX y Estado de Mexico. La propuesta: les mando 5 clientes de prueba sin costo. Si cierran ventas, despues cobramos por lead.\n\u00bfLes interesaria probar sin compromiso?",
+    waFollowUp: "Hola, seguimiento al mensaje. Dato de mercado: con la temporada de calor entrando, la demanda de fumigacion sube fuerte en CDMX y Edo. Mex. El CPL promedio en publicidad digital esta en ~$50-60 MXN por lead calificado.\nYo absorbo ese costo de publicidad. Solo pagan por lead despues de la prueba gratis. \u00bfLes interesa?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de FUMOM, Fumigaciones Omega de Mexico? Mi nombre es Leon. Vi que manejan un servicio diferenciado -- Manejo Integrado de Plagas, enfoque ecologico, atienden hoteles y restaurantes. Tienen una web profesional, pero no tienen WhatsApp visible ni formulario para que los clientes los contacten rapido. Ahi estan perdiendo leads.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy como les llegan la mayoria de sus clientes? Los hoteles y restaurantes los buscan directo, o llegan por recomendacion?</li><li>Del lado residencial, tienen demanda constante o es mas esporadico?</li><li>Si les mandara 5 clientes nuevos esta semana -- residencial o comercial -- tienen equipo para cubrirlos?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, ustedes ya hicieron la inversion mas dificil: tienen web profesional, se posicionan como ecologicos, manejan MIP. Eso los separa de la competencia que solo llega a echar veneno. Pero les falta el ultimo paso: que el cliente que busca fumigacion en Google pueda contactarlos en 10 segundos. Hoy llega a su pagina, no encuentra WhatsApp ni formulario, y se va con Fumicity que cobra desde $699 y tiene boton de WhatsApp al frente. Cada visitante que se va es un lead de $1,500 a $3,000 que perdieron.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que buscan fumigacion en CDMX y Estado de Mexico. Se los mando directo por WhatsApp con nombre, colonia, tipo de plaga y si es residencial o comercial. Los primeros 5 son gratis, sin costo, sin compromiso. Si les sirven, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Me confirma un WhatsApp para mandarle los detalles y arrancamos con los 5 leads gratis esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tengo suficientes clientes</div><div class=\"objection-a\">Me da gusto. Pero su diferenciador ecologico y MIP les permite cobrar mas que la competencia. Si les mando clientes que buscan exactamente eso -- fumigacion ecologica -- el ticket es mas alto. Los primeros 5 son gratis. Si no les convienen, no pierde nada.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta?</div><div class=\"objection-a\">Los primeros 5 son gratis. Si funcionan, despues cada lead cuesta entre $200 y $300 pesos. Con su posicionamiento ecologico y MIP, un servicio residencial les deja $1,500 minimo, comercial mucho mas. El retorno es de 5 a 10 veces.</div></div><div class=\"objection\"><div class=\"objection-q\">No confio en internet / ya lo intente y no funciono</div><div class=\"objection-a\">Entiendo. Pero fijese que ustedes ya tienen web profesional -- eso me dice que si creen en lo digital, solo que no les ha generado resultados. Yo no le vendo publicidad ni una pagina nueva. Le mando clientes reales a su WhatsApp. Los primeros 5 gratis para que juzgue con hechos.</div></div>"}],
+    notes: "Mejor hora para llamar: 8:00-9:00 am o 2:00-3:00 pm. El mas profesionalizado. Web bien hecha, diferenciador claro (ecologico/MIP). Tratarlos como par de negocios. Dos numeros: intentar CDMX primero."
+  },
+  {
+    rank: 7,
+    name: "SECOPLAX",
+    slug: "secoplax",
+    vertical: "Fumigadora",
+    zone: "Ecatepec / CDMX / Coacalco",
+    score: 50,
+    strategy: "call-first",
+    phone: "5543229340",
+    wa: "https://wa.me/525543229340",
+    waScript: "Hola, buenas tardes. Soy Leon de UPSIDE. Vi que tienen certificado SSA y cubren desde Ecatepec hasta CDMX con servicio 24 horas -- buena combinacion.\nEstoy generando clientes para fumigadoras con publicidad en redes. Les ofrezco 5 clientes de prueba gratis. Si les funcionan, despues se paga por lead recibido.\n\u00bfLes gustaria probar?",
+    waFollowUp: "Hola, le doy seguimiento. Dato que encontre: Ultra Fumigaciones y FumiZone estan captando los clientes de Ecatepec y CDMX norte con SEO y anuncios. La ventaja de ustedes es el certificado SSA -- pero necesitan que los clientes los encuentren.\nYo les mando clientes directo. \u00bfQuieren probar con 5 sin costo?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de SECOPLAX? Mi nombre es Leon. Vi que tienen certificado de la SSA y servicio 24 horas -- eso los pone por encima de la mayoria en la zona. Cubren Ecatepec, Coacalco, Agricola Oriental -- zonas con altisima demanda de fumigacion pero casi nadie haciendo publicidad digital ahi. Hay una oportunidad grande que nadie esta aprovechando.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Hoy como les llegan la mayoria de sus clientes? Recomendacion, el letrero, las llamadas que entran?</li><li>La zona de Ecatepec y Coacalco les genera buen volumen o es mas CDMX centro?</li><li>Si les cayeran 5 clientes nuevos esta semana de la zona que ya cubren, los podrian atender?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, Ecatepec tiene casi 2 millones de habitantes y muy poca competencia digital en fumigacion. La gente ahi ya busca en Google y en WhatsApp. Fumicity cobra desde $699 y aparece primero en casi toda la CDMX, pero en Ecatepec y Coacalco todavia no domina. Esa ventana no va a durar. Ustedes tienen el certificado SSA, servicio 24 horas, cobertura de la zona -- las credenciales estan. Lo que falta es que los clientes que buscan en internet los encuentren a ustedes primero.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar clientes que buscan fumigacion en Ecatepec, Coacalco y las zonas que ustedes cubren. Se los mando directo por WhatsApp con nombre, colonia y tipo de plaga. Los primeros 5 son completamente gratis, sin costo, sin compromiso. Si cierran trabajo con ellos, seguimos. Si no les sirven, aqui no paso nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Los primeros 5 leads son gratis. Arranco esta semana. Me confirma el WhatsApp que termina en 9340 para enviarle los detalles?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tengo suficientes clientes</div><div class=\"objection-a\">Que bien. Pero en Ecatepec hay casi 2 millones de personas y poca competencia digital. Si alguien mas empieza a aparecer en Google antes que ustedes, se lleva esos clientes. Los primeros 5 leads son gratis -- es como reservar su lugar en la zona antes de que llegue la competencia.</div></div><div class=\"objection\"><div class=\"objection-q\">Cuanto cuesta?</div><div class=\"objection-a\">Los primeros 5 son gratis. Despues, si les funcionan, cada lead cuesta entre $200 y $300 pesos. Un servicio residencial les deja $800 a $2,500 dependiendo del tamano. El retorno es minimo 3 a 4 veces.</div></div><div class=\"objection\"><div class=\"objection-q\">No confio en internet / ya lo intente y no funciono</div><div class=\"objection-a\">Totalmente entiendo. Fijese que no le estoy vendiendo una pagina web ni que se meta a redes sociales. Yo hago todo el trabajo de generar el cliente y se lo mando a su WhatsApp -- usted solo contesta y cierra. Los primeros 5 sin costo para que vea si le sirve o no.</div></div>"}],
+    notes: "Mejor hora para llamar: 8:00-9:00 am o 2:00-3:00 pm. Digital gap mas bajo (5/10) -- ya tienen WhatsApp visible y formulario web. El angulo NO es le falta presencia digital sino la zona esta desatendida. Tres numeros: intentar 55 4322 9340 primero."
+  },
+  {
+    rank: 8,
+    name: "Fumigaciones Inteligentes",
+    slug: "fumigaciones-inteligentes",
+    vertical: "Fumigadora",
+    zone: "Gustavo A. Madero",
+    score: 50,
+    strategy: "call-first",
+    phone: "5521275715",
+    wa: "https://wa.me/525521275715",
+    waScript: "Hola, buen dia. Soy Leon de UPSIDE. Vi su pagina y las resenas positivas que tienen -- se nota que hacen buen trabajo en GAM.\nGenero clientes para fumigadoras en CDMX con publicidad en linea. La propuesta: les envio 5 clientes de prueba gratis. Si cierran, despues pagan por lead.\n\u00bfLes interesaria recibir mas clientes?",
+    waFollowUp: "Hola, seguimiento al mensaje. Dato relevante: las fumigadoras con buenas resenas (como ustedes) cierran mucho mejor cuando reciben leads calificados. El problema es que sin publicidad digital, los clientes llegan a Fumicity o PlagaZero primero.\nLes puedo mandar clientes de GAM directo. \u00bfQuieren probar con 5 gratis?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de Fumigaciones Inteligentes? Mi nombre es Leon. Vi su pagina y sus resenas en Google, que por cierto estan muy bien. Les llamo porque genero clientes que buscan fumigacion en la zona de Gustavo A. Madero y queria ver si les interesa recibir algunos.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Con las buenas resenas que tienen, cuanto de su negocio viene de Google y cuanto de recomendaciones?</li><li>Mas o menos cuantos servicios hacen a la semana?</li><li>Si esta semana les llegaran 5 clientes nuevos buscando fumigacion en GAM, los pueden cubrir?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, ustedes ya tienen lo mas dificil: buena reputacion y resenas positivas. Eso es oro. Pero su pagina no tiene formulario, no tiene precios, no tiene redes. El cliente que los encuentra en Google y quiere contratar, no tiene manera facil de hacerlo salvo llamar. Y en GAM la competencia es fuerte: Fumicity anda desde $699 en Google Ads. El que responde primero se lleva al cliente. Con resenas positivas como las suyas, si el lead les llega rapido, ustedes cierran.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar personas que estan buscando fumigacion en Gustavo A. Madero ahora mismo. Se los mando directo a su WhatsApp con nombre y numero. Los primeros 5 son completamente gratis, sin costo, sin compromiso. Si cierran uno o dos y les funciona, seguimos. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Los primeros 5 son gratis. Me confirma su WhatsApp y arranco esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tenemos buenas resenas, nos llegan clientes solos</div><div class=\"objection-a\">Exacto, y por eso esto les funciona todavia mejor. Los leads que yo mando buscan fumigacion en GAM. Si llegan a ustedes y ven las resenas, cierran solos. Sus resenas son su mejor vendedor, solo les falta volumen para aprovecharlo.</div></div><div class=\"objection\"><div class=\"objection-q\">Gustavo A. Madero es zona complicada, la gente no quiere pagar</div><div class=\"objection-a\">Entiendo. Pero el servicio residencial promedio anda entre $800 y $2,500 pesos. Con que de los 5 leads gratis cierre 1, son $800-$2,500 sin gastar nada. Es pura ganancia.</div></div><div class=\"objection\"><div class=\"objection-q\">Ya nos han ofrecido publicidad y no funciona</div><div class=\"objection-a\">Lo entiendo. Por eso no le pido que pague nada. Los 5 primeros son gratis. Si no le sirven, no me debe nada. Yo pongo la inversion, usted solo recibe el contacto y decide.</div></div>"}],
+    notes: "Mejor horario: 8-9am o 2-3pm. Probar primero al 55 2127 5715, si no contestan intentar al 55 3612 8993. Ya tiene buena reputacion online. La venta es facil: ya tienes la confianza, solo te falta el volumen."
+  },
+  {
+    rank: 9,
+    name: "Fumigacion Integral",
+    slug: "fumigacion-integral",
+    vertical: "Fumigadora",
+    zone: "CDMX",
+    score: 50,
+    strategy: "call-first",
+    phone: "5529077099",
+    wa: "https://wa.me/525529077099",
+    waScript: "Hola, buenas tardes. Soy Leon de UPSIDE. Vi que tienen formulario de \u201cAgenda tu Servicio\u201d activo y manejan garantia en sus trabajos -- bien pensado.\nEstoy generando clientes para fumigadoras con anuncios digitales. Les ofrezco 5 clientes gratis de prueba. Si les funcionan, despues se paga por cada lead.\n\u00bfLes gustaria probar sin compromiso?",
+    waFollowUp: "Hola, le doy seguimiento. Dato de mercado: el rango de precio en fumigacion residencial CDMX va de $799 a $2,500. Los clientes que yo genero ya saben que es servicio profesional -- no buscan el mas barato.\nLes puedo mandar 5 de prueba para que vean la calidad. \u00bfLes interesa?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de Fumigacion Integral? Mi nombre es Leon. Vi su pagina y que tienen un formulario de 'Agenda tu Servicio' y una promocion de 25% de descuento. Se nota que le meten al marketing. Les llamo porque genero clientes que buscan fumigacion en CDMX y creo que les puede servir para aprovechar esa promo que estan corriendo.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>La promocion del 25%, les esta funcionando? Les llegan clientes por la pagina o mas por otros canales?</li><li>Cuantas solicitudes les caen por el formulario de la pagina al mes, mas o menos?</li><li>Si esta semana les llegaran 5 clientes nuevos buscando fumigacion, tienen capacidad para atenderlos con el descuento?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, el hecho de que corran una promo de 25% me dice que estan activamente buscando clientes. Eso ya los pone adelante de la mayoria. Pero una promocion sin volumen de trafico es como tener una tienda con descuento y la puerta cerrada. El costo por conseguir un cliente en fumigacion anda entre $50 y $150 pesos por lead. Si un servicio les deja $800 a $2,500, los numeros dan aunque sea con descuento. Lo que les falta no es la oferta, es el volumen de gente viendola.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar personas que estan buscando fumigacion en CDMX ahora mismo. Se los mando directo a su WhatsApp con nombre y numero, listos para agendar. Los primeros 5 son gratis, sin costo, sin compromiso. Si les funcionan con su promo del 25%, van a cerrar rapido. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Tienen la promo activa y yo tengo los leads. Me confirma su WhatsApp y les mando los primeros 5 esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Ya tenemos el formulario en la pagina, con eso nos basta</div><div class=\"objection-a\">Excelente que ya lo tienen. Pero la pregunta es: cuantos les llegan al mes por ahi? Los leads que yo mando son adicionales. No reemplazan su formulario, lo complementan. Y los primeros 5 son gratis.</div></div><div class=\"objection\"><div class=\"objection-q\">El descuento ya nos baja el margen, no queremos gastar mas</div><div class=\"objection-a\">Justamente por eso los primeros 5 son gratis. Usted no gasta nada. Si con 5 leads cierra 2 servicios al 25% de descuento, digamos a $600-$1,800 cada uno, son $1,200-$3,600 de ingreso nuevo sin inversion. El descuento duele menos cuando hay volumen.</div></div><div class=\"objection\"><div class=\"objection-q\">Como nos llegan los leads?</div><div class=\"objection-a\">Directo a su WhatsApp. Les cae un mensaje con el nombre de la persona, su numero y que servicio busca. Ustedes le contestan, le aplican su promo, y agendan. Asi de simple.</div></div>"}],
+    notes: "Mejor horario: 8-9am o 2-3pm. Tienen email como alternativa. El prospecto mas marketero -- ya entienden de promos, ya tienen formulario. La venta no es educar, es amplificar."
+  },
+  {
+    rank: 10,
+    name: "Fumiga Plus",
+    slug: "fumiga-plus",
+    vertical: "Fumigadora",
+    zone: "CDMX",
+    score: 50,
+    strategy: "call-first",
+    phone: "5584831846",
+    wa: "https://wa.me/525584831846",
+    waScript: "Hola, buen dia. Soy Leon de UPSIDE. Vi que manejan productos biodegradables y un proceso profesional de 5 pasos -- eso es diferenciador en el mercado.\nGenero clientes para fumigadoras en CDMX con publicidad en redes. La oferta: 5 clientes de prueba sin costo. Despues, solo pagan por lead recibido.\n\u00bfLes interesaria probar?",
+    waFollowUp: "Hola, seguimiento al mensaje. Dato interesante: los productos biodegradables son un diferenciador fuerte -- cada vez mas familias y negocios preguntan por opciones ecologicas. Pero si no aparecen en busquedas, ese valor se pierde.\nYo puedo ponerlos frente a esos clientes. \u00bf5 leads de prueba sin costo?",
+    callScript: [{label:"Apertura", time:"15s", content:"<div class=\"quote\">Buenas tardes, hablo con alguien de Fumiga Plus? Mi nombre es Leon. Vi su pagina y que trabajan con productos biodegradables y tienen un proceso de 5 pasos desde inspeccion hasta garantia. Se nota que son profesionales. Les llamo porque genero clientes que buscan fumigacion en CDMX y creo que su enfoque ecologico les da una ventaja que no estan explotando.</div>"},
+      {label:"Discovery", time:"30s", content:"<ol><li>Lo de los productos biodegradables, les preguntan mucho los clientes por eso o es mas algo que ustedes ofrecen de entrada?</li><li>Como les llegan los clientes hoy? Recomendaciones, Google, telefono?</li><li>Si esta semana les cayeran 5 clientes nuevos buscando fumigacion ecologica o segura para mascotas, tienen capacidad?</li></ol>"},
+      {label:"Agitar dolor", time:"20s", content:"<div class=\"quote\">Mire, hay un nicho que esta creciendo rapido: gente que busca 'fumigacion segura para mascotas', 'fumigacion ecologica', 'fumigacion sin toxicos'. Son personas dispuestas a pagar mas por un servicio como el de ustedes. El problema es que no tienen redes sociales ni WhatsApp visible en su pagina. Ese cliente ideal que busca exactamente lo que ustedes ofrecen no los encuentra. Mientras tanto, Fumicity cobra desde $699 con productos genericos y se lleva el trafico. Ustedes tienen un mejor producto pero menos visibilidad.</div>"},
+      {label:"Solucion", time:"20s", content:"<div class=\"quote\">Lo que yo hago es generar personas que estan buscando fumigacion en CDMX ahora mismo. Se los mando directo a su WhatsApp con nombre y numero. Los primeros 5 son completamente gratis, sin costo, sin compromiso. Si les sirven, seguimos y puedo incluso filtrar por gente que busca especificamente fumigacion ecologica o segura para mascotas. Si no, no pasa nada.</div>"},
+      {label:"CTA", time:"10s", content:"<div class=\"quote\">Los primeros 5 son gratis. Me confirma su WhatsApp y arrancamos esta semana?</div>"},
+      {label:"Objeciones", time:"", content:"<div class=\"objection\"><div class=\"objection-q\">Nosotros no necesitamos vender lo ecologico, vendemos fumigacion normal</div><div class=\"objection-a\">Entiendo. Y los leads que mando buscan fumigacion en general, no solo ecologica. Pero el punto es que ustedes ya tienen un diferenciador que la competencia no puede copiar facil. Con mas leads, cierran mas. Y los primeros 5 son gratis.</div></div><div class=\"objection\"><div class=\"objection-q\">La gente no paga mas por ecologico</div><div class=\"objection-a\">Puede ser en general, pero hay un segmento que si: familias con ninos chiquitos, gente con mascotas, restaurantes que necesitan certificaciones. Ese segmento paga 30-50% mas y busca activamente alguien como ustedes. Con 5 leads gratis no pierde nada probando.</div></div><div class=\"objection\"><div class=\"objection-q\">Ya nos han ofrecido publicidad y no funciona</div><div class=\"objection-a\">Lo entiendo. Por eso no le pido que invierta nada. Los primeros 5 leads son gratis. Si no le funcionan, no me debe nada. El riesgo es cero, solo necesito su WhatsApp.</div></div>"}],
+    notes: "Mejor horario: 8-9am o 2-3pm. Tiene el mejor diferenciador (biodegradable + proceso de 5 pasos). Si durante el discovery dicen que los clientes preguntan por lo ecologico, ancla fuerte en eso. Si no les importa, pivotea a leads generales."
+  }
+];
+
+
+// ==================== STORAGE ====================
+var PREFIX = 'igor2_';
+var SYNC_URL = 'https://hqmumxfhsptegeobadpm.supabase.co/functions/v1/playbook-sync';
+var noteTimers = {};
+var serverLoaded = false;
+
+// --- Supabase sync layer ---
+function syncToServer(slug, data) {
+  data.slug = slug;
+  try {
+    fetch(SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function(){});
+  } catch(e) {}
+}
+
+function loadFromServer() {
+  if (serverLoaded) return;
+  fetch(SYNC_URL).then(function(r){ return r.json(); }).then(function(resp) {
+    if (!resp.states) return;
+    var states = resp.states;
+    for (var slug in states) {
+      var s = states[slug];
+      if (s.status && s.status !== 'pendiente') localStorage.setItem(PREFIX+'s_'+slug, s.status);
+      if (s.notes) localStorage.setItem(PREFIX+'n_'+slug, s.notes);
+      if (s.day != null) localStorage.setItem(PREFIX+'d_'+slug, String(s.day));
+      if (s.channel && s.channel !== 'default') localStorage.setItem(PREFIX+'ch_'+slug, s.channel);
+    }
+    serverLoaded = true;
+    renderAll();
+  }).catch(function(){});
+}
+
+// --- State getters/setters with sync ---
+function getS(slug){return localStorage.getItem(PREFIX+'s_'+slug)||'pendiente'}
+function setS(slug,s){localStorage.setItem(PREFIX+'s_'+slug,s); syncToServer(slug, {status: s, notes: getN(slug)})}
+function getN(slug){return localStorage.getItem(PREFIX+'n_'+slug)||''}
+function setN(slug,n){
+  localStorage.setItem(PREFIX+'n_'+slug,n);
+  if (noteTimers[slug]) clearTimeout(noteTimers[slug]);
+  noteTimers[slug] = setTimeout(function(){ syncToServer(slug, {notes: n}); }, 2000);
+}
+function getD(slug){return parseInt(localStorage.getItem(PREFIX+'d_'+slug)||'0')}
+function setD(slug,d){localStorage.setItem(PREFIX+'d_'+slug,String(d)); syncToServer(slug, {day: d})}
+function getCh(slug){return localStorage.getItem(PREFIX+'ch_'+slug)||'default'}
+function setCh(slug,ch){localStorage.setItem(PREFIX+'ch_'+slug,ch); syncToServer(slug, {channel: ch})}
+
+// ==================== RENDER ====================
+function scoreClass(s){return s>=80?'high':s>=70?'mid':'low'}
+
+function getProspect(slug){
+for(var i=0;i<PROSPECTS.length;i++){if(PROSPECTS[i].slug===slug) return PROSPECTS[i]}
+return null;
+}
+
+function buildCallContent(p, day){
+var note = '';
+if(day===1){
+if(p.strategy==='wa-first'){
+note = '<div class="call-note">Mencionar: le escrib\u00ed por WhatsApp hace 2 d\u00edas</div>';
+} else {
+note = '<div class="call-note">Segunda llamada. Mencionar que llamaste antes. Misma estructura de script.</div>';
+}
+}
+var scriptHtml = '';
+for(var i=0;i<p.callScript.length;i++){
+var sec = p.callScript[i];
+var openClass = i===0 ? ' open' : '';
+scriptHtml += '<div class="script-section'+openClass+'"><div class="script-header"><span class="script-arrow">&#9654;</span><span class="script-label">'+sec.label+'</span><span class="script-time">'+sec.time+'</span></div><div class="script-content">'+sec.content+'</div></div>';
+}
+return note + '<div class="script-area">'+scriptHtml+'</div>' +
+  '<button class="btn-call-mode" data-slug="'+p.slug+'">MODO LLAMADA</button>';
+}
+
+function buildWaContent(p, day){
+// day 0 = HOY, day 1 = +2 DIAS, day 2 = +3 DIAS
+if(day===0){
+// HOY: show waScript
+var noteHtml = '';
+if(p.strategy==='call-first'){
+noteHtml = '<div class="wa-note">Enviar si no contesta la llamada</div>';
+}
+return '<div class="wa-content">' +
+noteHtml +
+'<div class="wa-label">Mensaje WhatsApp</div>' +
+'<div class="wa-script-box">'+p.waScript+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+} else if(day===1){
+// +2 DIAS
+if(p.strategy==='wa-first'){
+// wa-first +2: disabled WA
+return '<div class="wa-content"><div class="wa-disabled">Esperar a d\u00eda +3 para segundo WhatsApp</div></div>';
+} else {
+// call-first +2: now try WA if calls failed
+return '<div class="wa-content">' +
+'<div class="wa-label">Mensaje WhatsApp</div>' +
+'<div class="wa-script-box">'+p.waScript+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+}
+} else {
+// +3 DIAS: ALL get waFollowUp
+var followUp = p.waFollowUp || FOLLOWUPS[p.vertical] || '';
+return '<div class="wa-content">' +
+'<div class="wa-label">Follow-up WhatsApp</div>' +
+'<div class="wa-script-box">'+followUp+'</div>' +
+'<div class="wa-actions">' +
+'<button class="wa-copy-btn" data-action="copy">COPIAR SCRIPT</button>' +
+'<a class="wa-send-btn" href="'+p.wa+'" target="_blank">ENVIAR POR WHATSAPP</a>' +
+'</div></div>';
+}
+}
+
+function bestChannel(p, day){
+if(day===2) return 'wa';
+if(day===0) return p.strategy==='call-first' ? 'call' : 'wa';
+if(day===1) return p.strategy==='call-first' ? 'wa' : 'call';
+return 'call';
+}
+
+function renderDayContent(p, day, channel){
+var correct = bestChannel(p, day);
+if(channel !== correct) channel = correct;
+if(channel==='call'){
+return buildCallContent(p, day);
+} else {
+return buildWaContent(p, day);
+}
+}
+
+function renderCard(p){
+var status = getS(p.slug);
+var day = getD(p.slug);
+var notes = getN(p.slug);
+var savedCh = getCh(p.slug);
+var isCallFirst = p.strategy === 'call-first';
+
+// Determine active channel based on saved day + strategy
+var channel = bestChannel(p, day);
+
+var chTag = isCallFirst ? '<span class="ch-tag call">LLAMAR</span>' : '<span class="ch-tag wa">WA</span>';
+
+// Channel tabs
+var callActive = channel==='call' ? ' active' : '';
+var waActive = channel==='wa' ? ' active' : '';
+var channelTabsHtml = '<div class="channel-tabs">' +
+'<div class="channel-tab'+callActive+'" data-ch="call">LLAMAR</div>' +
+'<div class="channel-tab'+waActive+'" data-ch="wa">WA</div>' +
+'</div>';
+
+// Day tabs
+var dayLabels = ['HOY','+2 D\u00cdAS','+3 D\u00cdAS'];
+var dayTabsHtml = '';
+for(var d=0;d<3;d++){
+dayTabsHtml += '<div class="day-tab'+(d===day?' active':'')+'" data-di="'+d+'">'+dayLabels[d]+'</div>';
+}
+
+// Day content
+var dayContentHtml = renderDayContent(p, day, channel);
+
+// Result pills
+var statuses = ['contactado','interesado','no-contesta','rechazado'];
+var statusLabels = ['Contactado','Interesado','No contesta','Rechazado'];
+var resultHtml = '';
+for(var r=0;r<statuses.length;r++){
+var active = status===statuses[r] ? ' active' : '';
+resultHtml += '<div class="result-pill '+statuses[r]+active+'" data-rs="'+statuses[r]+'">'+statusLabels[r]+'</div>';
+}
+
+return '<div class="card" data-slug="'+p.slug+'" data-status="'+status+'" data-strategy="'+p.strategy+'" data-score="'+p.score+'" data-channel="'+channel+'">' +
+'<div class="card-header">' +
+'<span class="card-rank">#'+p.rank+'</span>' +
+'<span class="card-name">'+p.name+'</span>' +
+'<span class="score-pill '+scoreClass(p.score)+'">'+p.score+'</span>' +
+'<div class="card-line2">'+chTag+'<span class="card-vertical">'+p.vertical+' &middot; '+p.zone+'</span></div>' +
+'</div>' +
+'<div class="card-body">' +
+channelTabsHtml +
+'<div class="day-tabs">'+dayTabsHtml+'</div>' +
+'<div class="day-content">'+dayContentHtml+'</div>' +
+'<div class="result-bar">'+resultHtml+'</div>' +
+'<div class="notes-wrap"><textarea class="igor-notes" placeholder="Notas...">'+notes+'</textarea></div>' +
+'</div>' +
+'</div>';
+}
+
+function renderAll(){
+var list = document.getElementById('cardList');
+var html = '';
+for(var i=0;i<PROSPECTS.length;i++){
+html += renderCard(PROSPECTS[i]);
+}
+list.innerHTML = html;
+updateStats();
+}
+
+function updateStats(){
+var contacted = 0;
+var interested = 0;
+var total = PROSPECTS.length;
+for(var i=0;i<PROSPECTS.length;i++){
+var s = getS(PROSPECTS[i].slug);
+if(s==='contactado'||s==='interesado'||s==='no-contesta'||s==='rechazado') contacted++;
+if(s==='interesado') interested++;
+}
+var el = document.getElementById('headerStats');
+var txt = contacted+'/'+total+' contactados';
+if(interested>0) txt += ' &middot; <span class="hl">'+interested+' interesados</span>';
+el.innerHTML = txt;
+}
+
+function refreshDayContent(card){
+var slug = card.getAttribute('data-slug');
+var p = getProspect(slug);
+if(!p) return;
+var day = getD(slug);
+var channel = card.getAttribute('data-channel') || 'call';
+var container = card.querySelector('.day-content');
+if(container) container.innerHTML = renderDayContent(p, day, channel);
+}
+
+// ==================== TOAST ====================
+var toastTimer = null;
+function showToast(msg){
+var t = document.getElementById('toast');
+t.textContent = msg;
+t.classList.add('show');
+if(toastTimer) clearTimeout(toastTimer);
+toastTimer = setTimeout(function(){t.classList.remove('show')},1500);
+}
+
+// ==================== CALL MODE ====================
+var callState = { slug: null, step: 0, steps: [], prospect: null };
+var callProcessing = false;
+
+// Helper: strip HTML tags and return plain text
+function stripHtml(html) {
+  if (!html) return '';
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  var text = tmp.textContent || tmp.innerText || '';
+  // Clean up extra whitespace
+  text = text.replace(/\s+/g, ' ').trim();
+  return text;
+}
+
+// Helper: extract individual questions from Discovery HTML content
+function extractQuestions(html) {
+  if (!html) return [''];
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  // Try <li> elements first
+  var items = tmp.querySelectorAll('li');
+  if (items.length > 0) {
+    var qs = [];
+    for (var i = 0; i < items.length; i++) {
+      var t = items[i].textContent.trim();
+      if (t.length > 10) qs.push(t);
+    }
+    if (qs.length > 0) return qs;
+  }
+  // Try splitting by question marks followed by whitespace
+  var text = stripHtml(html);
+  var byQuestion = text.split(/\?\s+/);
+  if (byQuestion.length >= 2) {
+    var qs2 = [];
+    for (var j = 0; j < byQuestion.length; j++) {
+      var q = byQuestion[j].trim();
+      if (q.length > 15) qs2.push(q + '?');
+    }
+    // Remove trailing ? from last if it was already there
+    if (qs2.length > 0) {
+      var last = qs2[qs2.length - 1];
+      if (last.endsWith('??')) qs2[qs2.length - 1] = last.slice(0, -1);
+    }
+    if (qs2.length >= 2) return qs2;
+  }
+  // Fallback: split by numbered pattern
+  var parts = text.split(/(?:\d+[\.\)]\s*)/);
+  parts = parts.filter(function(p) { return p.trim().length > 15; });
+  if (parts.length >= 2) return parts;
+  // Last fallback: return whole text
+  return [text];
+}
+
+// Helper: truncate text to N sentences
+function truncateToSentences(text, maxSentences) {
+  var sentences = text.split(/(?<=[.!?])\s+/);
+  if (sentences.length <= maxSentences) return text;
+  return sentences.slice(0, maxSentences).join(' ');
+}
+
+function buildSteps(p) {
+  var steps = [];
+  var cs = p.callScript;
+
+  // Step 0: Gatekeeper -- pedir al dueno/gerente antes de pitchear
+  steps.push({
+    section: 'Gatekeeper',
+    text: '\u201cHola, buenas tardes. Busco al due\u00f1o o gerente de ' + p.name + '. \u00bfEst\u00e1 disponible?\u201d' +
+      '<div style="margin-top:16px;padding:12px;background:rgba(191,234,46,0.08);border-left:3px solid var(--primary);font-size:13px;line-height:1.6">' +
+      '<strong>Si te pasan:</strong> Continuar con Apertura<br>' +
+      '<strong>Si no est\u00e1:</strong> \u201c\u00bfA qu\u00e9 hora lo encuentro? Le marco despu\u00e9s.\u201d<br>' +
+      '<strong>\u201c\u00bfDe qu\u00e9 se trata?\u201d:</strong> \u201cEs sobre una herramienta para que les lleguen m\u00e1s clientes por WhatsApp. Son 2 minutos.\u201d<br>' +
+      '<strong>\u201cM\u00e1ndame un correo\u201d:</strong> Mandar correo y remarcar en 2 d\u00edas pidiendo al due\u00f1o directo.</div>' +
+      '<div style="margin-top:10px;padding:8px 12px;background:rgba(232,84,84,0.12);color:#E85454;font-size:12px;font-weight:600">NUNCA hacer el pitch a la recepcionista. Solo pedir que te pasen.</div>',
+    buttons: [
+      { label: 'ME PASARON AL DUE\u00d1O', type: 'primary', action: 'next' },
+      { label: 'NO EST\u00c1 / OTRO D\u00cdA', type: 'gold', action: 'reschedule' }
+    ]
+  });
+
+  // Step 1: Presentacion
+  steps.push({
+    section: 'Presentaci\u00f3n',
+    text: stripHtml(cs[0] ? cs[0].content : ''),
+    buttons: [{ label: 'PEDIR PERMISO', type: 'primary', action: 'next' }]
+  });
+
+  // Step 2: Permiso
+  steps.push({
+    section: 'Permiso',
+    text: '\u00bfLe robo 2 minutos? Es r\u00e1pido.',
+    buttons: [
+      { label: 'HACER PREGUNTAS', type: 'primary', action: 'next' },
+      { label: 'OTRO D\u00cdA', type: 'gold', action: 'reschedule' }
+    ]
+  });
+
+  // Discovery: one step per question
+  var questions = extractQuestions(cs[1] ? cs[1].content : '');
+  for (var qi = 0; qi < questions.length; qi++) {
+    steps.push({
+      section: 'Pregunta ' + (qi+1) + ' de ' + questions.length,
+      text: questions[qi],
+      buttons: [
+        { label: qi < questions.length - 1 ? 'SIGUIENTE PREGUNTA' : 'IR AL PROBLEMA', type: 'primary', action: 'next' },
+        { label: 'NO LE INTERESA', type: 'secondary', action: 'objection' }
+      ]
+    });
+  }
+
+  // El problema (was Agitar dolor)
+  if (cs[2]) {
+    steps.push({
+      section: 'El problema',
+      text: stripHtml(cs[2].content),
+      buttons: [
+        { label: 'PRESENTAR SOLUCI\u00d3N', type: 'primary', action: 'next' },
+        { label: 'OBJECI\u00d3N', type: 'secondary', action: 'objection' }
+      ]
+    });
+  }
+
+  // La solucion
+  if (cs[3]) {
+    steps.push({
+      section: 'La soluci\u00f3n',
+      text: truncateToSentences(stripHtml(cs[3].content), 3),
+      buttons: [
+        { label: 'CERRAR LA LLAMADA', type: 'primary', action: 'next' },
+        { label: 'NO GRACIAS', type: 'danger', action: 'reject' }
+      ]
+    });
+  }
+
+  // Cierre (was CTA) -- outcome buttons only
+  if (cs[4]) {
+    steps.push({
+      section: 'Cierre',
+      text: stripHtml(cs[4].content) +
+        '<div style="margin-top:14px;padding:10px 12px;background:rgba(191,234,46,0.1);border-left:3px solid var(--primary);font-size:12px;line-height:1.5">' +
+        '<strong>AGENDA LA DEMO AH\u00cd MISMO.</strong> Proponer d\u00eda y hora concretos. Solo si dicen \u201ctengo que revisar mi agenda\u201d hacer follow-up por WhatsApp despu\u00e9s.</div>',
+      buttons: [
+        { label: 'DEMO AGENDADA', type: 'primary', action: 'book' },
+        { label: 'REVISAR AGENDA (FOLLOW-UP)', type: 'gold', action: 'info' },
+        { label: 'NO GRACIAS', type: 'danger', action: 'reject' }
+      ]
+    });
+  }
+
+  return steps;
+}
+
+function getCallNote(slug, step) {
+  return localStorage.getItem(PREFIX + 'cn_' + slug + '_' + step) || '';
+}
+function setCallNote(slug, step, val) {
+  if (val && val.trim()) localStorage.setItem(PREFIX + 'cn_' + slug + '_' + step, val.trim());
+}
+function getAllCallNotes(slug) {
+  var notes = [];
+  for (var i = 0; i < 20; i++) {
+    var n = localStorage.getItem(PREFIX + 'cn_' + slug + '_' + i);
+    if (n) notes.push(n);
+  }
+  return notes;
+}
+function clearCallNotes(slug) {
+  for (var i = 0; i < 20; i++) localStorage.removeItem(PREFIX + 'cn_' + slug + '_' + i);
+}
+
+function renderStep() {
+  if (callState.step < 0 || callState.step >= callState.steps.length) {
+    renderOutcome('book');
+    return;
+  }
+  var s = callState.steps[callState.step];
+  if (!s) { renderOutcome('book'); return; }
+  var totalSteps = callState.steps.length;
+  var p = callState.prospect;
+
+  // Progress dots
+  var dots = '';
+  for (var d = 0; d < totalSteps; d++) {
+    var cls = d < callState.step ? 'done' : d === callState.step ? 'active' : '';
+    dots += '<div class="call-dot ' + cls + '"></div>';
+  }
+
+  // Buttons
+  var btns = '';
+  for (var b = 0; b < s.buttons.length; b++) {
+    btns += '<button class="call-btn ' + s.buttons[b].type + '" data-action="' + s.buttons[b].action + '">' + s.buttons[b].label + '</button>';
+  }
+
+  // Detect if this is a discovery or pitch step
+  var isQuestion = s.section && s.section.toLowerCase().indexOf('pregunta') !== -1;
+  var isPitchStep = s.section && (s.section.toLowerCase().indexOf('problema') !== -1 || s.section.toLowerCase().indexOf('soluci') !== -1);
+
+  var captureHtml = '';
+  if (isQuestion || isPitchStep) {
+    var saved = getCallNote(callState.slug, callState.step);
+    var ph = isQuestion ?
+      'Ej: 30 consultas al d&iacute;a, nadie responde despu&eacute;s de las 8pm' :
+      'Reacci&oacute;n del prospecto (opcional)';
+    var label = isQuestion ? 'RESPUESTA DEL PROSPECTO' : 'NOTA R&Aacute;PIDA';
+    captureHtml = '<div class="call-capture">' +
+      '<div class="capture-label">' + label + '</div>' +
+      '<input type="text" class="capture-input" id="stepNoteInput" ' +
+      'placeholder="' + ph + '" ' +
+      'value="' + (saved || '').replace(/"/g, '&quot;') + '" ' +
+      'autocomplete="off" />' +
+      '</div>';
+  }
+
+  var html = '<div class="call-top">' +
+    '<div class="call-back" data-action="back">&lsaquo; Atr&aacute;s</div>' +
+    '<div class="call-step-label">' + (callState.step + 1) + '/' + totalSteps + '</div>' +
+    '<div class="call-progress-dots">' + dots + '</div>' +
+    '</div>' +
+    '<div class="call-prospect-name">' + p.name + '</div>' +
+    '<a class="call-phone-link" href="tel:+52' + p.phone + '">' + p.phone + '</a>' +
+    '<div class="call-text-area">' +
+    '<div><div class="call-section-label">' + s.section + '</div>' +
+    '<div class="call-text">' + s.text + '</div></div>' +
+    '</div>' +
+    captureHtml +
+    '<div class="call-buttons">' + btns + '</div>';
+
+  document.getElementById('callMode').innerHTML = html;
+
+  // Save current step
+  localStorage.setItem(PREFIX + 'cm_' + callState.slug, String(callState.step));
+}
+
+function renderOutcome(type) {
+  var p = callState.prospect;
+  var statusMap = { book: 'interesado', info: 'contactado', reject: 'rechazado', reschedule: 'contactado' };
+  var titleMap = { book: 'DEMO AGENDADA', info: 'INFO SOLICITADA', reject: 'RECHAZADO', reschedule: 'REAGENDAR' };
+  var classMap = { book: 'success', info: 'neutral', reject: 'fail', reschedule: 'neutral' };
+  var noteMap = { book: 'Demo agendada via llamada', info: 'Pidio info, enviar por WhatsApp', reject: 'Rechazado en llamada', reschedule: 'Reagendar - pidio otro dia' };
+
+  var status = statusMap[type] || 'contactado';
+  var title = titleMap[type] || 'CONTACTADO';
+  var cls = classMap[type] || 'neutral';
+  var autoNote = noteMap[type] || '';
+
+  // Save any note from the last step before outcome
+  var noteInLast = document.getElementById('stepNoteInput');
+  if (noteInLast && noteInLast.value.trim()) {
+    setCallNote(callState.slug, callState.step, noteInLast.value);
+  }
+
+  // Gather captured notes
+  var captured = getAllCallNotes(callState.slug);
+  var capturedSummary = '';
+  if (captured.length > 0) {
+    capturedSummary = '\n\nRESPUESTAS:\n';
+    for (var ci = 0; ci < captured.length; ci++) {
+      capturedSummary += '- ' + captured[ci] + '\n';
+    }
+  }
+
+  // Set status
+  setS(p.slug, status);
+
+  var html = '<div class="call-top">' +
+    '<div class="call-back" data-action="close">&times; Cerrar</div>' +
+    '<div></div><div></div>' +
+    '</div>' +
+    '<div class="call-outcome">' +
+    '<div class="outcome-status ' + cls + '">' + title + '</div>' +
+    '<div class="outcome-prospect">' + p.name + '</div>' +
+    '<textarea class="outcome-notes" id="outcomeNotes" placeholder="Notas de la llamada...">' + autoNote + capturedSummary + '</textarea>' +
+    '</div>' +
+    '<div class="call-buttons">' +
+    '<button class="call-btn primary" data-action="nextprospect">SIGUIENTE PROSPECTO</button>' +
+    '</div>';
+
+  document.getElementById('callMode').innerHTML = html;
+  localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
+  clearCallNotes(callState.slug);
+}
+
+function showObjections() {
+  var p = callState.prospect;
+  // Find objections from callScript (usually last section)
+  var objections = [];
+  for (var i = 0; i < p.callScript.length; i++) {
+    if (p.callScript[i].label && p.callScript[i].label.toLowerCase().indexOf('objecion') !== -1) {
+      // Parse objection content - look for Q&A patterns
+      var content = p.callScript[i].content;
+      var parts = content.split(/(?=<div class="objection"|"[^"]{10,}")/);
+      // Simplified: just show the whole content
+      objections.push({ q: 'Ver objeciones comunes', a: content });
+    }
+  }
+
+  // Fallback: use vertical-based common objections
+  if (objections.length === 0) {
+    var verticalObj = {
+      'restaurante': [
+        { q: '&ldquo;No tengo tiempo ahorita.&rdquo;', a: 'Lo entiendo perfecto. La demo es de 15 minutos. &iquest;Le funciona el jueves a las 10?' },
+        { q: '&ldquo;No conf&iacute;o en bots.&rdquo;', a: 'El agente no reemplaza al equipo. Contesta a las 11pm cuando nadie puede y pasa al humano los que valen la pena.' },
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntas solicitudes de eventos se fueron el mes pasado porque nadie contest&oacute; a tiempo? Les muestro los n&uacute;meros en 15 min.' }
+      ],
+      'veterinaria': [
+        { q: '&ldquo;Mi recepcionista ya lo hace.&rdquo;', a: '&iquest;Y a las 2am cuando llama alguien con un perro envenenado? El agente cubre las horas que la recepcionista no est&aacute;.' },
+        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente hace triaje b&aacute;sico y agenda. Emergencias reales se escalan directo a ustedes.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una sola emergencia que no pierden al mes ya paga el sistema.' }
+      ],
+      'inmobiliaria': [
+        { q: '&ldquo;Ya respondemos r&aacute;pido.&rdquo;', a: '&iquest;A las 10pm un s&aacute;bado? 78% de compradores trabajan con quien responde primero. El agente cubre las horas que ustedes no.' },
+        { q: '&ldquo;Ya tenemos CRM.&rdquo;', a: 'El CRM guarda datos. El agente act&uacute;a antes de que el dato llegue: responde, califica y agenda la visita.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Una comisi&oacute;n de venta paga la inversi&oacute;n 5 veces. Solo necesitan cerrar una venta extra al trimestre.' }
+      ],
+      'sal': [
+        { q: '&ldquo;Mis clientas no quieren bots.&rdquo;', a: '59% de las personas esperan respuesta en menos de 5 segundos. Prefieren velocidad a esperar.' },
+        { q: '&ldquo;No necesito automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntas horas al d&iacute;a pasan contestando cu&aacute;nto cuesta un corte o un tinte? El agente se encarga de eso.' },
+        { q: '&ldquo;No tengo tiempo para esto.&rdquo;', a: 'Nosotros hacemos todo. Solo necesitamos acceso al WhatsApp y en 2-3 semanas est&aacute; funcionando.' }
+      ],
+      'cl': [
+        { q: '&ldquo;Mi recepcionista ya lo hace.&rdquo;', a: '&iquest;Y a las 10pm? El agente cubre noches, fines de semana y hora de comida. La recepcionista se enfoca en pacientes presenciales.' },
+        { q: '&ldquo;No conf&iacute;o en bots para salud.&rdquo;', a: 'El agente no diagnostica. Contesta preguntas frecuentes de precios y horarios, y agenda. Lo cl&iacute;nico sigue siendo 100% del doctor.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Se paga solo con 2-3 citas extra al mes. Un paciente de tratamiento recurrente vale miles al a&ntilde;o.' }
+      ],
+      'spa': [
+        { q: '&ldquo;Un bot afecta la experiencia premium.&rdquo;', a: 'El agente responde fuera de horario cuando nadie atiende. Durante el d&iacute;a, su equipo sigue dando el trato personal. Es complemento, no reemplazo.' },
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n.&rdquo;', a: 'Cada mensaje fuera de horario que no se responde es una cita de $2K-$5K que se va a otro spa.' },
+        { q: '&ldquo;No tengo tiempo.&rdquo;', a: 'Nosotros hacemos toda la implementaci&oacute;n. En 2-3 semanas est&aacute; funcionando sin que ustedes cambien nada.' }
+      ],
+      'gym': [
+        { q: '&ldquo;Ya tenemos sistema de booking.&rdquo;', a: 'El booking agenda clases. El agente cierra el gap entre &ldquo;pidi&oacute; info&rdquo; y &ldquo;se inscribi&oacute;&rdquo; con seguimiento autom&aacute;tico.' },
+        { q: '&ldquo;No necesito automatizaci&oacute;n.&rdquo;', a: '&iquest;Cu&aacute;ntos leads de Instagram piden info y nunca regresan? Ah&iacute; est&aacute; el dinero.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Con 3 membres&iacute;as nuevas al mes, el sistema se paga solo en 30 d&iacute;as.' }
+      ],
+      'contab': [
+        { q: '&ldquo;No necesitamos automatizaci&oacute;n para un despacho.&rdquo;', a: 'En temporada fiscal, cada prospecto que no recibe respuesta r&aacute;pida busca otro contador. El agente captura esos leads 24/7.' },
+        { q: '&ldquo;Nuestros clientes prefieren llamar.&rdquo;', a: 'Perfecto. El agente contesta por WhatsApp a los que no llaman. Son dos canales, no uno reemplazando al otro.' },
+        { q: '&ldquo;Es muy caro.&rdquo;', a: 'Un solo cliente nuevo de declaraci&oacute;n anual paga el sistema. Y se queda a&ntilde;os.' }
+      ]
+    };
+    // Default objections
+    var defaultObj = [
+      { q: '&ldquo;No tengo tiempo.&rdquo;', a: 'Son 15 minutos. Si no les convence, no les quito m&aacute;s tiempo. &iquest;Jueves o viernes?' },
+      { q: '&ldquo;No conf&iacute;o en bots.&rdquo;', a: 'No es un men&uacute; de opciones. Es un agente que conversa. Le muestro en 5 minutos y usted juzga.' },
+      { q: '&ldquo;Es muy caro.&rdquo;', a: 'Se paga solo con 2-3 citas extra al mes. Les muestro los n&uacute;meros en la demo.' }
+    ];
+
+    var v = (p.vertical || '').toLowerCase();
+    var matched = false;
+    for (var key in verticalObj) {
+      if (v.indexOf(key) !== -1) {
+        objections = verticalObj[key];
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) objections = defaultObj;
+  }
+
+  var html = '<div class="objection-panel-title">OBJECIONES COMUNES</div>';
+  for (var o = 0; o < objections.length; o++) {
+    html += '<div class="objection-card" data-oi="' + o + '">' +
+      '<div class="objection-card-q">' + objections[o].q + '</div>' +
+      '<div class="objection-card-a">' + objections[o].a + '</div>' +
+      '</div>';
+  }
+  html += '<button class="objection-close-btn" data-action="closeobjection">VOLVER AL SCRIPT</button>';
+
+  var panel = document.getElementById('objectionPanel');
+  panel.innerHTML = html;
+  panel.classList.add('show');
+}
+
+function startCallMode(slug) {
+  var p = getProspect(slug);
+  if (!p) return;
+
+  callState.slug = slug;
+  callState.prospect = p;
+  callState.steps = buildSteps(p);
+
+  // Check for saved step
+  var savedStep = localStorage.getItem(PREFIX + 'cm_' + slug);
+  callState.step = savedStep ? parseInt(savedStep) : 0;
+
+  var modal = document.getElementById('callMode');
+  modal.classList.remove('hidden');
+  renderStep();
+
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCallMode() {
+  var modal = document.getElementById('callMode');
+  modal.classList.add('hidden');
+  modal.innerHTML = '';
+  document.body.style.overflow = '';
+
+  // Save any outcome notes
+  var notesEl = document.getElementById('outcomeNotes');
+  if (notesEl && callState.slug && notesEl.value.trim()) {
+    setN(callState.slug, notesEl.value.trim());
+  }
+
+  localStorage.removeItem(PREFIX + 'cm_' + callState.slug);
+  callState = { slug: null, step: 0, steps: [], prospect: null };
+
+  // Re-render cards to reflect status changes
+  renderAll();
+}
+
+function handleCallAction(action) {
+  if (action !== 'closeobjection' && callProcessing) return;
+  callProcessing = true;
+  setTimeout(function(){ callProcessing = false; }, 300);
+  var panel = document.getElementById('objectionPanel');
+
+  switch(action) {
+    case 'next':
+      // Save any note input before advancing
+      var noteIn = document.getElementById('stepNoteInput');
+      if (noteIn && noteIn.value.trim()) {
+        setCallNote(callState.slug, callState.step, noteIn.value);
+      }
+      callState.step++;
+      if (callState.step >= callState.steps.length) {
+        renderOutcome('book'); // Reached end = assume booking
+      } else {
+        renderStep();
+      }
+      break;
+    case 'back':
+      // Close objection panel if open
+      var panelBack = document.getElementById('objectionPanel');
+      if (panelBack) panelBack.classList.remove('show');
+      // Save any note input before going back
+      var noteInBack = document.getElementById('stepNoteInput');
+      if (noteInBack && noteInBack.value.trim()) {
+        setCallNote(callState.slug, callState.step, noteInBack.value);
+      }
+      if (callState.step > 0) {
+        callState.step--;
+        renderStep();
+      } else {
+        closeCallMode();
+      }
+      break;
+    case 'objection':
+      showObjections();
+      break;
+    case 'closeobjection':
+      panel.classList.remove('show');
+      break;
+    case 'book':
+      renderOutcome('book');
+      break;
+    case 'info':
+      renderOutcome('info');
+      break;
+    case 'reject':
+      renderOutcome('reject');
+      break;
+    case 'reschedule':
+      renderOutcome('reschedule');
+      break;
+    case 'nextprospect':
+      // Save notes
+      var notesEl = document.getElementById('outcomeNotes');
+      if (notesEl && callState.slug && notesEl.value.trim()) {
+        setN(callState.slug, notesEl.value.trim());
+      }
+      closeCallMode();
+      // Scroll to next pending card
+      setTimeout(function() {
+        var cards = document.querySelectorAll('#cardList .card');
+        for (var i = 0; i < cards.length; i++) {
+          var s = getS(cards[i].getAttribute('data-slug'));
+          if (s === 'pendiente') {
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            break;
+          }
+        }
+      }, 300);
+      break;
+    case 'close':
+      closeCallMode();
+      break;
+  }
+}
+
+// ==================== EVENT DELEGATION ====================
+document.addEventListener('click', function(e){
+var t = e.target;
+
+// Let phone link through without triggering call actions
+if (t.closest('.call-phone-link')) return;
+
+// Call mode actions
+var callAction = t.closest('[data-action]');
+if (callAction && (t.closest('.call-mode') || t.closest('.objection-panel'))) {
+  e.preventDefault();
+  e.stopPropagation();
+  var action = callAction.getAttribute('data-action');
+  handleCallAction(action);
+  return;
+}
+
+// Objection card expand
+var objCard = t.closest('.objection-card');
+if (objCard && !t.closest('.objection-close-btn')) {
+  objCard.classList.toggle('expanded');
+  return;
+}
+
+// MODO LLAMADA button
+var callModeBtn = t.closest('.btn-call-mode');
+if (callModeBtn) {
+  e.preventDefault();
+  e.stopPropagation();
+  var slug = callModeBtn.closest('.card').getAttribute('data-slug');
+  startCallMode(slug);
+  return;
+}
+
+// Textarea / capture input
+if(t.closest('.igor-notes')) return;
+if(t.closest('.capture-input')) return;
+
+// WA copy button
+var copyBtn = t.closest('[data-action="copy"]');
+if(copyBtn){
+e.preventDefault();
+e.stopPropagation();
+var waContent = copyBtn.closest('.wa-content');
+var waBox = waContent ? waContent.querySelector('.wa-script-box') : null;
+if(waBox){
+var text = waBox.textContent;
+if(navigator.clipboard && navigator.clipboard.writeText){
+navigator.clipboard.writeText(text).then(function(){
+copyBtn.textContent = 'COPIADO';
+showToast('Script copiado');
+setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+// Auto-mark as contactado on copy
+var copyCard = copyBtn.closest('.card');
+if(copyCard){ var cSlug = copyCard.getAttribute('data-slug'); if(getS(cSlug)==='pendiente'){setS(cSlug,'contactado');renderAll();}}
+});
+} else {
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.style.position='fixed';
+ta.style.left='-9999px';
+document.body.appendChild(ta);
+ta.select();
+document.execCommand('copy');
+document.body.removeChild(ta);
+copyBtn.textContent = 'COPIADO';
+showToast('Script copiado');
+setTimeout(function(){ copyBtn.textContent = 'COPIAR SCRIPT'; }, 2000);
+// Auto-mark as contactado on copy
+var copyCard2 = copyBtn.closest('.card');
+if(copyCard2){ var cSlug2 = copyCard2.getAttribute('data-slug'); if(getS(cSlug2)==='pendiente'){setS(cSlug2,'contactado');renderAll();}}
+}
+}
+return;
+}
+
+// WA send button - auto-mark as contactado then let through
+if(t.closest('.wa-send-btn')){
+var waCard = t.closest('.card');
+if(waCard){ var wSlug = waCard.getAttribute('data-slug'); if(getS(wSlug)==='pendiente'){setS(wSlug,'contactado');renderAll();}}
+return;
+}
+
+// Result pill
+var rp = t.closest('.result-pill');
+if(rp){
+e.preventDefault();
+e.stopPropagation();
+var card = rp.closest('.card');
+var slug = card.getAttribute('data-slug');
+var newStatus = rp.getAttribute('data-rs');
+var oldStatus = getS(slug);
+if(oldStatus === newStatus){
+setS(slug,'pendiente');
+card.setAttribute('data-status','pendiente');
+}else{
+setS(slug,newStatus);
+card.setAttribute('data-status',newStatus);
+}
+var pills = card.querySelectorAll('.result-pill');
+var cur = getS(slug);
+for(var i=0;i<pills.length;i++){
+if(pills[i].getAttribute('data-rs')===cur) pills[i].classList.add('active');
+else pills[i].classList.remove('active');
+}
+var nameEl = card.querySelector('.card-name');
+if(nameEl){nameEl.style=''}
+updateStats();
+if(cur!=='pendiente'){
+setTimeout(function(){
+var cards = document.querySelectorAll('#cardList .card');
+for(var j=0;j<cards.length;j++){
+if(getS(cards[j].getAttribute('data-slug'))==='pendiente' && !cards[j].classList.contains('hidden')){
+cards[j].scrollIntoView({behavior:'smooth',block:'center'});
+break;
+}
+}
+},300);
+}
+return;
+}
+
+// Channel tab
+var chTab = t.closest('.channel-tab');
+if(chTab){
+e.preventDefault();
+e.stopPropagation();
+var card = chTab.closest('.card');
+var slug = card.getAttribute('data-slug');
+var ch = chTab.getAttribute('data-ch');
+setCh(slug, ch);
+card.setAttribute('data-channel', ch);
+var tabs = card.querySelectorAll('.channel-tab');
+for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
+chTab.classList.add('active');
+refreshDayContent(card);
+return;
+}
+
+// Day tab
+var dt = t.closest('.day-tab');
+if(dt){
+e.preventDefault();
+e.stopPropagation();
+var card = dt.closest('.card');
+var slug = card.getAttribute('data-slug');
+var p = getProspect(slug);
+var di = parseInt(dt.getAttribute('data-di'));
+setD(slug,di);
+// Auto-select best channel for this day
+var best = bestChannel(p, di);
+card.setAttribute('data-channel', best);
+setCh(slug, best);
+// Update day tabs
+var tabs = card.querySelectorAll('.day-tab');
+for(var i=0;i<tabs.length;i++){tabs[i].classList.remove('active')}
+dt.classList.add('active');
+// Update channel tabs visually
+var chTabs = card.querySelectorAll('.channel-tab');
+for(var i=0;i<chTabs.length;i++){
+chTabs[i].classList.remove('active');
+if(chTabs[i].getAttribute('data-ch')===best) chTabs[i].classList.add('active');
+}
+refreshDayContent(card);
+return;
+}
+
+// Script accordion
+var sh = t.closest('.script-header');
+if(sh){
+var sec = sh.closest('.script-section');
+if(sec) sec.classList.toggle('open');
+return;
+}
+
+// Card header - toggle expand
+var ch = t.closest('.card-header');
+if(ch){
+e.preventDefault();
+var card = ch.closest('.card');
+card.classList.toggle('expanded');
+return;
+}
+}, false);
+
+// ==================== NOTES SAVE ====================
+document.addEventListener('focusout', function(e){
+if(e.target && e.target.classList.contains('igor-notes')){
+var card = e.target.closest('.card');
+if(card) setN(card.getAttribute('data-slug'), e.target.value);
+}
+}, false);
+
+// ==================== SEARCH ====================
+function normalizeText(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+document.getElementById('searchInput').addEventListener('input', function(){
+var q = normalizeText(this.value.trim());
+var cards = document.querySelectorAll('#cardList .card');
+for(var i=0;i<cards.length;i++){
+var slug = cards[i].getAttribute('data-slug');
+var p = getProspect(slug);
+if(!q || (p && (normalizeText(p.name).indexOf(q)!==-1 || normalizeText(p.vertical).indexOf(q)!==-1 || normalizeText(p.zone).indexOf(q)!==-1))){
+cards[i].style.display='';
+cards[i].classList.remove('hidden');
+}else{
+cards[i].style.display='none';
+cards[i].classList.add('hidden');
+}
+}
+});
+
+// ==================== INIT ====================
+// Reset day and channel to defaults (HOY + strategy-based channel)
+// Status and notes are preserved
+for(var i=0;i<PROSPECTS.length;i++){
+localStorage.removeItem(PREFIX+'d_'+PROSPECTS[i].slug);
+localStorage.removeItem(PREFIX+'ch_'+PROSPECTS[i].slug);
+}
+renderAll();
+loadFromServer();
+</script>
+</body>
+</html>
