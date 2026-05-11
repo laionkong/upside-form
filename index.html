@@ -429,7 +429,10 @@ const PIPELINES = {
 // ============================================================
 // LOCAL STORAGE PERSISTENCE
 // ============================================================
+let formCompleted = false; // set after successful submit; suppresses further saves
+
 function saveLocal(){
+  if (formCompleted) return;
   try {
     const snapshot = {
       ...state,
@@ -511,15 +514,14 @@ function buildPayload(){
 
 // ============================================================
 // SERVER SAVE (draft on step nav, submitted on final)
+// Serialized chain so calls never trample each other — esp. submit
+// must always run, even if a draft is in flight. UPSERT is idempotent.
 // ============================================================
-let saveInFlight = false;
-let savePending = false;
+let saveChain = Promise.resolve();
 async function saveServer(status){
-  if (saveInFlight){ savePending = true; return; }
-  saveInFlight = true;
-  setSaveStatus('saving');
-  const body = { session_id: state.session_id, status, payload: buildPayload() };
-  try {
+  const myPromise = saveChain.catch(()=>{}).then(async () => {
+    setSaveStatus('saving');
+    const body = { session_id: state.session_id, status, payload: buildPayload() };
     const res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -527,22 +529,15 @@ async function saveServer(status){
     });
     if (!res.ok){
       const txt = await res.text().catch(()=>'');
+      setSaveStatus('error');
       throw new Error('HTTP ' + res.status + ': ' + txt);
     }
     setSaveStatus('saved');
     return await res.json().catch(()=>({}));
-  } catch(e){
-    console.warn('Server save failed', e);
-    setSaveStatus('error');
-    throw e;
-  } finally {
-    saveInFlight = false;
-    if (savePending){
-      savePending = false;
-      // Re-save after a small delay (idempotent UPSERT)
-      setTimeout(()=>saveServer('draft').catch(()=>{}), 500);
-    }
-  }
+  });
+  // Continue chain even on individual failures
+  saveChain = myPromise.catch(()=>{});
+  return myPromise;
 }
 
 // ============================================================
@@ -907,9 +902,11 @@ async function submitForm(){
   document.getElementById('submitError').style.display = 'none';
   try {
     await saveServer('submitted');
-    clearLocal(); // clear draft after successful submit
+    formCompleted = true;
+    clearLocal();
     goTo(8);
   } catch(e){
+    formCompleted = false;
     btn.disabled = false;
     btn.textContent = 'Enviar diagnóstico';
     document.getElementById('submitError').style.display = 'block';
