@@ -499,18 +499,41 @@
   </section>
 
   <!-- 9 — ROI -->
+  <!-- NOTA (interna, no la ve el cliente): las 2 cifras de efectivo salen de datos que YA
+       están en la demo (80 riders x $60, y los $720 sin cobrar de esta semana). Antes de
+       mandarla, confirmar con Sebastián: (a) su % real de cobranza a tiempo, (b) cuántos
+       riders nuevos entra al mes, (c) si las bicis realmente traen GPS. Ajustar si difiere. -->
   <section class="screen" id="s-roi">
-    <h2>Los números — a tus 80 riders</h2>
-    <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">Valor que el sistema te devuelve por semana, en AUD.</p>
-    <ul class="levers">
-      <li><span class="lv-t"><b>Tiempo recuperado</b><small>~15 h/sem persiguiendo pagos y contestando → al sistema</small></span><span class="lv-n">$525</span></li>
-      <li><span class="lv-t"><b>Cobros recuperados</b><small>el ~5% del rent roll que se pierde sin cobro al día</small></span><span class="lv-n">$192</span></li>
-      <li><span class="lv-t"><b>Nuevas rentas capturadas</b><small>de los 336 mensajes caídos/sem, 3-5 riders/mes que hoy se van</small></span><span class="lv-n">$250</span></li>
-      <li><span class="lv-t"><b>Retención (anti-churn)</b><small>riders que se irían por falta de seguimiento</small></span><span class="lv-n">$150</span></li>
-      <li><span class="lv-t"><b>Bicis salvadas</b><small>GPS + dunning rápido evita pérdidas (ya se han perdido varias)</small></span><span class="lv-n">$150</span></li>
+    <h2>Lo que hace por ti</h2>
+    <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
+      Todo esto, cada semana, sin que muevas un dedo:
+    </p>
+
+    <ul class="points" style="margin-top:0">
+      <li><strong>Cobra solo</strong> y persigue al que no paga — tú solo te enteras del que de verdad no pagó.</li>
+      <li><strong>Contesta cada mensaje al instante</strong> — el rider que hoy se te iba con otro, ahora lo atiendes.</li>
+      <li><strong>Agenda las recolecciones</strong> y te libera las horas que hoy gastas en el celular.</li>
+      <li><strong>Marca la bici (GPS)</strong> cuando alguien deja de pagar, lista para recuperar.</li>
+      <li><strong>Atiende 24/7, en español e inglés</strong> — a las 2 a.m., en fin de semana, cuando estás dormido o fuera.</li>
     </ul>
-    <div class="roi-total"><span class="lbl">Valor total por semana</span><span class="amt">~$1,267 AUD</span></div>
-    <p class="roi-line">Cuesta <span>$350</span> — cerca del <span>7%</span> de tu renta semanal — y te devuelve <span>3 a 4 veces</span> eso.</p>
+
+    <p style="color:var(--gris1);font-size:14px;margin:26px 0 10px">Para hacer todo esto a mano, tu única opción sería contratar a alguien:</p>
+
+    <div class="invest" style="margin-bottom:14px">
+      <div class="row">
+        <span class="lbl">Un asistente<br><small style="color:var(--gris2);font-weight:400">$25/h · 10 h al día · los 7 días</small></span>
+        <span class="amt">$1,750 / sem</span>
+      </div>
+      <div class="row">
+        <span class="lbl">El sistema<br><small style="color:var(--gris2);font-weight:400">24 h al día · sin fallar · bilingüe</small></span>
+        <span class="amt">$350 / sem</span>
+      </div>
+    </div>
+
+    <p class="roi-line">
+      Un quinto del costo de una persona — y <span>no duerme, no se enferma, no se le olvida cobrar</span> y atiende en dos idiomas a la vez.
+    </p>
+    <p class="note" style="margin-top:10px">Y ese $1,750 es el piso: sin contar recargos de fin de semana, prestaciones ni que una persona solo cubre un turno a la vez.</p>
   </section>
 
   <!-- 10 — CIERRE / INVERSIÓN -->
@@ -536,8 +559,6 @@
   "use strict";
 
   /* ===================== CONVERSATION SCRIPTS ===================== */
-  // delay = ms the recipient "waits"/types before this bubble shows.
-  // For OUT bubbles a typing indicator shows before; IN bubbles appear after a short read pause.
   var CONVS = {
     A: { ts:"2:14 a.m.", lines:[
       {side:"in",  t:["Hola, vi que rentan bicis para repartir. Tienen disponibles?"]},
@@ -620,7 +641,6 @@
   }).join("");
   document.getElementById("dash-rows").innerHTML = rows;
 
-  /* "Today" pile renders statically, all unread */
   (function(){
     var c = document.getElementById("chat-hoy");
     var html = '<div class="daystamp">Hoy</div>';
@@ -630,7 +650,7 @@
 
   /* ===================== PLAYBACK ENGINE ===================== */
   var TYPE_MIN=850, TYPE_MAX=1150, READ_MIN=550, READ_MAX=800, STEP_PAUSE=420;
-  var timers = {}; // per-conv list of timeout ids
+  var timers = {};
   var playing = {};
 
   function rand(a,b){ return a + Math.floor(Math.random()*(b-a)); }
@@ -721,8 +741,6 @@
     at(t, function(){ playing[id]=false; setBtns(id,false); });
   }
 
-  /* wire buttons — delegated + touch-safe for in-app WebViews (WhatsApp viewer
-     doesn't fire synthetic click reliably; handle touchend/pointerup too). */
   function handleTap(target){
     var pb = target.closest ? target.closest("[data-play]") : null;
     if (pb){ play(pb.getAttribute("data-play")); return true; }
@@ -732,8 +750,6 @@
     if (lb){ setLang(lb.id === "lang-en" ? "en" : "es"); return true; }
     return false;
   }
-  // A real touchend is followed by a synthetic click ~300ms later. Lock briefly
-  // after a handled touchend so the trailing click can't fire the action twice.
   var tapLock = false;
   function onTap(e){
     if (e.type === "click" && tapLock) return;
@@ -749,8 +765,6 @@
   document.addEventListener("click", onTap, false);
 
   /* ===================== LANGUAGE TOGGLE (UI chrome only) ===================== */
-  // EN toggle re-labels the page chrome to show the demo also "speaks" English.
-  // Conversations keep their own native language (D is already in English).
   var I18N = {
     es:{ "s-problema":"Problema","s-hoy":"Hoy","s-convs":"Conversaciones","s-dash":"Cobros","s-flujo":"Cómo funciona","s-roi":"Números",
          honesty:'<b>Vista previa del sistema LuckyBike</b> — datos de ejemplo, no es un sistema en vivo.' },
@@ -768,7 +782,6 @@
     });
     document.documentElement.lang = lng;
   }
-  // lang buttons handled by the delegated onTap above (touch-safe).
 
 })();
 </script>
