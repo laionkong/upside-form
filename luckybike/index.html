@@ -226,7 +226,7 @@ footer{padding:36px 0 10px;font-size:12.5px;color:var(--gris3);display:flex;just
     <div class="flow-step bad"><div class="dot"></div>Día 5 — se acabaron los reintentos. AHORA sí, te llega a TU WhatsApp:</div>
     <div class="alert-card" style="align-self:flex-start;width:100%;max-width:430px">
       <b>⚠ Alerta · rider moroso</b>
-      Andrés Molina · bici <b>LB-009</b> (GPS activo) · 5 días de mora · $60 sin pagar.<br>
+      Andrés Molina · bici <b>LB-009</b> · 5 días de mora · $60 sin pagar.<br>
       Cargo rechazado 3 veces, avisos enviados sin respuesta. Requiere tu atención.
     </div>
   </div>
@@ -278,10 +278,10 @@ footer{padding:36px 0 10px;font-size:12.5px;color:var(--gris3);display:flex;just
   <h2>Bici con problema o perdida → tú te enteras al segundo</h2>
   <div class="demo-block">
     <div class="demo-copy">
-      <p class="lead" style="font-size:15px">Ya se te han perdido bicis. El sistema no las va a buscar por ti — pero te avisa al instante, con los datos de GPS a la mano, en cuanto un rider reporta algo.</p>
+      <p class="lead" style="font-size:15px">Ya se te han perdido bicis. El sistema no las va a buscar por ti — pero te avisa al instante, con el número de la bici, en cuanto un rider reporta algo.</p>
       <ul>
         <li>El rider reporta por WhatsApp, a cualquier hora.</li>
-        <li>Alerta inmediata a tu teléfono con bici + GPS.</li>
+        <li>Alerta inmediata a tu teléfono con el número de la bici.</li>
         <li>El asistente contiene al rider mientras tú actúas.</li>
       </ul>
     </div>
@@ -320,9 +320,9 @@ footer{padding:36px 0 10px;font-size:12.5px;color:var(--gris3);display:flex;just
     </div>
     <div class="alertband">
       <b>Requieren tu atención</b>
-      <div class="row"><span>Andrés Molina · LB-009 (GPS)</span><span>5 días de mora · $60</span></div>
-      <div class="row"><span>Tom Baker · LB-052 (GPS)</span><span>6 días de mora · $60</span></div>
-      <div class="row"><span>Luis Herrera · LB-018 (GPS)</span><span>8 días de mora · $120</span></div>
+      <div class="row"><span>Andrés Molina · LB-009</span><span>5 días de mora · $60</span></div>
+      <div class="row"><span>Tom Baker · LB-052</span><span>6 días de mora · $60</span></div>
+      <div class="row"><span>Luis Herrera · LB-018</span><span>8 días de mora · $120</span></div>
     </div>
     <div class="tbl-scroll">
     <table class="tbl">
@@ -382,7 +382,7 @@ footer{padding:36px 0 10px;font-size:12.5px;color:var(--gris3);display:flex;just
       <tr><td>Pagos tarde o perdidos, recuperados con cargo automático + reintentos</td><td>~$192</td></tr>
       <tr><td>Riders retenidos (hoy se van por falta de respuesta)</td><td>~$150</td></tr>
       <tr><td>Rentas nuevas capturadas de los 336 mensajes que hoy se pierden</td><td>~$250</td></tr>
-      <tr><td>Bicis salvadas (alerta temprana de morosos + GPS)</td><td>~$150</td></tr>
+      <tr><td>Bicis salvadas (alerta temprana de morosos)</td><td>~$150</td></tr>
       <tr class="total"><td>Total sobre la mesa cada semana</td><td>~$1,267</td></tr>
     </tbody>
   </table>
@@ -434,8 +434,8 @@ var SCRIPTS = {
   c: [
     {t:"in",  x:"Amigo me acaban de robar la bici 😞 estaba afuera del restaurante y ya no está"},
     {t:"out", x:"María, qué mal — gracias por avisar de inmediato. Ya registré el reporte de tu bici *LB-003* y le avisé al equipo en este momento."},
-    {t:"alert", x:"María Vargas reporta bici LB-003 ROBADA hace minutos · zona Haymarket · GPS activo — última señal 7:42 pm. Reporte registrado.", h:"🔴 Alerta inmediata · bici perdida"},
-    {t:"out", x:"La bici tiene GPS, así que el equipo ya está viendo su ubicación. ¿Estás bien tú?"},
+    {t:"alert", x:"María Vargas reporta bici LB-003 ROBADA hace minutos · zona Haymarket. Reporte registrado.", h:"🔴 Alerta inmediata · bici perdida"},
+    {t:"out", x:"El equipo ya tiene el aviso con el número de tu bici. ¿Estás bien tú?"},
     {t:"in",  x:"Sí yo bien, solo la bici"},
     {t:"out", x:"Ok. El equipo te contacta en breve para los siguientes pasos. Cualquier cosa que recuerdes (hora exacta, dónde), mándamela por aquí."}
   ],
