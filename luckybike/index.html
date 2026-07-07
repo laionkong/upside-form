@@ -405,7 +405,7 @@
         <div class="conv-copy">
           <div class="rlabel">Conversación C · Cobro fallido · 3 niveles</div>
           <h3>Si el cobro automático falla, el sistema persigue por ti</h3>
-          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti. Con la bici (GPS) marcada para recuperación.</p>
+          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti. Con el número de la bici en el aviso.</p>
           <div class="saydim">"Los mensajes solo salen si el cobro automático no pasó. Los dos recordatorios los manda el sistema."</div>
         </div>
         <div>
@@ -483,17 +483,17 @@
       <div class="ahd">Requiere tu atención</div>
       <div class="alertrow">
         <span class="nm">Andrés Molina</span>
-        <span class="meta">bici LB-009 · <span class="gps">GPS activo</span> · 5 días de mora · $60</span>
+        <span class="meta">bici LB-009 · 5 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Tomás Aguilar</span>
-        <span class="meta">bici LB-022 · <span class="gps">GPS activo</span> · 8 días de mora · $60</span>
+        <span class="meta">bici LB-022 · 8 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Kevin Ng</span>
-        <span class="meta">bici LB-040 · <span class="gps">GPS activo</span> · 6 días de mora · $60</span>
+        <span class="meta">bici LB-040 · 6 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
     </div>
@@ -536,7 +536,7 @@
   <!-- NOTA (interna, no la ve el cliente): las 2 cifras de efectivo salen de datos que YA
        están en la demo (80 riders x $60, y los $720 sin cobrar de esta semana). Antes de
        mandarla, confirmar con Sebastián: (a) su % real de cobranza a tiempo, (b) cuántos
-       riders nuevos entra al mes, (c) si las bicis realmente traen GPS. Ajustar si difiere. -->
+       riders nuevos entra al mes, (c) nada de GPS en los avisos: solo número de bici (instrucción Leon 2026-07-07). -->
   <section class="screen" id="s-roi">
     <h2>Lo que hace por ti</h2>
     <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
@@ -547,7 +547,7 @@
       <li><strong>Cobra solo</strong> y persigue al que no paga — tú solo te enteras del que de verdad no pagó.</li>
       <li><strong>Contesta cada mensaje al instante</strong> — el rider que hoy se te iba con otro, ahora lo atiendes.</li>
       <li><strong>Agenda las recolecciones</strong> y te libera las horas que hoy gastas en el celular.</li>
-      <li><strong>Marca la bici (GPS)</strong> cuando alguien deja de pagar, lista para recuperar.</li>
+      <li><strong>Te avisa con el número de la bici</strong> cuando alguien deja de pagar, para tu proceso de recuperación.</li>
       <li><strong>Atiende 24/7, en español e inglés</strong> — a las 2 a.m., en fin de semana, cuando estás dormido o fuera.</li>
     </ul>
 
@@ -625,7 +625,7 @@
       {side:"out", t:["Con este link lo resuelves en un minuto: pay.luckybike.com.au/a-molina"]},
       {side:"out", t:["Cualquier cosa, escríbeme y lo vemos."]},
       {lvl:"Nivel 3 · escalación a Sebastián"},
-      {alert:true, head:"Alerta al dueño", t:["<b>Andrés Molina</b> · bici LB-009 (GPS activo) · 5 días sin poder cobrar · $60.","El cobro automático y los recordatorios fallaron. Requiere tu atención."]}
+      {alert:true, head:"Alerta al dueño", t:["<b>Andrés Molina</b> · bici LB-009 · 5 días sin poder cobrar · $60.","El cobro automático y los recordatorios fallaron. Requiere tu atención."]}
     ]},
     D: { ts:"11:20 a.m.", lines:[
       {side:"in",  t:["Hey, is my bike ready for pickup?"]},
