@@ -405,7 +405,7 @@
         <div class="conv-copy">
           <div class="rlabel">Conversación C · Cobro fallido · 3 niveles</div>
           <h3>Si el cobro automático falla, el sistema persigue por ti</h3>
-          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti. Con el número de la bici en el aviso.</p>
+          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti.</p>
           <div class="saydim">"Los mensajes solo salen si el cobro automático no pasó. Los dos recordatorios los manda el sistema."</div>
         </div>
         <div>
@@ -483,17 +483,17 @@
       <div class="ahd">Requiere tu atención</div>
       <div class="alertrow">
         <span class="nm">Andrés Molina</span>
-        <span class="meta">bici LB-009 · 5 días de mora · $60</span>
+        <span class="meta">bici LB-009 · 5 días sin cobrar · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Tomás Aguilar</span>
-        <span class="meta">bici LB-022 · 8 días de mora · $60</span>
+        <span class="meta">bici LB-022 · 8 días sin cobrar · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Kevin Ng</span>
-        <span class="meta">bici LB-040 · 6 días de mora · $60</span>
+        <span class="meta">bici LB-040 · 6 días sin cobrar · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
     </div>
@@ -526,17 +526,17 @@
         <div class="dbranch"><b>Responde</b> — horario, status, dudas de renta</div>
         <div class="dbranch"><b>Cobra</b> — Stripe carga la renta automático; recuerda solo si falla</div>
         <div class="dbranch"><b>Agenda</b> — aparta la recolección de la bici</div>
-        <div class="dbranch"><b>Escala</b> — solo lo importante te llega a ti</div>
+        <div class="dbranch"><b>Escala</b> — cobro fallido o bici reportada perdida: solo lo importante te llega a ti</div>
       </div>
     </div>
     <p class="dnote">La lógica de cobro y agenda corre en código, no en la IA — por eso es predecible y no inventa.</p>
   </section>
 
   <!-- 9 — ROI -->
-  <!-- NOTA (interna, no la ve el cliente): las 2 cifras de efectivo salen de datos que YA
-       están en la demo (80 riders x $60, y los $720 sin cobrar de esta semana). Antes de
-       mandarla, confirmar con Sebastián: (a) su % real de cobranza a tiempo, (b) cuántos
-       riders nuevos entra al mes, (c) nada de GPS en los avisos: solo número de bici (instrucción Leon 2026-07-07). -->
+  <!-- NOTA (interna, no la ve el cliente): el único número duro aquí es el costo del asistente
+       humano ($25/h x 10h x 7 = $1,750/sem), que es un hecho, no una estimación. Confirmar con
+       Sebastián solo los supuestos base (80 riders a $60/sem) y que el reporte de bici perdida
+       se maneje por notificación como se describe. -->
   <section class="screen" id="s-roi">
     <h2>Lo que hace por ti</h2>
     <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
@@ -547,7 +547,7 @@
       <li><strong>Cobra solo</strong> y persigue al que no paga — tú solo te enteras del que de verdad no pagó.</li>
       <li><strong>Contesta cada mensaje al instante</strong> — el rider que hoy se te iba con otro, ahora lo atiendes.</li>
       <li><strong>Agenda las recolecciones</strong> y te libera las horas que hoy gastas en el celular.</li>
-      <li><strong>Te avisa con el número de la bici</strong> cuando alguien deja de pagar, para tu proceso de recuperación.</li>
+      <li><strong>Te avisa al instante</strong> si un rider reporta una bici perdida o robada — la notificación te llega directo, sin que se pierda entre mensajes.</li>
       <li><strong>Atiende 24/7, en español e inglés</strong> — a las 2 a.m., en fin de semana, cuando estás dormido o fuera.</li>
     </ul>
 
