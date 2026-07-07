@@ -1,514 +1,825 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LuckyBike — Vista previa del sistema</title>
 <style>
-:root{
-  --verde:#1f7a5a; --verde-bg:#f5f9f7; --verde-borde:#d9e8e2;
-  --tinta:#1d2125; --texto:#2b343b; --gris:#5a646c; --gris2:#6b7680; --gris3:#8b959c;
-  --linea:#eef1f3; --blanco:#ffffff; --rojo:#b4453a; --ambar:#b07d2e;
-  --wa-header:#075e54; --wa-chat:#efe7de; --wa-out:#d9fdd3; --wa-in:#ffffff;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--texto);background:var(--blanco);line-height:1.55;-webkit-font-smoothing:antialiased}
-.banner{position:sticky;top:0;z-index:50;background:var(--tinta);color:#e8e8e4;font-size:11.5px;text-align:center;padding:7px 12px;letter-spacing:.3px}
-.wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
-section{padding:56px 0 8px;border-bottom:1px solid var(--linea)}
-.kicker{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--verde);font-weight:700;margin-bottom:10px}
-h1{font-size:34px;line-height:1.15;color:var(--tinta);letter-spacing:-.5px;margin-bottom:14px}
-h2{font-size:24px;line-height:1.2;color:var(--tinta);letter-spacing:-.3px;margin-bottom:10px}
-p.lead{font-size:17px;color:var(--gris);max-width:60ch}
-p.note{font-size:13px;color:var(--gris3);margin-top:10px}
-.stats{display:flex;gap:14px;flex-wrap:wrap;margin:26px 0 8px}
-.stat{flex:1;min-width:150px;background:var(--verde-bg);border:1px solid var(--verde-borde);border-radius:10px;padding:16px 18px}
-.stat b{display:block;font-size:30px;color:var(--verde);letter-spacing:-1px}
-.stat.bad b{color:var(--rojo)}
-.stat.warn b{color:var(--ambar)}
-.stat span{font-size:12.5px;color:var(--gris2)}
-.layers{display:grid;gap:12px;margin:24px 0}
-.layer{border:1px solid var(--verde-borde);border-radius:12px;padding:18px 20px;background:var(--blanco);display:flex;gap:16px;align-items:flex-start}
-.layer .n{background:var(--verde);color:#fff;font-weight:800;font-size:15px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.layer h3{font-size:16px;color:var(--tinta);margin-bottom:3px}
-.layer p{font-size:14px;color:var(--gris)}
-.layer .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--verde);background:var(--verde-bg);border:1px solid var(--verde-borde);border-radius:20px;padding:2px 10px;margin-top:8px}
-.callout{border-left:4px solid var(--verde);background:var(--verde-bg);padding:14px 18px;border-radius:0 10px 10px 0;margin:20px 0;font-size:14.5px;color:var(--texto)}
-/* phone */
-.demo-block{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;margin:26px 0}
-.demo-copy{flex:1;min-width:250px}
-.demo-copy ul{margin:12px 0 0 18px;font-size:14px;color:var(--gris)}
-.demo-copy li{margin-bottom:6px}
-.phone{width:320px;max-width:100%;border:10px solid #2b2b2b;border-radius:28px;overflow:hidden;background:var(--wa-chat);flex-shrink:0;box-shadow:0 12px 30px rgba(0,0,0,.12)}
-.ph-head{background:var(--wa-header);color:#fff;padding:11px 14px;display:flex;align-items:center;gap:10px}
-.ph-ava{width:32px;height:32px;border-radius:50%;background:#0e7a6c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-.ph-head b{font-size:14px;display:block;line-height:1.1}
-.ph-head small{font-size:10.5px;opacity:.8}
-.chat{height:400px;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:7px;scroll-behavior:smooth}
-.bub{max-width:82%;padding:7px 11px;border-radius:9px;font-size:13.2px;line-height:1.4;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-line;animation:pop .18s ease-out}
-.bub .ts{display:block;font-size:10px;color:#667;text-align:right;margin-top:3px}
-.bub.in{background:var(--wa-in);align-self:flex-start;border-top-left-radius:2px}
-.bub.out{background:var(--wa-out);align-self:flex-end;border-top-right-radius:2px}
-.bub.sys{background:#fdf3d7;align-self:center;font-size:11px;color:#6d5a1e;text-align:center;box-shadow:none;border-radius:7px;max-width:92%}
-.stage{align-self:center;font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gris2);background:#e4ded4;border-radius:12px;padding:3px 12px;margin:4px 0;animation:pop .18s ease-out}
-.typing{align-self:flex-end;background:var(--wa-out);border-radius:9px;padding:9px 13px;display:flex;gap:4px}
-.typing i{width:6px;height:6px;border-radius:50%;background:#7a8a7a;animation:blink 1.1s infinite}
-.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
-@keyframes pop{from{transform:translateY(5px);opacity:0}to{transform:none;opacity:1}}
-.ph-ctl{display:flex;gap:10px;background:#f0f0ee;padding:10px;border-top:1px solid #ddd}
-.btn{flex:1;border:0;border-radius:8px;padding:10px 6px;font-size:13.5px;font-weight:700;cursor:pointer;touch-action:manipulation}
-.btn.play{background:var(--verde);color:#fff}
-.btn.reset{background:#fff;border:1px solid #ccc;color:var(--gris)}
-/* alert card */
-.alert-card{align-self:center;width:94%;background:#fff;border:1px solid #ecc9c4;border-left:5px solid var(--rojo);border-radius:10px;padding:11px 13px;font-size:12.5px;box-shadow:0 3px 10px rgba(0,0,0,.1);animation:pop .18s ease-out}
-.alert-card b{color:var(--rojo);display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-/* email cards */
-.mailflow{display:grid;gap:14px;margin:24px 0;max-width:560px}
-.mail{border:1px solid var(--linea);border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.06);background:#fff}
-.mail .mhead{background:#f7f8f9;border-bottom:1px solid var(--linea);padding:9px 16px;font-size:12px;color:var(--gris2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
-.mail .mbody{padding:16px 18px}
-.mail .mbody h4{font-size:15.5px;color:var(--tinta);margin-bottom:6px}
-.mail .mbody p{font-size:13.5px;color:var(--gris)}
-.mail .amount{font-size:26px;color:var(--verde);font-weight:800;letter-spacing:-.5px;margin:8px 0 2px}
-.mail.fail .amount{color:var(--rojo)}
-.mail .fakebtn{display:inline-block;background:var(--verde);color:#fff;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:700;margin-top:10px}
-.mail.fail .fakebtn{background:var(--rojo)}
-.flow-step{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--gris2);margin:2px 0 2px 6px}
-.flow-step .dot{width:10px;height:10px;border-radius:50%;background:var(--verde);flex-shrink:0}
-.flow-step.bad .dot{background:var(--rojo)}
-/* dashboard */
-.dash{border:1px solid var(--linea);border-radius:14px;overflow:hidden;margin:24px 0;box-shadow:0 6px 20px rgba(0,0,0,.06)}
-.dash-head{padding:16px 20px;border-bottom:1px solid var(--linea);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
-.dash-head b{font-size:15px;color:var(--tinta)}
-.dash-head span{font-size:12px;color:var(--gris3)}
-.dash-stats{display:flex;gap:0;border-bottom:1px solid var(--linea)}
-.dash-stats .ds{flex:1;padding:14px;text-align:center;border-right:1px solid var(--linea)}
-.dash-stats .ds:last-child{border-right:0}
-.ds b{display:block;font-size:22px;letter-spacing:-.5px}
-.ds.ok b{color:var(--verde)} .ds.pend b{color:var(--ambar)} .ds.mor b{color:var(--rojo)}
-.ds span{font-size:11px;color:var(--gris3)}
-.alertband{background:#fdf6f5;border-bottom:1px solid #f0dedb;padding:10px 16px;font-size:12.5px;color:var(--gris)}
-.alertband b{color:var(--rojo);font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px}
-.alertband .row{display:flex;justify-content:space-between;gap:8px;padding:3px 0;flex-wrap:wrap}
-.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.tbl th{text-align:left;padding:9px 12px;background:#fafbfb;color:var(--gris3);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--linea)}
-.tbl td{padding:8px 12px;border-bottom:1px solid var(--linea);color:var(--texto);white-space:nowrap}
-.tbl-scroll{max-height:330px;overflow:auto}
-.badge{font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;white-space:nowrap}
-.badge.ok{background:var(--verde-bg);color:var(--verde)}
-.badge.pend{background:#faf3e3;color:var(--ambar)}
-.badge.mor{background:#fbeceb;color:var(--rojo)}
-/* diagram */
-.diagram{display:grid;gap:10px;margin:24px 0}
-.dg-row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
-.dg{border:1px solid var(--verde-borde);background:var(--verde-bg);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--texto);flex:1;min-width:130px}
-.dg.core{background:var(--verde);color:#fff;border-color:var(--verde);font-weight:700}
-.dg small{display:block;font-size:11px;opacity:.75;margin-top:2px}
-.dg-arrow{align-self:center;color:var(--gris3);font-size:16px;flex:0}
-/* roi */
-.roi{width:100%;border-collapse:collapse;font-size:13.5px;margin:20px 0}
-.roi th{text-align:left;background:var(--verde-bg);padding:9px 12px;color:var(--tinta);font-size:12px;border:1px solid var(--verde-borde)}
-.roi td{padding:9px 12px;border:1px solid var(--linea)}
-.roi tr.total td{background:var(--verde-bg);font-weight:800;color:var(--verde);font-size:15px}
-.price{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0}
-.pcard{flex:1;min-width:200px;border:1px solid var(--verde-borde);border-radius:12px;padding:20px}
-.pcard b{font-size:26px;color:var(--tinta);letter-spacing:-.5px;display:block}
-.pcard span{font-size:13px;color:var(--gris2)}
-footer{padding:36px 0 10px;font-size:12.5px;color:var(--gris3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
-@media (max-width:640px){ h1{font-size:27px} .demo-block{flex-direction:column} .phone{margin:0 auto} }
+  /* ===================== TOKENS ===================== */
+  :root {
+    --verde:#1f7a5a; --verde-bg:#f5f9f7; --verde-borde:#d9e8e2;
+    --tinta:#1d2125; --texto:#2b343b;
+    --gris1:#5a646c; --gris2:#6b7680; --gris3:#8b959c;
+    --linea:#eef1f3; --blanco:#ffffff;
+    --ambar:#b07d1a; --ambar-bg:#fbf4e4; --ambar-borde:#ecdcb4;
+    --rojo:#b4453a; --rojo-bg:#fbefed; --rojo-borde:#ecccc6;
+    /* WhatsApp */
+    --wa-header:#075e54; --wa-chat-bg:#efe7de; --wa-out:#d9fdd3; --wa-in:#ffffff;
+    color-scheme: light;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--tinta); line-height:1.55; background:var(--blanco); font-size:15px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===================== HONESTY BANNER ===================== */
+  .honesty {
+    position:sticky; top:0; z-index:50;
+    background:var(--tinta); color:#e8edf0;
+    font-size:12px; letter-spacing:.2px; text-align:center;
+    padding:7px 14px; line-height:1.4;
+  }
+  .honesty b { color:#fff; }
+
+  /* ===================== NAVBAR ===================== */
+  nav {
+    position:sticky; top:30px; z-index:40;
+    background:rgba(255,255,255,.97); -webkit-backdrop-filter:saturate(120%); backdrop-filter:saturate(120%);
+    border-bottom:1px solid var(--linea);
+    display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+    padding:8px 14px;
+  }
+  nav .brand { font-weight:700; font-size:14px; margin-right:auto; letter-spacing:-.3px; }
+  nav .brand span { color:var(--verde); }
+  nav a {
+    font-size:12px; color:var(--gris1); text-decoration:none;
+    padding:4px 8px; border-radius:6px; white-space:nowrap;
+  }
+  nav a:hover { background:var(--verde-bg); color:var(--verde); }
+  .langtoggle {
+    display:inline-flex; border:1px solid var(--verde-borde); border-radius:7px; overflow:hidden;
+    margin-left:6px;
+  }
+  .langtoggle button {
+    border:none; background:#fff; color:var(--gris1); font:inherit; font-size:11.5px; font-weight:600;
+    padding:6px 11px; cursor:pointer;
+    touch-action:manipulation; -webkit-tap-highlight-color:rgba(31,122,90,.25);
+    -webkit-appearance:none; appearance:none; user-select:none;
+  }
+  .langtoggle button.active { background:var(--verde); color:#fff; }
+
+  /* ===================== LAYOUT ===================== */
+  .page { max-width:760px; margin:0 auto; padding:0 18px 80px; }
+  section.screen {
+    padding:42px 0 38px; border-bottom:1px solid var(--linea);
+  }
+  section.screen:last-child { border-bottom:none; }
+  .eyebrow {
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--gris2); margin-bottom:10px;
+  }
+  h1 { font-size:30px; font-weight:700; letter-spacing:-.5px; line-height:1.18; }
+  h1 span { color:var(--verde); }
+  h2 {
+    font-size:13px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--verde); font-weight:700; margin-bottom:14px;
+  }
+  .sub { font-size:15px; color:#4a545c; margin-top:10px; }
+  p { margin-bottom:10px; color:var(--texto); }
+  .lead { font-size:16px; }
+
+  .points { list-style:none; margin-top:6px; }
+  .points li {
+    padding:9px 0 9px 26px; position:relative; border-bottom:1px solid var(--linea); color:var(--texto);
+  }
+  .points li:last-child { border-bottom:none; }
+  .points li::before { content:"›"; position:absolute; left:4px; color:var(--verde); font-weight:700; }
+  .points li strong { color:var(--tinta); }
+
+  .stats { display:flex; gap:12px; flex-wrap:wrap; }
+  .stat {
+    flex:1; min-width:140px; background:var(--verde-bg); border:1px solid var(--verde-borde);
+    border-radius:10px; padding:18px 12px; text-align:center;
+  }
+  .stat .n { font-size:26px; font-weight:700; color:var(--verde); line-height:1; }
+  .stat .l { font-size:12.5px; color:var(--gris1); margin-top:8px; line-height:1.35; }
+  .punch { margin-top:16px; font-size:15.5px; font-weight:600; color:var(--tinta); }
+  .punch span { color:var(--verde); }
+
+  /* ===================== PHONE / WHATSAPP ===================== */
+  .conv-grid { display:flex; gap:30px; align-items:flex-start; flex-wrap:wrap; }
+  .conv-copy { flex:1; min-width:240px; }
+  .conv-copy .rlabel { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--verde); font-weight:700; margin-bottom:8px; }
+  .conv-copy h3 { font-size:19px; font-weight:700; color:var(--tinta); margin-bottom:8px; letter-spacing:-.3px; }
+  .conv-copy p { font-size:14px; color:var(--gris1); }
+  .conv-copy .saydim { font-size:13px; color:var(--gris2); font-style:italic; border-left:2px solid var(--verde-borde); padding-left:10px; margin-top:12px; }
+
+  .phone {
+    width:320px; max-width:100%; background:#d7c4ad;
+    border:10px solid #2b2b2b; border-radius:28px;
+    padding:8px 8px 14px; box-shadow:0 6px 18px rgba(0,0,0,.18);
+    flex:0 0 auto; margin:0 auto;
+  }
+  .phone-header {
+    background:var(--wa-header); color:#fff; font-size:13px; font-weight:600;
+    padding:9px 12px; border-radius:18px 18px 6px 6px; margin-bottom:6px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .phone-header .avatar {
+    width:24px; height:24px; border-radius:50%; background:#0b7d6f; color:#cdeee7;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex:0 0 auto;
+  }
+  .phone-header .who { display:flex; flex-direction:column; line-height:1.15; text-align:left; }
+  .phone-header .who small { font-size:10px; font-weight:400; color:#bfe3da; }
+  .chat {
+    background:var(--wa-chat-bg); border-radius:6px 6px 18px 18px;
+    padding:12px 8px; height:360px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .chat::-webkit-scrollbar { width:5px; }
+  .chat::-webkit-scrollbar-thumb { background:rgba(0,0,0,.15); border-radius:3px; }
+  .daystamp {
+    align-self:center; background:#d8e8f0; color:#54707e; font-size:10px;
+    padding:3px 9px; border-radius:6px; margin:2px 0;
+  }
+  .bubble {
+    position:relative; max-width:85%; padding:6px 9px 5px; border-radius:8px;
+    font-size:14px; line-height:1.34; word-wrap:break-word;
+    box-shadow:0 1px .5px rgba(0,0,0,.13);
+    animation:pop .18s ease-out;
+  }
+  @keyframes pop { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  .bubble.out { align-self:flex-end; background:var(--wa-out); border-top-right-radius:2px; }
+  .bubble.in  { align-self:flex-start; background:var(--wa-in); border-top-left-radius:2px; }
+  .bubble b { font-weight:700; }
+  .bubble .ts { display:block; text-align:right; font-size:10px; color:#667; margin-top:2px; }
+  .bubble .mline { display:block; }
+  .typing {
+    align-self:flex-start; background:var(--wa-in); border-radius:8px; border-top-left-radius:2px;
+    padding:8px 11px; box-shadow:0 1px .5px rgba(0,0,0,.13); display:flex; gap:4px;
+  }
+  .typing span { width:6px; height:6px; border-radius:50%; background:#9aa0a6; animation:blink 1.2s infinite; }
+  .typing span:nth-child(2){ animation-delay:.2s; } .typing span:nth-child(3){ animation-delay:.4s; }
+  @keyframes blink { 0%,60%,100%{opacity:.3} 30%{opacity:1} }
+
+  /* owner alert card (level 3) */
+  .alertcard {
+    align-self:stretch; background:var(--rojo-bg); border:1px solid var(--rojo-borde);
+    border-left:3px solid var(--rojo); border-radius:8px; padding:9px 11px; font-size:12.5px; color:#5e2a24;
+    animation:pop .18s ease-out;
+  }
+  .alertcard .ahead { font-weight:700; color:var(--rojo); font-size:11px; letter-spacing:.5px; text-transform:uppercase; margin-bottom:4px; }
+  .alertcard b { font-weight:700; }
+
+  .controls { margin-top:12px; display:flex; gap:8px; justify-content:center; }
+  .btn {
+    font:inherit; font-size:12.5px; font-weight:600; cursor:pointer; border-radius:8px;
+    padding:9px 16px; border:1px solid var(--verde); background:var(--verde); color:#fff;
+    touch-action:manipulation; -webkit-tap-highlight-color:rgba(31,122,90,.25);
+    -webkit-appearance:none; appearance:none; user-select:none;
+  }
+  .btn:hover { background:#1a6a4e; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .btn.ghost { background:#fff; color:var(--verde); }
+  .btn.ghost:hover { background:var(--verde-bg); }
+
+  .lvl-label { align-self:center; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gris2); margin:4px 0; font-weight:700; }
+
+  /* ===================== DASHBOARD ===================== */
+  .dash-head { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .dash-head .wk { font-size:13px; color:var(--gris1); }
+  .dash-stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .dstat { flex:1; min-width:120px; border-radius:10px; padding:14px 12px; text-align:center; border:1px solid; }
+  .dstat.ok { background:var(--verde-bg); border-color:var(--verde-borde); }
+  .dstat.pend { background:var(--ambar-bg); border-color:var(--ambar-borde); }
+  .dstat.mor { background:var(--rojo-bg); border-color:var(--rojo-borde); }
+  .dstat .n { font-size:24px; font-weight:700; line-height:1; }
+  .dstat.ok .n { color:var(--verde); } .dstat.pend .n { color:var(--ambar); } .dstat.mor .n { color:var(--rojo); }
+  .dstat .l { font-size:12px; color:var(--gris1); margin-top:6px; }
+
+  .alertband { background:var(--rojo-bg); border:1px solid var(--rojo-borde); border-radius:10px; padding:10px 12px; margin-bottom:16px; }
+  .alertband .ahd { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--rojo); font-weight:700; margin-bottom:8px; }
+  .alertrow { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--rojo-borde); font-size:13px; }
+  .alertrow:last-child { border-bottom:none; }
+  .alertrow .nm { font-weight:600; color:var(--tinta); }
+  .alertrow .meta { color:var(--gris1); font-size:12px; }
+  .alertrow .gps { font-size:11px; color:var(--verde); font-weight:600; }
+  .alertrow .spacer { margin-left:auto; }
+
+  .progress-wrap { margin-bottom:18px; }
+  .progress-wrap .plabel { font-size:12px; color:var(--gris1); margin-bottom:6px; display:flex; justify-content:space-between; }
+  .progress { height:9px; background:var(--linea); border-radius:6px; overflow:hidden; }
+  .progress .fill { height:100%; background:var(--verde); border-radius:6px; }
+
+  .table-wrap { border:1px solid var(--linea); border-radius:10px; overflow:hidden; }
+  .table-scroll { max-height:330px; overflow-y:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th {
+    position:sticky; top:0; background:#fafbfb; text-align:left; font-size:11px; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--gris2); font-weight:700; padding:9px 10px; border-bottom:1px solid var(--linea);
+  }
+  tbody td { padding:9px 10px; border-bottom:1px solid var(--linea); color:var(--texto); }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafdfc; }
+  .badge { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:20px; }
+  .badge::before { content:"●"; font-size:9px; }
+  .badge.ok { background:var(--verde-bg); color:var(--verde); }
+  .badge.pend { background:var(--ambar-bg); color:var(--ambar); }
+  .badge.mor { background:var(--rojo-bg); color:var(--rojo); }
+  .tact { color:var(--verde); font-size:12px; cursor:default; }
+  .colcode { color:var(--gris1); font-variant-numeric:tabular-nums; }
+
+  /* ===================== DIAGRAM ===================== */
+  .diagram { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .dnode {
+    border-radius:9px; padding:12px 14px; font-size:13px; font-weight:600; text-align:center; line-height:1.3;
+  }
+  .dnode.entry { background:#fff; border:1px solid var(--verde-borde); color:var(--texto); }
+  .dnode.triage { background:var(--verde); color:#fff; }
+  .dbranches { display:flex; flex-direction:column; gap:8px; flex:1; min-width:220px; }
+  .dbranch { background:var(--verde-bg); border:1px solid var(--verde-borde); border-radius:8px; padding:9px 12px; font-size:13px; color:var(--texto); }
+  .dbranch b { color:var(--verde); }
+  .darrow { color:var(--gris3); font-size:18px; font-weight:700; flex:0 0 auto; }
+  .dnote { font-size:13px; color:var(--gris1); font-style:italic; margin-top:16px; border-left:2px solid var(--verde-borde); padding-left:12px; }
+
+  /* ===================== ROI ===================== */
+  .levers { list-style:none; border:1px solid var(--verde-borde); border-radius:10px; overflow:hidden; }
+  .levers li { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--linea); }
+  .levers li:last-child { border-bottom:none; }
+  .levers .lv-t { color:var(--texto); }
+  .levers .lv-t b { color:var(--tinta); display:block; }
+  .levers .lv-t small { color:var(--gris2); font-size:12px; }
+  .levers .lv-n { font-weight:700; color:var(--verde); font-size:16px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .roi-total { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:var(--verde-bg); border:1px solid var(--verde-borde); border-radius:10px; margin-top:14px; }
+  .roi-total .lbl { font-weight:700; color:var(--tinta); }
+  .roi-total .amt { font-size:22px; font-weight:700; color:var(--verde); }
+  .roi-line { margin-top:14px; font-size:15.5px; font-weight:600; color:var(--tinta); }
+  .roi-line span { color:var(--verde); }
+
+  /* ===================== COBRO (billing) ===================== */
+  .cobro-grid { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .cobro-card { flex:1; min-width:240px; border-radius:10px; padding:16px; border:1px solid; }
+  .cobro-card.ok { background:var(--verde-bg); border-color:var(--verde-borde); }
+  .cobro-card.warn { background:var(--ambar-bg); border-color:var(--ambar-borde); }
+  .cobro-card .ct { font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:7px; }
+  .cobro-card.ok .ct { color:var(--verde); }
+  .cobro-card.warn .ct { color:var(--ambar); }
+  .cobro-card .ct .dot { font-size:10px; }
+  .cobro-card p { font-size:13.5px; color:var(--texto); margin:0; }
+  .cobro-card p b { color:var(--tinta); }
+
+  /* ===================== INVEST / CTA ===================== */
+  .invest { border:1px solid var(--verde-borde); border-radius:10px; overflow:hidden; margin-bottom:14px; }
+  .invest .row { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--linea); }
+  .invest .row:last-child { border-bottom:none; background:var(--verde-bg); }
+  .invest .lbl { color:var(--texto); }
+  .invest .amt { font-weight:700; font-size:19px; color:var(--verde); }
+  .note { font-size:13px; color:var(--gris2); }
+  .cta { background:var(--tinta); color:#fff; border-radius:10px; padding:24px; text-align:center; margin-top:16px; }
+  .cta h3 { font-size:18px; margin-bottom:6px; }
+  .cta p { color:#c4ccd2; font-size:14px; margin:0; }
+  .cta .valid { font-size:12px; color:#8b959c; margin-top:14px; }
+
+  .foot { text-align:center; font-size:12px; color:var(--gris3); margin-top:34px; padding-top:18px; border-top:1px solid var(--linea); }
+
+  .hide { display:none !important; }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width:560px) {
+    .page { padding:0 14px 70px; }
+    h1 { font-size:25px; }
+    .conv-grid { gap:18px; }
+    .conv-copy { min-width:0; flex-basis:100%; order:1; }
+    .phone { order:2; }
+    nav { top:34px; }
+    .levers li { flex-wrap:wrap; }
+  }
 </style>
 </head>
 <body>
 
-<div class="banner">Vista previa del sistema LuckyBike — datos de ejemplo, no es un sistema en vivo.</div>
-<div class="wrap">
+<!-- ===================== HONESTY BANNER ===================== -->
+<div class="honesty">
+  <b>Vista previa del sistema LuckyBike</b> — datos de ejemplo, no es un sistema en vivo.
+</div>
 
-<!-- 1 · PORTADA / PROBLEMA -->
-<section>
-  <div class="kicker">UPSIDE × LuckyBike</div>
-  <h1>El dinero llega solo.<br>Las preguntas se contestan solas.</h1>
-  <p class="lead">Hoy recibes ~420 mensajes y llamadas por semana y alcanzas a contestar 84. Y cada semana persigues ~80 transferencias a mano, una por una. Esto es lo que ese trabajo hace por ti — automático.</p>
-  <div class="stats">
-    <div class="stat bad"><b>336</b><span>mensajes sin responder cada semana (el 80%)</span></div>
-    <div class="stat warn"><b>~80</b><span>transferencias perseguidas a mano, cada semana</span></div>
-    <div class="stat"><b>$4,800</b><span>tu renta semanal (80 riders × $60) — lo que hay que proteger</span></div>
-  </div>
-</section>
+<!-- ===================== NAVBAR ===================== -->
+<nav>
+  <span class="brand">Lucky<span>Bike</span></span>
+  <a href="#s-problema">Problema</a>
+  <a href="#s-hoy">Hoy</a>
+  <a href="#s-convs">Conversaciones</a>
+  <a href="#s-cobro">Pago</a>
+  <a href="#s-dash">Cobros</a>
+  <a href="#s-flujo">Cómo funciona</a>
+  <a href="#s-roi">Números</a>
+  <span class="langtoggle" role="group" aria-label="Idioma">
+    <button id="lang-es" class="active" type="button">ES</button>
+    <button id="lang-en" type="button">EN</button>
+  </span>
+</nav>
 
-<!-- 2 · ASÍ SE VE HOY -->
-<section>
-  <h2>Así se ve tu WhatsApp hoy</h2>
-  <div class="demo-block">
-    <div class="demo-copy">
-      <p class="lead" style="font-size:15px">Mensajes apilados. Gente que quiere rentar, gente que pregunta si su bici está lista, gente a la que hay que cobrarle. Todo mezclado, todo manual.</p>
-      <ul>
-        <li>Respondidos esta semana: <b>20%</b></li>
-        <li>El que no recibe respuesta, renta con el de enfrente (Wattle St está llena de competencia).</li>
-        <li>Y el cobro: transferencia manual, sin depósito, sin registro automático de quién pagó.</li>
-      </ul>
-    </div>
-    <div class="phone">
-      <div class="ph-head"><div class="ph-ava">LB</div><div><b>LuckyBike (hoy)</b><small>12 chats sin leer</small></div></div>
-      <div class="chat" style="height:330px">
-        <div class="bub in">Hola, tienen bicis disponibles?<span class="ts">8:14 am</span></div>
-        <div class="bub in">Bro my bike has a flat, can I swap it today?<span class="ts">8:31 am</span></div>
-        <div class="bub in">Ya te transferí lo de la semana, revisa porfa<span class="ts">9:02 am</span></div>
-        <div class="bub in">A qué hora abren el sábado?<span class="ts">9:40 am</span></div>
-        <div class="bub in">Amigo necesito la bici para hoy, hay?<span class="ts">10:15 am</span></div>
-        <div class="bub in">Is my bike ready??<span class="ts">11:03 am</span></div>
-        <div class="bub in">Oye y cuánto es la renta?<span class="ts">11:47 am</span></div>
-        <div class="bub sys">+ 5 mensajes más sin leer…</div>
+<div class="page">
+
+  <!-- 1 — PORTADA / PROBLEMA -->
+  <section class="screen" id="s-problema">
+    <div class="eyebrow">Vista previa del sistema · Sídney, Australia</div>
+    <h1>Lucky<span>Bike</span> — cobro y atención automáticos por WhatsApp</h1>
+    <p class="sub">Así respondería y cobraría el sistema que UPSIDE le arma a LuckyBike. Para Sebastián.</p>
+
+    <div style="margin-top:24px"></div>
+    <h2>Tu situación hoy</h2>
+    <ul class="points">
+      <li>Rentas e-bikes a <strong>~80 repartidores</strong>. La demanda existe: recibes <strong>~420 mensajes y llamadas por semana</strong>.</li>
+      <li>Solo alcanzas a responder <strong>el 20%</strong> — unos 84. Los otros <strong>336 se van con el de enfrente.</strong></li>
+      <li>Cobras la renta <strong>persiguiendo cada transferencia a mano</strong>, cada semana, sin saber bien quién pagó.</li>
+    </ul>
+  </section>
+
+  <!-- 2 — ASÍ SE VE HOY (manual) -->
+  <section class="screen" id="s-hoy">
+    <h2>Así se ve tu lunes hoy</h2>
+    <div class="conv-grid">
+      <div class="conv-copy">
+        <h3>Mensajes apilados, sin contestar</h3>
+        <p>Cada mensaje sin respuesta es un rider que se renta la bici con otro. Y los pagos siguen llegando uno por uno, a mano.</p>
+        <div class="saydim">"Esto es lo que pasa cuando 8 de cada 10 mensajes quedan sin respuesta y cada cobro se persigue a mano."</div>
+      </div>
+      <div class="phone">
+        <div class="phone-header">
+          <div class="avatar">LB</div>
+          <div class="who"><span>LuckyBike</span><small>12 mensajes sin leer</small></div>
+        </div>
+        <div class="chat" id="chat-hoy" style="height:300px"></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- 3 · EL SISTEMA EN 3 CAPAS -->
-<section>
-  <h2>El sistema: 3 piezas que trabajan solas</h2>
-  <div class="layers">
-    <div class="layer"><div class="n">1</div><div>
-      <h3>Cobro automático (Stripe)</h3>
-      <p>Cada rider deja su tarjeta al firmar su contrato de renta — igual que Zoomo y toda la industria. Cada semana, el cargo de <b>$60</b> sale solo de su tarjeta. Si falla, se reintenta solo. Nadie manda mensajes, nadie persigue a nadie.</p>
-      <span class="tag">Sin chat · sin IA · solo pasa</span>
-    </div></div>
-    <div class="layer"><div class="n">2</div><div>
-      <h3>Recibos y avisos por email</h3>
-      <p>Cobro exitoso → recibo automático al rider. Cobro fallido → aviso con link para arreglar su tarjeta. Todo queda por escrito, siempre. Y tú recibes un resumen semanal: quién pagó, quién no.</p>
-      <span class="tag">Constancia de todo · automático</span>
-    </div></div>
-    <div class="layer"><div class="n">3</div><div>
-      <h3>Asistente de WhatsApp</h3>
-      <p>Para todo lo demás: "¿debo algo?", "¿está lista mi bici?", "¿cuándo puedo pasar?", precios, rentar. Contesta 24/7 en español e inglés con los datos <b>reales</b> de la cuenta de cada rider — y solo te pasa lo que de verdad necesita tu atención.</p>
-      <span class="tag">Responde el 100% · ES + EN</span>
-    </div></div>
-  </div>
-  <div class="callout"><b>Cada pieza funciona sola.</b> Si un día WhatsApp se cae, los cobros siguen saliendo y los recibos siguen llegando. El dinero nunca depende del chat.</div>
-</section>
+  <!-- 3-6 — CONVERSACIONES -->
+  <section class="screen" id="s-convs">
+    <h2>Así responde el sistema</h2>
+    <p class="lead" style="color:var(--gris1);font-size:14px;margin-bottom:26px">
+      Cada conversación se reproduce como pasaría en vivo. Pulsa <b style="color:var(--verde)">Reproducir</b> y míralo contestar solo.
+    </p>
 
-<!-- 4 · COBRO AUTOMÁTICO -->
-<section>
-  <h2>Cada viernes, sin mover un dedo</h2>
-  <p class="lead" style="font-size:15px">Así se ve la semana de un rider al corriente. Nadie escribió un solo mensaje.</p>
-  <div class="mailflow">
-    <div class="flow-step"><div class="dot"></div>Viernes 6:00 am — el sistema carga <b>&nbsp;$60&nbsp;</b> a la tarjeta de Diego, automático.</div>
-    <div class="mail">
-      <div class="mhead"><span>De: <b>LuckyBike</b> &lt;pagos@luckybike.com.au&gt;</span><span>vie 6:01 am</span></div>
-      <div class="mbody">
-        <h4>Recibo de tu renta semanal ✓</h4>
-        <div class="amount">$60.00 AUD</div>
-        <p>Hola Diego — tu renta de la semana quedó pagada. Bici <b>LB-027</b> · al corriente hasta el <b>viernes 10 de julio</b>.</p>
+    <!-- Conv A -->
+    <div class="conv-block" data-conv="A" style="margin-bottom:38px">
+      <div class="conv-grid">
+        <div class="conv-copy">
+          <div class="rlabel">Conversación A · Rider nuevo</div>
+          <h3>Llega un repartidor nuevo y agenda recolección solo</h3>
+          <p>El sistema responde al instante, cotiza la renta, ofrece horarios reales y aparta la cita. Sin que muevas un dedo.</p>
+          <div class="saydim">"Un rider nuevo escribe a las 2 a.m. — el sistema lo atiende y lo agenda igual."</div>
+        </div>
+        <div>
+          <div class="phone">
+            <div class="phone-header"><div class="avatar">CR</div><div class="who"><span>Carlos Rojas</span><small>nuevo · LB-014</small></div></div>
+            <div class="chat" id="chat-A"></div>
+          </div>
+          <div class="controls">
+            <button class="btn" data-play="A">▶ Reproducir</button>
+            <button class="btn ghost" data-reset="A">Reiniciar</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flow-step"><div class="dot"></div>Y en tu panel: Diego aparece <b>&nbsp;al corriente&nbsp;</b>. Cero mensajes, cero persecución.</div>
-  </div>
-  <p class="note">Simulación con datos de ejemplo. El cobro real lo procesa Stripe (estándar de la industria); su comisión por transacción va a costo.</p>
-</section>
 
-<!-- 5 · CUANDO UN PAGO FALLA -->
-<section>
-  <h2>Y cuando una tarjeta falla, el sistema insiste por ti</h2>
-  <p class="lead" style="font-size:15px">Reintentos automáticos + avisos por email. Tú solo te enteras si de verdad no pagó.</p>
-  <div class="mailflow">
-    <div class="flow-step bad"><div class="dot"></div>Viernes — el cargo de <b>&nbsp;$60&nbsp;</b> de Andrés es rechazado (fondos insuficientes).</div>
-    <div class="mail fail">
-      <div class="mhead"><span>De: <b>LuckyBike</b> &lt;pagos@luckybike.com.au&gt;</span><span>vie 6:05 am</span></div>
-      <div class="mbody">
-        <h4>No pudimos procesar tu renta</h4>
-        <div class="amount">$60.00 AUD</div>
-        <p>Hola Andrés — el cargo de esta semana no pasó. Puedes pagar o actualizar tu tarjeta aquí en 2 toques:</p>
-        <span class="fakebtn">Pagar ahora&nbsp;→</span>
-        <p style="margin-top:8px;font-size:11.5px;color:var(--gris3)">(link de ejemplo)</p>
+    <!-- Conv B -->
+    <div class="conv-block" data-conv="B" style="margin-bottom:38px">
+      <div class="conv-grid">
+        <div class="conv-copy">
+          <div class="rlabel">Conversación B · Cobro automático</div>
+          <h3>La renta se cobra sola, cada semana</h3>
+          <p>Stripe carga los $60 a la tarjeta del rider automáticamente. El rider no hace nada: solo recibe su recibo y queda al corriente. Tú no persigues ni mandas nada.</p>
+          <div class="saydim">"El cobro pasa solo. Al rider solo le llega su recibo — ni tiene que abrir un link."</div>
+        </div>
+        <div>
+          <div class="phone">
+            <div class="phone-header"><div class="avatar">DF</div><div class="who"><span>Diego Fernández</span><small>al corriente · LB-027</small></div></div>
+            <div class="chat" id="chat-B"></div>
+          </div>
+          <div class="controls">
+            <button class="btn" data-play="B">▶ Reproducir</button>
+            <button class="btn ghost" data-reset="B">Reiniciar</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flow-step bad"><div class="dot"></div>Sábado y lunes — el sistema reintenta el cargo solo. Sigue fallando. Segundo aviso por email.</div>
-    <div class="flow-step bad"><div class="dot"></div>Día 5 — se acabaron los reintentos. AHORA sí, te llega a TU WhatsApp:</div>
-    <div class="alert-card" style="align-self:flex-start;width:100%;max-width:430px">
-      <b>⚠ Alerta · rider moroso</b>
-      Andrés Molina · bici <b>LB-009</b> · 5 días de mora · $60 sin pagar.<br>
-      Cargo rechazado 3 veces, avisos enviados sin respuesta. Requiere tu atención.
-    </div>
-  </div>
-  <div class="callout">De 80 riders, quizá 2 o 3 llegan a este punto en una semana. <b>Solo esos te tocan a ti.</b> Los otros 77 se cobraron y avisaron solos.</div>
-</section>
 
-<!-- 6 · CONV A: RIDER NUEVO -->
-<section>
-  <h2>El asistente de WhatsApp: un rider nuevo</h2>
-  <div class="demo-block">
-    <div class="demo-copy">
-      <p class="lead" style="font-size:15px">De los 336 mensajes que hoy se pierden, varios son gente queriendo rentar. Así los captura el sistema — a cualquier hora.</p>
-      <ul>
-        <li>Contesta al instante, agenda la recolección.</li>
-        <li>Le manda el link de alta: tarjeta + contrato en un solo paso.</li>
-        <li>Y te avisa que entró un rider nuevo.</li>
-      </ul>
+    <!-- Conv C -->
+    <div class="conv-block" data-conv="C" style="margin-bottom:38px">
+      <div class="conv-grid">
+        <div class="conv-copy">
+          <div class="rlabel">Conversación C · Cobro fallido · 3 niveles</div>
+          <h3>Si el cobro automático falla, el sistema persigue por ti</h3>
+          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti. Con la bici (GPS) marcada para recuperación.</p>
+          <div class="saydim">"Los mensajes solo salen si el cobro automático no pasó. Los dos recordatorios los manda el sistema."</div>
+        </div>
+        <div>
+          <div class="phone">
+            <div class="phone-header"><div class="avatar">AM</div><div class="who"><span>Andrés Molina</span><small>moroso 5 días · LB-009</small></div></div>
+            <div class="chat" id="chat-C"></div>
+          </div>
+          <div class="controls">
+            <button class="btn" data-play="C">▶ Reproducir</button>
+            <button class="btn ghost" data-reset="C">Reiniciar</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="phone">
-      <div class="ph-head"><div class="ph-ava">CR</div><div><b>Carlos Rojas</b><small>rider nuevo</small></div></div>
-      <div class="chat" id="chat-a"></div>
-      <div class="ph-ctl"><button class="btn play" onclick="play('a')">▶ Reproducir</button><button class="btn reset" onclick="resetChat('a')">Reiniciar</button></div>
-    </div>
-  </div>
-</section>
 
-<!-- 7 · CONV B: ¿DEBO ALGO? + PRIVACIDAD -->
-<section>
-  <h2>"¿Debo algo?" — con datos reales, y solo LOS SUYOS</h2>
-  <div class="demo-block">
-    <div class="demo-copy">
-      <p class="lead" style="font-size:15px">El asistente no inventa: consulta el registro real de pagos antes de responder. Y cada rider solo puede ver SU cuenta — la privacidad está bloqueada a nivel de sistema.</p>
-      <ul>
-        <li>Estado de pago al momento, desde el registro real.</li>
-        <li>Pide datos de otro rider → se niega, siempre.</li>
-        <li>Nunca opina de temas legales de las bicis.</li>
-      </ul>
+    <!-- Conv D -->
+    <div class="conv-block" data-conv="D">
+      <div class="conv-grid">
+        <div class="conv-copy">
+          <div class="rlabel">Conversación D · Status · Inglés</div>
+          <h3>Habla inglés y español, según escriba el rider</h3>
+          <p>El mismo sistema atiende en inglés a quien escribe en inglés. Tus riders no esperan a que estés disponible.</p>
+          <div class="saydim">"Le escriben en inglés, contesta en inglés. En español, en español."</div>
+        </div>
+        <div>
+          <div class="phone">
+            <div class="phone-header"><div class="avatar">WC</div><div class="who"><span>Wei Chen</span><small>al corriente · LB-031</small></div></div>
+            <div class="chat" id="chat-D"></div>
+          </div>
+          <div class="controls">
+            <button class="btn" data-play="D">▶ Reproducir</button>
+            <button class="btn ghost" data-reset="D">Reiniciar</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="phone">
-      <div class="ph-head"><div class="ph-ava">DF</div><div><b>Diego Fernández</b><small>bici LB-027</small></div></div>
-      <div class="chat" id="chat-b"></div>
-      <div class="ph-ctl"><button class="btn play" onclick="play('b')">▶ Reproducir</button><button class="btn reset" onclick="resetChat('b')">Reiniciar</button></div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- 8 · CONV C: BICI PERDIDA -->
-<section>
-  <h2>Bici con problema o perdida → tú te enteras al segundo</h2>
-  <div class="demo-block">
-    <div class="demo-copy">
-      <p class="lead" style="font-size:15px">Ya se te han perdido bicis. El sistema no las va a buscar por ti — pero te avisa al instante, con el número de la bici, en cuanto un rider reporta algo.</p>
-      <ul>
-        <li>El rider reporta por WhatsApp, a cualquier hora.</li>
-        <li>Alerta inmediata a tu teléfono con el número de la bici.</li>
-        <li>El asistente contiene al rider mientras tú actúas.</li>
-      </ul>
-    </div>
-    <div class="phone">
-      <div class="ph-head"><div class="ph-ava">MV</div><div><b>María Vargas</b><small>bici LB-003</small></div></div>
-      <div class="chat" id="chat-c"></div>
-      <div class="ph-ctl"><button class="btn play" onclick="play('c')">▶ Reproducir</button><button class="btn reset" onclick="resetChat('c')">Reiniciar</button></div>
-    </div>
-  </div>
-</section>
+  <!-- 6.5 — CÓMO SE COBRA -->
+  <section class="screen" id="s-cobro">
+    <h2>Cómo se cobra la renta</h2>
+    <p class="lead" style="color:var(--gris1);font-size:14px;margin-bottom:20px">
+      Nada de perseguir transferencias ni mandar links cada semana. La renta se cobra sola.
+    </p>
 
-<!-- 9 · CONV D: INGLÉS -->
-<section>
-  <h2>Y habla inglés — porque tus riders también</h2>
-  <div class="demo-block">
-    <div class="demo-copy">
-      <p class="lead" style="font-size:15px">El asistente responde en el idioma en que le escriban, automáticamente. Español e inglés desde el día uno.</p>
+    <div class="cobro-grid">
+      <div class="cobro-card ok">
+        <div class="ct"><span class="dot">●</span> Cada semana, automático</div>
+        <p><b>Stripe cobra los $60 directo a la tarjeta</b> que el rider registró una sola vez al darse de alta. Sin links, sin transferencias, sin que tú toques nada. El rider recibe su recibo y queda al corriente solo.</p>
+      </div>
+      <div class="cobro-card warn">
+        <div class="ct"><span class="dot">●</span> Solo si el cobro falla</div>
+        <p>Si la tarjeta rechaza (sin fondos, tarjeta vencida), <b>ahí — y solo ahí</b> — entran los mensajes de WhatsApp: recordatorio con link para reintentar. Si aun así no paga, te escala a ti.</p>
+      </div>
     </div>
-    <div class="phone">
-      <div class="ph-head"><div class="ph-ava">WC</div><div><b>Wei Chen</b><small>bike LB-031</small></div></div>
-      <div class="chat" id="chat-d"></div>
-      <div class="ph-ctl"><button class="btn play" onclick="play('d')">▶ Reproducir</button><button class="btn reset" onclick="resetChat('d')">Reiniciar</button></div>
-    </div>
-  </div>
-</section>
 
-<!-- 10 · DASHBOARD -->
-<section>
-  <h2>Tu panel: toda la semana en una pantalla</h2>
-  <div class="dash">
-    <div class="dash-head"><b>Panel de cobros</b><span>Semana del 6 al 12 de julio · datos de ejemplo</span></div>
+    <p class="dnote">Los mensajes de cobro no son la forma de pagar: son el plan B por si el cobro automático no pasa. En la mayoría de tus riders, nunca se mandan.</p>
+  </section>
+
+  <!-- 7 — DASHBOARD -->
+  <section class="screen" id="s-dash">
+    <h2>Panel de cobros</h2>
+    <div class="dash-head">
+      <div></div>
+      <div class="wk">Semana del 23 al 29 de junio · renta total: <b style="color:var(--verde)">$4,800 AUD/sem</b></div>
+    </div>
+
     <div class="dash-stats">
-      <div class="ds ok"><b>68/80</b><span>al corriente</span></div>
-      <div class="ds pend"><b>9</b><span>reintentando</span></div>
-      <div class="ds mor"><b>3</b><span>morosos</span></div>
+      <div class="dstat ok"><div class="n">68 / 80</div><div class="l">al corriente</div></div>
+      <div class="dstat pend"><div class="n">9</div><div class="l">pendientes</div></div>
+      <div class="dstat mor"><div class="n">3</div><div class="l">morosos</div></div>
     </div>
+
     <div class="alertband">
-      <b>Requieren tu atención</b>
-      <div class="row"><span>Andrés Molina · LB-009</span><span>5 días de mora · $60</span></div>
-      <div class="row"><span>Tom Baker · LB-052</span><span>6 días de mora · $60</span></div>
-      <div class="row"><span>Luis Herrera · LB-018</span><span>8 días de mora · $120</span></div>
+      <div class="ahd">Requiere tu atención</div>
+      <div class="alertrow">
+        <span class="nm">Andrés Molina</span>
+        <span class="meta">bici LB-009 · <span class="gps">GPS activo</span> · 5 días de mora · $60</span>
+        <span class="spacer"></span><span class="tact">Ver</span>
+      </div>
+      <div class="alertrow">
+        <span class="nm">Tomás Aguilar</span>
+        <span class="meta">bici LB-022 · <span class="gps">GPS activo</span> · 8 días de mora · $60</span>
+        <span class="spacer"></span><span class="tact">Ver</span>
+      </div>
+      <div class="alertrow">
+        <span class="nm">Kevin Ng</span>
+        <span class="meta">bici LB-040 · <span class="gps">GPS activo</span> · 6 días de mora · $60</span>
+        <span class="spacer"></span><span class="tact">Ver</span>
+      </div>
     </div>
-    <div class="tbl-scroll">
-    <table class="tbl">
-      <thead><tr><th>Rider</th><th>Bici</th><th>Renta/sem</th><th>Estado</th><th>Último pago</th></tr></thead>
-      <tbody>
-        <tr><td>Diego Fernández</td><td>LB-027</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Wei Chen</td><td>LB-031</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Carlos Rojas</td><td>LB-014</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>María Vargas</td><td>LB-003</td><td>$60</td><td><span class="badge pend">● Reintentando</span></td><td>3 jul</td></tr>
-        <tr><td>Andrés Molina</td><td>LB-009</td><td>$60</td><td><span class="badge mor">● Moroso (5d)</span></td><td>28 jun</td></tr>
-        <tr><td>Jack Nguyen</td><td>LB-044</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Camila Torres</td><td>LB-021</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Tom Baker</td><td>LB-052</td><td>$60</td><td><span class="badge mor">● Moroso (6d)</span></td><td>27 jun</td></tr>
-        <tr><td>Felipe Cárdenas</td><td>LB-036</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Anh Tran</td><td>LB-048</td><td>$60</td><td><span class="badge pend">● Reintentando</span></td><td>3 jul</td></tr>
-        <tr><td>Sofía Restrepo</td><td>LB-007</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Luis Herrera</td><td>LB-018</td><td>$60</td><td><span class="badge mor">● Moroso (8d)</span></td><td>25 jun</td></tr>
-        <tr><td>Ben Wilson</td><td>LB-060</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Paula Medina</td><td>LB-012</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-        <tr><td>Kevin Li</td><td>LB-055</td><td>$60</td><td><span class="badge ok">● Pagó</span></td><td>10 jul</td></tr>
-      </tbody>
-    </table>
+
+    <div class="progress-wrap">
+      <div class="plabel"><span>Cobro de la semana</span><span><b style="color:var(--verde)">85%</b> · $4,080 de $4,800</span></div>
+      <div class="progress"><div class="fill" style="width:85%"></div></div>
     </div>
-  </div>
-  <p class="note">Rent roll de la semana: $4,800 (80 × $60) · cobrado automático: 85% y subiendo con reintentos. Datos de ejemplo.</p>
-</section>
 
-<!-- 11 · CÓMO FUNCIONA -->
-<section>
-  <h2>Cómo funciona (sin tecnicismos)</h2>
-  <div class="diagram">
-    <div class="dg-row">
-      <div class="dg core">Stripe cobra cada semana<small>tarjeta del rider · reintentos solos</small></div>
-      <div class="dg-arrow">→</div>
-      <div class="dg">Email al rider<small>recibo o aviso de fallo</small></div>
-      <div class="dg-arrow">→</div>
-      <div class="dg">Tu panel se actualiza<small>pagó / reintentando / moroso</small></div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Rider</th><th>Bici</th><th>Renta/sem</th><th>Estado</th><th>Último pago</th><th>Acción</th></tr></thead>
+          <tbody id="dash-rows"></tbody>
+        </table>
+      </div>
     </div>
-    <div class="dg-row">
-      <div class="dg core">WhatsApp: el asistente responde<small>dudas · estatus · agendar · rentar</small></div>
-      <div class="dg-arrow">→</div>
-      <div class="dg">Con datos reales<small>solo la cuenta del que escribe</small></div>
-      <div class="dg-arrow">→</div>
-      <div class="dg">Te escala solo lo importante<small>morosos reales · bicis perdidas · riders nuevos</small></div>
+    <p class="note" style="margin-top:10px">Datos de ejemplo. Con tus riders y bicis reales, esta es exactamente la vista que tendrías cada semana.</p>
+  </section>
+
+  <!-- 8 — DIAGRAMA -->
+  <section class="screen" id="s-flujo">
+    <h2>Cómo funciona</h2>
+    <div class="diagram">
+      <div class="dnode entry">Mensaje<br>entra</div>
+      <div class="darrow">→</div>
+      <div class="dnode triage">Triage<br>clasifica</div>
+      <div class="darrow">→</div>
+      <div class="dbranches">
+        <div class="dbranch"><b>Responde</b> — horario, status, dudas de renta</div>
+        <div class="dbranch"><b>Cobra</b> — Stripe carga la renta automático; recuerda solo si falla</div>
+        <div class="dbranch"><b>Agenda</b> — aparta la recolección de la bici</div>
+        <div class="dbranch"><b>Escala</b> — solo lo importante te llega a ti</div>
+      </div>
     </div>
-  </div>
-  <p class="note">El cobro y los avisos corren en sistemas de pago estándar (Stripe), no en la IA — por eso son predecibles y no inventan. La IA solo conversa, y solo con los datos reales de cada rider.</p>
-</section>
+    <p class="dnote">La lógica de cobro y agenda corre en código, no en la IA — por eso es predecible y no inventa.</p>
+  </section>
 
-<!-- 12 · ROI -->
-<section>
-  <h2>Los números, con tus datos</h2>
-  <table class="roi">
-    <thead><tr><th>Qué recupera el sistema cada semana</th><th>Valor estimado</th></tr></thead>
-    <tbody>
-      <tr><td>Tu tiempo persiguiendo transferencias y contestando mensajes (~15 hrs/sem)</td><td>~$525</td></tr>
-      <tr><td>Pagos tarde o perdidos, recuperados con cargo automático + reintentos</td><td>~$192</td></tr>
-      <tr><td>Riders retenidos (hoy se van por falta de respuesta)</td><td>~$150</td></tr>
-      <tr><td>Rentas nuevas capturadas de los 336 mensajes que hoy se pierden</td><td>~$250</td></tr>
-      <tr><td>Bicis salvadas (alerta temprana de morosos)</td><td>~$150</td></tr>
-      <tr class="total"><td>Total sobre la mesa cada semana</td><td>~$1,267</td></tr>
-    </tbody>
-  </table>
-  <p class="lead" style="font-size:15px">Estimados conservadores con tus propios números (80 riders, $60/sem, 20% de respuesta). El sistema cuesta una fracción de eso.</p>
-</section>
+  <!-- 9 — ROI -->
+  <!-- NOTA (interna, no la ve el cliente): las 2 cifras de efectivo salen de datos que YA
+       están en la demo (80 riders x $60, y los $720 sin cobrar de esta semana). Antes de
+       mandarla, confirmar con Sebastián: (a) su % real de cobranza a tiempo, (b) cuántos
+       riders nuevos entra al mes, (c) si las bicis realmente traen GPS. Ajustar si difiere. -->
+  <section class="screen" id="s-roi">
+    <h2>Lo que hace por ti</h2>
+    <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
+      Todo esto, cada semana, sin que muevas un dedo:
+    </p>
 
-<!-- 13 · CIERRE -->
-<section style="border-bottom:0">
-  <h2>Inversión y siguiente paso</h2>
-  <div class="price">
-    <div class="pcard"><b>AU$1,500</b><span>implementación (pago único)</span></div>
-    <div class="pcard"><b>AU$350<span style="font-size:14px;color:var(--gris2)">/semana</span></b><span>servicio: hosting, soporte, optimización · mínimo 12 semanas</span></div>
-  </div>
-  <p class="lead" style="font-size:15px">Contra ~$1,267/semana que hoy se quedan en la mesa, el sistema cuesta ~7% de tu renta semanal y está hecho para devolver 3–4x. Comisiones de Stripe por transacción a costo.</p>
-  <div class="callout"><b>Siguiente paso:</b> confirmamos alcance, arrancamos la Fase 1, y en cuestión de semanas tus primeros riders están en cobro automático — empezando con un piloto de 10-15.</div>
-</section>
+    <ul class="points" style="margin-top:0">
+      <li><strong>Cobra solo</strong> y persigue al que no paga — tú solo te enteras del que de verdad no pagó.</li>
+      <li><strong>Contesta cada mensaje al instante</strong> — el rider que hoy se te iba con otro, ahora lo atiendes.</li>
+      <li><strong>Agenda las recolecciones</strong> y te libera las horas que hoy gastas en el celular.</li>
+      <li><strong>Marca la bici (GPS)</strong> cuando alguien deja de pagar, lista para recuperar.</li>
+      <li><strong>Atiende 24/7, en español e inglés</strong> — a las 2 a.m., en fin de semana, cuando estás dormido o fuera.</li>
+    </ul>
 
-<footer>
-  <span>UPSIDE — Automatización con IA para negocios en crecimiento</span>
-  <span>Leon Arroyo · Santiago Arroyo (Sídney)</span>
-</footer>
+    <p style="color:var(--gris1);font-size:14px;margin:26px 0 10px">Para hacer todo esto a mano, tu única opción sería contratar a alguien:</p>
+
+    <div class="invest" style="margin-bottom:14px">
+      <div class="row">
+        <span class="lbl">Un asistente<br><small style="color:var(--gris2);font-weight:400">$25/h · 10 h al día · los 7 días</small></span>
+        <span class="amt">$1,750 / sem</span>
+      </div>
+      <div class="row">
+        <span class="lbl">El sistema<br><small style="color:var(--gris2);font-weight:400">24 h al día · sin fallar · bilingüe</small></span>
+        <span class="amt">$350 / sem</span>
+      </div>
+    </div>
+
+    <p class="roi-line">
+      Un quinto del costo de una persona — y <span>no duerme, no se enferma, no se le olvida cobrar</span> y atiende en dos idiomas a la vez.
+    </p>
+    <p class="note" style="margin-top:10px">Y ese $1,750 es el piso: sin contar recargos de fin de semana, prestaciones ni que una persona solo cubre un turno a la vez.</p>
+  </section>
+
+  <!-- 10 — CIERRE / INVERSIÓN -->
+  <section class="screen" id="s-cierre">
+    <h2>Inversión</h2>
+    <div class="invest">
+      <div class="row"><span class="lbl">Implementación (pago único)</span><span class="amt">AU$1,500</span></div>
+      <div class="row"><span class="lbl">Servicio semanal (todo incluido)</span><span class="amt">AU$350 / semana</span></div>
+    </div>
+    <p class="note">Mínimo 12 semanas, luego semana a semana. Las comisiones de la pasarela de pago se pagan a costo.</p>
+    <div class="cta">
+      <h3>El siguiente paso</h3>
+      <p>Confirmamos el alcance, arrancamos, y en pocas semanas tus primeros riders están en cobro automático.</p>
+      <div class="valid">Propuesta válida hasta el 11 de julio de 2026</div>
+    </div>
+    <div class="foot">UPSIDE &nbsp;·&nbsp; Leon Arroyo (a través de Santiago, Sídney) &nbsp;·&nbsp; Vista previa — datos de ejemplo</div>
+  </section>
 
 </div>
 
 <script>
-var SCRIPTS = {
-  a: [
-    {t:"in",  x:"Hola, vi que rentan bicis para repartir. Tienen disponibles?"},
-    {t:"out", x:"¡Hola! Sí, sí tenemos e-bikes disponibles para repartidores."},
-    {t:"out", x:"La renta es de *$60 por semana*. ¿La quieres para empezar esta semana?"},
-    {t:"in",  x:"Sí, esta semana. Cómo le hago?"},
-    {t:"out", x:"Perfecto. Pasas por la bici a nuestro local en Wattle St, Ultimo.\nTengo estos horarios para que la recojas:\n1. Hoy 4:00 pm\n2. Mañana 10:00 am\n3. Mañana 2:00 pm\nRespóndeme con el número."},
-    {t:"in",  x:"2"},
-    {t:"out", x:"Listo, te aparté *mañana a las 10:00 am*. ¿Tu nombre completo para registrarte?"},
-    {t:"in",  x:"Carlos Rojas"},
-    {t:"out", x:"Gracias Carlos. Te mando tu link de alta — ahí dejas tu tarjeta y firmas tu contrato de renta, 2 minutos:\nluckybike.com.au/alta/c-rojas  (ejemplo)"},
-    {t:"out", x:"Con eso tu renta se paga sola cada semana y no tienes que andar transfiriendo. Nos vemos mañana en Wattle St."},
-    {t:"alert", x:"Rider nuevo · Carlos Rojas · recoge mañana 10:00 am · alta enviada.", h:"🟢 Aviso · rider nuevo"}
-  ],
-  b: [
-    {t:"in",  x:"Oye, estoy al corriente? No me acuerdo si ya pasó el cobro"},
-    {t:"out", x:"Hola Diego, déjame revisar tu cuenta…"},
-    {t:"out", x:"Sí, todo en orden. Tu cargo de *$60* del viernes se procesó bien — tienes el recibo en tu correo. Estás al corriente hasta el *viernes 10 de julio*."},
-    {t:"in",  x:"Perfecto. Oye y mi primo Andrés también renta con ustedes, él debe algo?"},
-    {t:"out", x:"Eso no te lo puedo decir, Diego — solo puedo darte información de *tu* cuenta. Si Andrés quiere saber, que nos escriba él directo y con gusto le decimos."},
-    {t:"in",  x:"Jaja ok ok. Buena semana"},
-    {t:"out", x:"Igualmente, Diego. Aquí andamos."}
-  ],
-  c: [
-    {t:"in",  x:"Amigo me acaban de robar la bici 😞 estaba afuera del restaurante y ya no está"},
-    {t:"out", x:"María, qué mal — gracias por avisar de inmediato. Ya registré el reporte de tu bici *LB-003* y le avisé al equipo en este momento."},
-    {t:"alert", x:"María Vargas reporta bici LB-003 ROBADA hace minutos · zona Haymarket. Reporte registrado.", h:"🔴 Alerta inmediata · bici perdida"},
-    {t:"out", x:"El equipo ya tiene el aviso con el número de tu bici. ¿Estás bien tú?"},
-    {t:"in",  x:"Sí yo bien, solo la bici"},
-    {t:"out", x:"Ok. El equipo te contacta en breve para los siguientes pasos. Cualquier cosa que recuerdes (hora exacta, dónde), mándamela por aquí."}
-  ],
-  d: [
-    {t:"in",  x:"Hey, is my bike ready for pickup?"},
-    {t:"out", x:"Hi Wei! Yes — your bike *LB-031* is ready."},
-    {t:"out", x:"You can pick it up today until *6:00 pm* at our Wattle St shop."},
-    {t:"in",  x:"great, what are the weekend hours?"},
-    {t:"out", x:"We're open *Sat & Sun, 8 am–2 pm*. See you there!"}
-  ]
-};
+(function(){
+  "use strict";
 
-var playing = {};
-var runToken = {};
+  /* ===================== CONVERSATION SCRIPTS ===================== */
+  var CONVS = {
+    A: { ts:"2:14 a.m.", lines:[
+      {side:"in",  t:["Hola, vi que rentan bicis para repartir. Tienen disponibles?"]},
+      {side:"out", t:["¡Hola! Sí, sí tenemos e-bikes disponibles para repartidores."]},
+      {side:"out", t:["La renta es de <b>$60 por semana</b>, sin depósito. ¿La quieres para empezar esta semana?"]},
+      {side:"in",  t:["Sí, esta semana. Cómo le hago?"]},
+      {side:"out", t:["Perfecto. Pasas por la bici a nuestro local en Wattle St, Ultimo."]},
+      {side:"out", t:["Tengo estos horarios para que la recojas:","• Hoy 4:00 pm","• Mañana 10:00 am","• Mañana 2:00 pm"]},
+      {side:"in",  t:["Mañana 10 am"]},
+      {side:"out", t:["Listo, te aparté <b>mañana a las 10:00 am</b> para recoger tu bici."]},
+      {side:"out", t:["Te mando un recordatorio antes. ¿Tu nombre completo para registrarte?"]},
+      {side:"in",  t:["Carlos Rojas"]},
+      {side:"out", t:["Gracias Carlos. Un último paso: registra tu tarjeta una sola vez aquí: pay.luckybike.com.au/alta/c-rojas <i>(ejemplo)</i>"]},
+      {side:"out", t:["Con eso la renta de <b>$60</b> se te cobra sola cada semana — sin transferencias ni links."]},
+      {side:"in",  t:["Listo, ya la registré"]},
+      {side:"out", t:["Perfecto. Quedas agendado y con cobro automático. Nos vemos mañana en Wattle St."]}
+    ]},
+    B: { ts:"9:00 a.m.", day:"Viernes", lines:[
+      {side:"out", t:["Hola Diego. Se te cobró la renta semanal de <b>$60</b> automáticamente a tu tarjeta terminación ••42."]},
+      {side:"out", t:["Aquí tu recibo: pay.luckybike.com.au/recibo/df-2607 <i>(ejemplo)</i>. Quedas al corriente hasta el <b>viernes 4 de julio</b>."]},
+      {side:"in",  t:["Gracias!"]},
+      {side:"out", t:["A ti, Diego. Buena semana."]}
+    ]},
+    C: { ts:"8:30 a.m.", lines:[
+      {lvl:"Nivel 1 · recordatorio amable (D+1)"},
+      {side:"out", t:["Hola Andrés, tu cobro automático de <b>$60</b> de esta semana no pasó (tu tarjeta la rechazó)."]},
+      {side:"out", t:["Actualiza tu tarjeta o reintenta aquí y listo: pay.luckybike.com.au/a-molina <i>(ejemplo)</i>"]},
+      {lvl:"Nivel 2 · re-intento (D+3)"},
+      {side:"out", t:["Andrés, seguimos sin poder cobrar tu renta de <b>$60</b>. ¿Todo bien?"]},
+      {side:"out", t:["Con este link lo resuelves en un minuto: pay.luckybike.com.au/a-molina"]},
+      {side:"out", t:["Cualquier cosa, escríbeme y lo vemos."]},
+      {lvl:"Nivel 3 · escalación a Sebastián"},
+      {alert:true, head:"Alerta al dueño", t:["<b>Andrés Molina</b> · bici LB-009 (GPS activo) · 5 días sin poder cobrar · $60.","El cobro automático y los recordatorios fallaron. Requiere tu atención."]}
+    ]},
+    D: { ts:"11:20 a.m.", lines:[
+      {side:"in",  t:["Hey, is my bike ready for pickup?"]},
+      {side:"out", t:["Hi Wei! Yes — your bike <b>LB-031</b> is ready."]},
+      {side:"out", t:["You can pick it up today until <b>6:00 pm</b> at our Wattle St shop."]},
+      {side:"in",  t:["great, what are the weekend hours?"]},
+      {side:"out", t:["We're open <b>Sat & Sun, 8 am–2 pm</b>. See you there!"]}
+    ]}
+  };
 
-function el(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!==undefined)e.innerHTML=html; return e; }
-function fmt(x){ return x.replace(/\*(.+?)\*/g,'<b>$1</b>').replace(/\n/g,'<br>'); }
-function ts(){ var d=new Date(); var h=d.getHours()%12||12; var m=('0'+d.getMinutes()).slice(-2); return h+':'+m+(d.getHours()<12?' am':' pm'); }
+  /* ===================== "TODAY" (manual, unread pile) ===================== */
+  var HOY = [
+    {side:"in", t:["Tienen bici disponible esta semana?"]},
+    {side:"in", t:["Buenas, hasta qué hora abren hoy?"]},
+    {side:"in", t:["Hola? sigo esperando respuesta"]},
+    {side:"in", t:["Is the bike ready? need it today"]},
+    {side:"in", t:["Cuánto es la renta semanal?"]},
+    {side:"in", t:["Ya hice la transferencia, la viste?"]},
+    {side:"in", t:["Quiero rentar una, cómo le hago"]},
+    {side:"in", t:["A qué hora paso por la bici??"]}
+  ];
 
-function resetChat(id){
-  playing[id] = false;
-  runToken[id] = (runToken[id]||0) + 1;
-  var c = document.getElementById('chat-'+id);
-  c.innerHTML = '';
-}
+  /* ===================== DASHBOARD ROWS ===================== */
+  var RIDERS = [
+    ["Diego Fernández","LB-027","Pagó","26 jun"],
+    ["María Vargas","LB-003","Pendiente","19 jun"],
+    ["Andrés Molina","LB-009","Moroso (5d)","14 jun"],
+    ["Wei Chen","LB-031","Pagó","25 jun"],
+    ["José Luis Peña","LB-011","Pagó","26 jun"],
+    ["Tomás Aguilar","LB-022","Moroso (8d)","11 jun"],
+    ["Sofía Ramírez","LB-018","Pagó","24 jun"],
+    ["Liang Wu","LB-035","Pagó","26 jun"],
+    ["Pablo Castro","LB-007","Pendiente","20 jun"],
+    ["Kevin Ng","LB-040","Moroso (6d)","13 jun"],
+    ["Ana Beltrán","LB-029","Pagó","25 jun"],
+    ["Marco Solís","LB-016","Pagó","26 jun"],
+    ["Hugo Maldonado","LB-002","Pagó","24 jun"],
+    ["Lucía Ferreira","LB-038","Pagó","26 jun"],
+    ["Daniel Ortiz","LB-024","Pagó","25 jun"]
+  ];
 
-function play(id){
-  if(playing[id]) return;
-  resetChat(id);
-  playing[id] = true;
-  var myRun = runToken[id];
-  var c = document.getElementById('chat-'+id);
-  var steps = SCRIPTS[id];
-  var i = 0;
+  function badge(status){
+    if (status.indexOf("Moroso")===0) return '<span class="badge mor">'+status+'</span>';
+    if (status==="Pendiente") return '<span class="badge pend">Pendiente</span>';
+    return '<span class="badge ok">Pagó</span>';
+  }
+  var rows = RIDERS.map(function(r){
+    return '<tr><td>'+r[0]+'</td><td class="colcode">'+r[1]+'</td><td>$60</td><td>'+badge(r[2])+'</td><td class="colcode">'+r[3]+'</td><td><span class="tact">Ver</span></td></tr>';
+  }).join("");
+  document.getElementById("dash-rows").innerHTML = rows;
 
-  function next(){
-    if(!playing[id] || runToken[id] !== myRun) return;
-    if(i >= steps.length){ playing[id]=false; return; }
-    var s = steps[i++];
-    if(s.t === 'out'){
-      var t = el('div','typing','<i></i><i></i><i></i>');
-      c.appendChild(t); c.scrollTop = c.scrollHeight;
-      setTimeout(function(){
-        if(!playing[id] || runToken[id] !== myRun){ t.remove(); return; }
-        t.remove();
-        var b = el('div','bub out', fmt(s.x)+'<span class="ts">'+ts()+' ✓✓</span>');
-        c.appendChild(b); c.scrollTop = c.scrollHeight;
-        setTimeout(next, 900);
-      }, 850 + Math.random()*350);
-    } else if(s.t === 'in'){
-      var b = el('div','bub in', fmt(s.x)+'<span class="ts">'+ts()+'</span>');
-      c.appendChild(b); c.scrollTop = c.scrollHeight;
-      setTimeout(next, 1100);
-    } else if(s.t === 'alert'){
-      var lbl = el('div','stage','En el teléfono de Sebastián');
-      c.appendChild(lbl);
-      var a = el('div','alert-card','<b>'+s.h+'</b>'+fmt(s.x));
-      c.appendChild(a); c.scrollTop = c.scrollHeight;
-      setTimeout(next, 1600);
-    } else {
-      next();
+  (function(){
+    var c = document.getElementById("chat-hoy");
+    var html = '<div class="daystamp">Hoy</div>';
+    HOY.forEach(function(m){ html += '<div class="bubble in"><span class="mline">'+m.t[0]+'</span></div>'; });
+    c.innerHTML = html;
+  })();
+
+  /* ===================== PLAYBACK ENGINE ===================== */
+  var TYPE_MIN=850, TYPE_MAX=1150, READ_MIN=550, READ_MAX=800, STEP_PAUSE=420;
+  var timers = {};
+  var playing = {};
+
+  function rand(a,b){ return a + Math.floor(Math.random()*(b-a)); }
+  function clearConv(id){
+    (timers[id]||[]).forEach(clearTimeout); timers[id]=[]; playing[id]=false;
+    var chat = document.getElementById("chat-"+id);
+    if (chat) chat.innerHTML="";
+    setBtns(id,false);
+  }
+  function setBtns(id, running){
+    var pb = document.querySelector('[data-play="'+id+'"]');
+    if (pb){ pb.disabled = running; pb.textContent = running ? "Reproduciendo…" : "▶ Reproducir"; }
+  }
+  function scrollChat(chat){ chat.scrollTop = chat.scrollHeight; }
+
+  function bubble(side, lines, ts){
+    var b = document.createElement("div");
+    b.className = "bubble "+side;
+    var inner = lines.map(function(l){ return '<span class="mline">'+l+'</span>'; }).join("");
+    b.innerHTML = inner + '<span class="ts">'+ts+'</span>';
+    return b;
+  }
+  function alertCard(head, lines){
+    var c = document.createElement("div");
+    c.className = "alertcard";
+    c.innerHTML = '<div class="ahead">'+head+'</div>' + lines.map(function(l){return '<span class="mline">'+l+'</span>';}).join("");
+    return c;
+  }
+  function lvlLabel(txt){
+    var d = document.createElement("div"); d.className="lvl-label"; d.textContent=txt; return d;
+  }
+  function dayStamp(txt){
+    var d = document.createElement("div"); d.className="daystamp"; d.textContent=txt; return d;
+  }
+
+  function play(id){
+    if (playing[id]) return;
+    clearConv(id);
+    playing[id]=true; setBtns(id,true);
+    var conv = CONVS[id];
+    var chat = document.getElementById("chat-"+id);
+    var t = 0; timers[id]=[];
+    function at(delay, fn){ timers[id].push(setTimeout(fn, delay)); }
+
+    if (conv.day){
+      at(t, function(){ chat.appendChild(dayStamp(conv.day)); scrollChat(chat); });
+      t += 350;
+    }
+
+    conv.lines.forEach(function(line){
+      if (line.lvl){
+        at(t, function(){ chat.appendChild(lvlLabel(line.lvl)); scrollChat(chat); });
+        t += 700;
+        return;
+      }
+      if (line.alert){
+        var tp = rand(TYPE_MIN,TYPE_MAX);
+        at(t, function(){
+          var ty=document.createElement("div"); ty.className="typing"; ty.id="ty-"+id;
+          ty.innerHTML="<span></span><span></span><span></span>"; chat.appendChild(ty); scrollChat(chat);
+        });
+        at(t+tp, function(){
+          var ty=document.getElementById("ty-"+id); if(ty) ty.remove();
+          chat.appendChild(alertCard(line.head, line.t)); scrollChat(chat);
+        });
+        t += tp + 900;
+        return;
+      }
+      if (line.side==="out"){
+        var typ = rand(TYPE_MIN,TYPE_MAX);
+        at(t, function(){
+          var ty=document.createElement("div"); ty.className="typing"; ty.id="ty-"+id;
+          ty.innerHTML="<span></span><span></span><span></span>"; chat.appendChild(ty); scrollChat(chat);
+        });
+        at(t+typ, function(){
+          var ty=document.getElementById("ty-"+id); if(ty) ty.remove();
+          chat.appendChild(bubble("out", line.t, conv.ts)); scrollChat(chat);
+        });
+        t += typ + STEP_PAUSE;
+      } else {
+        var rd = rand(READ_MIN,READ_MAX);
+        at(t+rd, function(){
+          chat.appendChild(bubble("in", line.t, conv.ts)); scrollChat(chat);
+        });
+        t += rd + STEP_PAUSE;
+      }
+    });
+    at(t, function(){ playing[id]=false; setBtns(id,false); });
+  }
+
+  function handleTap(target){
+    var pb = target.closest ? target.closest("[data-play]") : null;
+    if (pb){ play(pb.getAttribute("data-play")); return true; }
+    var rb = target.closest ? target.closest("[data-reset]") : null;
+    if (rb){ clearConv(rb.getAttribute("data-reset")); return true; }
+    var lb = target.closest ? target.closest("#lang-es,#lang-en") : null;
+    if (lb){ setLang(lb.id === "lang-en" ? "en" : "es"); return true; }
+    return false;
+  }
+  var tapLock = false;
+  function onTap(e){
+    if (e.type === "click" && tapLock) return;
+    if (handleTap(e.target)){
+      e.preventDefault();
+      if (e.type === "touchend"){
+        tapLock = true;
+        setTimeout(function(){ tapLock = false; }, 700);
+      }
     }
   }
-  next();
-}
+  document.addEventListener("touchend", onTap, false);
+  document.addEventListener("click", onTap, false);
 
-// touch support for in-app webviews
-document.addEventListener('touchend', function(e){
-  var b = e.target.closest && e.target.closest('.btn');
-  if(!b) return;
-  e.preventDefault();
-  b.click();
-}, {passive:false});
+  /* ===================== LANGUAGE TOGGLE (UI chrome only) ===================== */
+  var I18N = {
+    es:{ "s-problema":"Problema","s-hoy":"Hoy","s-convs":"Conversaciones","s-cobro":"Pago","s-dash":"Cobros","s-flujo":"Cómo funciona","s-roi":"Números",
+         honesty:'<b>Vista previa del sistema LuckyBike</b> — datos de ejemplo, no es un sistema en vivo.' },
+    en:{ "s-problema":"Problem","s-hoy":"Today","s-convs":"Conversations","s-cobro":"Payment","s-dash":"Billing","s-flujo":"How it works","s-roi":"Numbers",
+         honesty:'<b>LuckyBike system preview</b> — sample data, not a live system.' }
+  };
+  function setLang(lng){
+    document.getElementById("lang-es").classList.toggle("active", lng==="es");
+    document.getElementById("lang-en").classList.toggle("active", lng==="en");
+    var dict = I18N[lng];
+    document.querySelector(".honesty").innerHTML = dict.honesty;
+    document.querySelectorAll('nav a').forEach(function(a){
+      var key = a.getAttribute("href").slice(1);
+      if (dict[key]) a.textContent = dict[key];
+    });
+    document.documentElement.lang = lng;
+  }
+
+})();
 </script>
 </body>
 </html>
