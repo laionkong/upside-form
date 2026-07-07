@@ -314,6 +314,7 @@
   <a href="#s-cobro">Pago</a>
   <a href="#s-dash">Cobros</a>
   <a href="#s-flujo">Cómo funciona</a>
+  <a href="#s-alcance">Incluye</a>
   <a href="#s-roi">Números</a>
   <span class="langtoggle" role="group" aria-label="Idioma">
     <button id="lang-es" class="active" type="button">ES</button>
@@ -332,8 +333,8 @@
     <div style="margin-top:24px"></div>
     <h2>Tu situación hoy</h2>
     <ul class="points">
-      <li>Rentas e-bikes a <strong>~80 repartidores</strong>. La demanda existe: recibes <strong>~420 mensajes y llamadas por semana</strong>.</li>
-      <li>Solo alcanzas a responder <strong>el 20%</strong> — unos 84. Los otros <strong>336 se van con el de enfrente.</strong></li>
+      <li>Rentas e-bikes a <strong>~80 repartidores</strong>. La demanda existe: te llegan mensajes y llamadas todo el día.</li>
+      <li>Solo alcanzas a responder cerca del <strong>20%</strong>. La mayoría se queda sin respuesta y se va con el de enfrente.</li>
       <li>Cobras la renta <strong>persiguiendo cada transferencia a mano</strong>, cada semana, sin saber bien quién pagó.</li>
     </ul>
   </section>
@@ -584,11 +585,20 @@
     <p class="dnote">La lógica de cobro y agenda corre en código, no en la IA — por eso es predecible y no inventa.</p>
   </section>
 
+  <!-- 8.5 — ALCANCE -->
+  <section class="screen" id="s-alcance">
+    <h2>Todo lo que incluye</h2>
+    <ul class="points">
+      <li><strong>Agente de WhatsApp 24/7, en español e inglés</strong> — responde dudas, da el estatus de la bici y agenda visitas y recolecciones solo.</li>
+      <li><strong>Cobro automático o por mensaje</strong> — Stripe carga la renta a la tarjeta cada semana, o cobras por link; con recibos y avisos por correo.</li>
+      <li><strong>Página web</strong> — productos, agendamiento, ubicación, contacto y los datos generales del negocio.</li>
+      <li><strong>Panel operativo</strong> — conversaciones, alertas, y el estatus de cada bici y cada rider en una sola vista.</li>
+      <li><strong>Agenda conectada a Google Calendar</strong> — las citas quedan en tu calendario sin capturarlas a mano.</li>
+      <li><strong>Links de alta</strong> — registro de contrato del rider y alta de bicicletas.</li>
+    </ul>
+  </section>
+
   <!-- 9 — ROI -->
-  <!-- NOTA (interna, no la ve el cliente): el único número duro aquí es el costo del asistente
-       humano ($25/h x 10h x 7 = $1,750/sem), que es un hecho, no una estimación. Confirmar con
-       Sebastián solo los supuestos base (80 riders a $60/sem) y que el reporte de bici perdida
-       se maneje por notificación como se describe. -->
   <section class="screen" id="s-roi">
     <h2>Lo que hace por ti</h2>
     <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
@@ -612,12 +622,12 @@
       </div>
       <div class="row">
         <span class="lbl">El sistema<br><small style="color:var(--gris2);font-weight:400">24 h al día · sin fallar · bilingüe</small></span>
-        <span class="amt">$350 / sem</span>
+        <span class="amt">$270 / sem</span>
       </div>
     </div>
 
     <p class="roi-line">
-      Un quinto del costo de una persona — y <span>no duerme, no se enferma, no se le olvida cobrar</span> y atiende en dos idiomas a la vez.
+      Una fracción del costo de una persona — y <span>no duerme, no se enferma, no se le olvida cobrar</span> y atiende en dos idiomas a la vez.
     </p>
     <p class="note" style="margin-top:10px">Y ese $1,750 es el piso: sin contar recargos de fin de semana, prestaciones ni que una persona solo cubre un turno a la vez.</p>
   </section>
@@ -626,14 +636,14 @@
   <section class="screen" id="s-cierre">
     <h2>Inversión</h2>
     <div class="invest">
-      <div class="row"><span class="lbl">Implementación (pago único)</span><span class="amt">AU$1,500</span></div>
-      <div class="row"><span class="lbl">Servicio semanal (todo incluido)</span><span class="amt">AU$350 / semana</span></div>
+      <div class="row"><span class="lbl">Implementación (pago único, incluye la web)</span><span class="amt">AU$2,200</span></div>
+      <div class="row"><span class="lbl">Servicio semanal (todo incluido)</span><span class="amt">AU$270 / semana</span></div>
     </div>
     <p class="note">Mínimo 12 semanas, luego semana a semana. Las comisiones de la pasarela de pago se pagan a costo.</p>
     <div class="cta">
       <h3>El siguiente paso</h3>
       <p>Confirmamos el alcance, arrancamos, y en pocas semanas tus primeros riders están en cobro automático.</p>
-      <div class="valid">Propuesta válida hasta el 11 de julio de 2026</div>
+      <div class="valid">Trato confirmado — listos para arrancar</div>
     </div>
     <div class="foot">UPSIDE &nbsp;·&nbsp; Leon Arroyo (a través de Santiago, Sídney) &nbsp;·&nbsp; Vista previa — datos de ejemplo</div>
   </section>
@@ -684,7 +694,7 @@
     E: { ts:"7:48 p.m.", lines:[
       {side:"in",  t:["Amigo me acaban de robar la bici 😞 estaba afuera del restaurante y ya no está"]},
       {side:"out", t:["María, qué mal — gracias por avisar de inmediato. Ya registré el reporte de tu bici <b>LB-003</b> y le avisé al equipo en este momento."]},
-      {alert:true, head:"Alerta inmediata al dueño", t:["<b>María Vargas</b> reporta bici <b>LB-003</b> robada hace minutos · zona Haymarket.","Reporte registrado con el número de la bici."]},
+      {alert:true, head:"Alerta inmediata al dueño", t:["<b>María Vargas</b> reporta bici <b>LB-003</b> robada hace minutos.","Reporte registrado con el número de la bici."]},
       {side:"out", t:["El equipo ya tiene el aviso. ¿Estás bien tú?"]},
       {side:"in",  t:["Sí yo bien, solo la bici"]},
       {side:"out", t:["Ok. Te contactan en breve para los siguientes pasos. Cualquier dato que recuerdes (hora exacta, dónde fue), mándamelo por aquí."]}
@@ -864,9 +874,9 @@
 
   /* ===================== LANGUAGE TOGGLE (UI chrome only) ===================== */
   var I18N = {
-    es:{ "s-problema":"Problema","s-hoy":"Hoy","s-convs":"Conversaciones","s-cobro":"Pago","s-dash":"Cobros","s-flujo":"Cómo funciona","s-roi":"Números",
+    es:{ "s-problema":"Problema","s-hoy":"Hoy","s-convs":"Conversaciones","s-cobro":"Pago","s-dash":"Cobros","s-flujo":"Cómo funciona","s-alcance":"Incluye","s-roi":"Números",
          honesty:'<b>Vista previa del sistema LuckyBike</b> — datos de ejemplo, no es un sistema en vivo.' },
-    en:{ "s-problema":"Problem","s-hoy":"Today","s-convs":"Conversations","s-cobro":"Payment","s-dash":"Billing","s-flujo":"How it works","s-roi":"Numbers",
+    en:{ "s-problema":"Problem","s-hoy":"Today","s-convs":"Conversations","s-cobro":"Payment","s-dash":"Billing","s-flujo":"How it works","s-alcance":"Included","s-roi":"Numbers",
          honesty:'<b>LuckyBike system preview</b> — sample data, not a live system.' }
   };
   function setLang(lng){
