@@ -196,7 +196,6 @@
   .alertrow:last-child { border-bottom:none; }
   .alertrow .nm { font-weight:600; color:var(--tinta); }
   .alertrow .meta { color:var(--gris1); font-size:12px; }
-  .alertrow .gps { font-size:11px; color:var(--verde); font-weight:600; }
   .alertrow .spacer { margin-left:auto; }
 
   .progress-wrap { margin-bottom:18px; }
@@ -219,7 +218,6 @@
   .badge.ok { background:var(--verde-bg); color:var(--verde); }
   .badge.pend { background:var(--ambar-bg); color:var(--ambar); }
   .badge.mor { background:var(--rojo-bg); color:var(--rojo); }
-  .tact { color:var(--verde); font-size:12px; cursor:default; }
   .colcode { color:var(--gris1); font-variant-numeric:tabular-nums; }
 
   /* ===================== DIAGRAM ===================== */
@@ -328,7 +326,7 @@
   <!-- 1 — PORTADA / PROBLEMA -->
   <section class="screen" id="s-problema">
     <div class="eyebrow">Vista previa del sistema · Sídney, Australia</div>
-    <h1>Lucky<span>Bike</span> — cobro y atención automáticos por WhatsApp</h1>
+    <h1>Lucky<span>Bike</span> — el cobro pasa solo y WhatsApp atiende por ti</h1>
     <p class="sub">Así respondería y cobraría el sistema que UPSIDE le arma a LuckyBike. Para Sebastián.</p>
 
     <div style="margin-top:24px"></div>
@@ -538,17 +536,17 @@
       <div class="alertrow">
         <span class="nm">Andrés Molina</span>
         <span class="meta">bici LB-009 · 5 días sin cobrar · $60</span>
-        <span class="spacer"></span><span class="tact">Ver</span>
+        
       </div>
       <div class="alertrow">
         <span class="nm">Tomás Aguilar</span>
         <span class="meta">bici LB-022 · 8 días sin cobrar · $60</span>
-        <span class="spacer"></span><span class="tact">Ver</span>
+        
       </div>
       <div class="alertrow">
         <span class="nm">Kevin Ng</span>
         <span class="meta">bici LB-040 · 6 días sin cobrar · $60</span>
-        <span class="spacer"></span><span class="tact">Ver</span>
+        
       </div>
     </div>
 
@@ -560,7 +558,7 @@
     <div class="table-wrap">
       <div class="table-scroll">
         <table>
-          <thead><tr><th>Rider</th><th>Bici</th><th>Renta/sem</th><th>Estado</th><th>Último pago</th><th>Acción</th></tr></thead>
+          <thead><tr><th>Rider</th><th>Bici</th><th>Renta/sem</th><th>Estado</th><th>Último pago</th></tr></thead>
           <tbody id="dash-rows"></tbody>
         </table>
       </div>
@@ -666,7 +664,7 @@
     ]},
     B: { ts:"9:00 a.m.", day:"Viernes", lines:[
       {side:"out", t:["Hola Diego. Se te cobró la renta semanal de <b>$60</b> automáticamente a tu tarjeta terminación ••42."]},
-      {side:"out", t:["Aquí tu recibo: pay.luckybike.com.au/recibo/df-2607 <i>(ejemplo)</i>. Quedas al corriente hasta el <b>viernes 4 de julio</b>."]},
+      {side:"out", t:["Tu recibo ya te llegó al correo. Quedas al corriente hasta el <b>viernes 4 de julio</b>."]},
       {side:"in",  t:["Gracias! Oye, y mi primo Andrés también renta con ustedes, él va al corriente?"]},
       {side:"out", t:["Eso no te lo puedo decir, Diego — solo puedo darte información de <b>tu</b> cuenta. Si Andrés quiere saber, que nos escriba él directo y con gusto le decimos."]},
       {side:"in",  t:["Jaja ok ok. Buena semana"]},
@@ -737,7 +735,7 @@
     return '<span class="badge ok">Pagó</span>';
   }
   var rows = RIDERS.map(function(r){
-    return '<tr><td>'+r[0]+'</td><td class="colcode">'+r[1]+'</td><td>$60</td><td>'+badge(r[2])+'</td><td class="colcode">'+r[3]+'</td><td><span class="tact">Ver</span></td></tr>';
+    return '<tr><td>'+r[0]+'</td><td class="colcode">'+r[1]+'</td><td>$60</td><td>'+badge(r[2])+'</td><td class="colcode">'+r[3]+'</td></tr>';
   }).join("");
   document.getElementById("dash-rows").innerHTML = rows;
 
