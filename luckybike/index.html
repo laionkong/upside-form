@@ -287,6 +287,17 @@
     nav { top:34px; }
     .levers li { flex-wrap:wrap; }
   }
+
+  /* ===================== EMAIL MOCKS (recibos) ===================== */
+  .mailgrid { display:grid; gap:14px; margin:20px 0 6px; }
+  .mailcard { border:1px solid var(--linea); border-radius:12px; overflow:hidden; background:#fff; box-shadow:0 4px 14px rgba(0,0,0,.05); max-width:560px; }
+  .mailcard .mhead { background:#f7f8f9; border-bottom:1px solid var(--linea); padding:8px 14px; font-size:12px; color:var(--gris2); display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px; }
+  .mailcard .mbody { padding:14px 16px; }
+  .mailcard .mbody h4 { font-size:15px; color:var(--tinta); margin-bottom:5px; }
+  .mailcard .mbody p { font-size:13.5px; color:var(--gris1); }
+  .mailcard .amount { font-size:24px; color:var(--verde); font-weight:800; margin:6px 0 2px; letter-spacing:-.5px; }
+  .mailcard.fail .amount { color:var(--rojo); }
+  .mailcard .fakebtn { display:inline-block; background:var(--rojo); color:#fff; border-radius:7px; padding:7px 16px; font-size:13px; font-weight:700; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -383,7 +394,7 @@
         <div class="conv-copy">
           <div class="rlabel">Conversación B · Cobro automático</div>
           <h3>La renta se cobra sola, cada semana</h3>
-          <p>Stripe carga los $60 a la tarjeta del rider automáticamente. El rider no hace nada: solo recibe su recibo y queda al corriente. Tú no persigues ni mandas nada.</p>
+          <p>Stripe carga los $60 a la tarjeta del rider automáticamente. El rider no hace nada: solo recibe su recibo y queda al corriente. Tú no persigues ni mandas nada. Y la privacidad está bloqueada a nivel de sistema: cada rider solo puede preguntar por <b>su</b> cuenta, nunca por la de otro.</p>
           <div class="saydim">"El cobro pasa solo. Al rider solo le llega su recibo — ni tiene que abrir un link."</div>
         </div>
         <div>
@@ -405,7 +416,7 @@
         <div class="conv-copy">
           <div class="rlabel">Conversación C · Cobro fallido · 3 niveles</div>
           <h3>Si el cobro automático falla, el sistema persigue por ti</h3>
-          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti.</p>
+          <p>Cuando la tarjeta rechaza, entran los recordatorios: uno amable, luego el re-intento, y solo cuando de verdad no paga te llega la alerta a ti. Con el número de la bici en el aviso.</p>
           <div class="saydim">"Los mensajes solo salen si el cobro automático no pasó. Los dos recordatorios los manda el sistema."</div>
         </div>
         <div>
@@ -442,6 +453,28 @@
         </div>
       </div>
     </div>
+
+    <!-- Conv E -->
+    <div class="conv-block" data-conv="E" style="margin-top:38px">
+      <div class="conv-grid">
+        <div class="conv-copy">
+          <div class="rlabel">Conversación E · Bici perdida o robada</div>
+          <h3>Reporta un problema y tú te enteras al segundo</h3>
+          <p>Si un rider reporta la bici robada o perdida, el sistema registra el reporte y te manda la alerta inmediata con el número de la bici. El asistente contiene al rider mientras tú actúas.</p>
+          <div class="saydim">"El aviso te llega al momento, con el número de la bici — no horas después, cuando ya se enfrió."</div>
+        </div>
+        <div>
+          <div class="phone">
+            <div class="phone-header"><div class="avatar">MV</div><div class="who"><span>María Vargas</span><small>bici LB-003</small></div></div>
+            <div class="chat" id="chat-E"></div>
+          </div>
+          <div class="controls">
+            <button class="btn" data-play="E">▶ Reproducir</button>
+            <button class="btn ghost" data-reset="E">Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- 6.5 — CÓMO SE COBRA -->
@@ -462,6 +495,27 @@
       </div>
     </div>
 
+    <p style="color:var(--gris1);font-size:14px;margin:22px 0 0">Y todo queda por escrito: cada movimiento genera su constancia por correo, automática.</p>
+    <div class="mailgrid">
+      <div class="mailcard">
+        <div class="mhead"><span>De: <b>LuckyBike</b> &lt;pagos@luckybike.com.au&gt;</span><span>vie 9:01 a.m.</span></div>
+        <div class="mbody">
+          <h4>Recibo de tu renta semanal ✓</h4>
+          <div class="amount">$60.00 AUD</div>
+          <p>Hola Diego — tu renta de la semana quedó pagada. Bici <b>LB-027</b> · al corriente hasta el <b>viernes 4 de julio</b>.</p>
+        </div>
+      </div>
+      <div class="mailcard fail">
+        <div class="mhead"><span>De: <b>LuckyBike</b> &lt;pagos@luckybike.com.au&gt;</span><span>vie 9:05 a.m.</span></div>
+        <div class="mbody">
+          <h4>No pudimos procesar tu renta</h4>
+          <div class="amount">$60.00 AUD</div>
+          <p>Hola Andrés — el cargo de esta semana no pasó. Puedes pagar o actualizar tu tarjeta aquí en 2 toques:</p>
+          <span class="fakebtn">Pagar ahora →</span>
+          <p style="margin-top:7px;font-size:11.5px;color:var(--gris3)">(ejemplo)</p>
+        </div>
+      </div>
+    </div>
     <p class="dnote">Los mensajes de cobro no son la forma de pagar: son el plan B por si el cobro automático no pasa. En la mayoría de tus riders, nunca se mandan.</p>
   </section>
 
@@ -483,17 +537,17 @@
       <div class="ahd">Requiere tu atención</div>
       <div class="alertrow">
         <span class="nm">Andrés Molina</span>
-        <span class="meta">bici LB-009 · 5 días sin cobrar · $60</span>
+        <span class="meta">bici LB-009 · 5 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Tomás Aguilar</span>
-        <span class="meta">bici LB-022 · 8 días sin cobrar · $60</span>
+        <span class="meta">bici LB-022 · 8 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
       <div class="alertrow">
         <span class="nm">Kevin Ng</span>
-        <span class="meta">bici LB-040 · 6 días sin cobrar · $60</span>
+        <span class="meta">bici LB-040 · 6 días de mora · $60</span>
         <span class="spacer"></span><span class="tact">Ver</span>
       </div>
     </div>
@@ -526,17 +580,17 @@
         <div class="dbranch"><b>Responde</b> — horario, status, dudas de renta</div>
         <div class="dbranch"><b>Cobra</b> — Stripe carga la renta automático; recuerda solo si falla</div>
         <div class="dbranch"><b>Agenda</b> — aparta la recolección de la bici</div>
-        <div class="dbranch"><b>Escala</b> — cobro fallido o bici reportada perdida: solo lo importante te llega a ti</div>
+        <div class="dbranch"><b>Escala</b> — solo lo importante te llega a ti</div>
       </div>
     </div>
     <p class="dnote">La lógica de cobro y agenda corre en código, no en la IA — por eso es predecible y no inventa.</p>
   </section>
 
   <!-- 9 — ROI -->
-  <!-- NOTA (interna, no la ve el cliente): el único número duro aquí es el costo del asistente
-       humano ($25/h x 10h x 7 = $1,750/sem), que es un hecho, no una estimación. Confirmar con
-       Sebastián solo los supuestos base (80 riders a $60/sem) y que el reporte de bici perdida
-       se maneje por notificación como se describe. -->
+  <!-- NOTA (interna, no la ve el cliente): las 2 cifras de efectivo salen de datos que YA
+       están en la demo (80 riders x $60, y los $720 sin cobrar de esta semana). Antes de
+       mandarla, confirmar con Sebastián: (a) su % real de cobranza a tiempo, (b) cuántos
+       riders nuevos entra al mes, (c) nada de GPS en los avisos: solo número de bici (instrucción Leon 2026-07-07). -->
   <section class="screen" id="s-roi">
     <h2>Lo que hace por ti</h2>
     <p style="color:var(--gris1);font-size:14px;margin-bottom:16px">
@@ -547,7 +601,7 @@
       <li><strong>Cobra solo</strong> y persigue al que no paga — tú solo te enteras del que de verdad no pagó.</li>
       <li><strong>Contesta cada mensaje al instante</strong> — el rider que hoy se te iba con otro, ahora lo atiendes.</li>
       <li><strong>Agenda las recolecciones</strong> y te libera las horas que hoy gastas en el celular.</li>
-      <li><strong>Te avisa al instante</strong> si un rider reporta una bici perdida o robada — la notificación te llega directo, sin que se pierda entre mensajes.</li>
+      <li><strong>Te avisa con el número de la bici</strong> cuando alguien deja de pagar, para tu proceso de recuperación.</li>
       <li><strong>Atiende 24/7, en español e inglés</strong> — a las 2 a.m., en fin de semana, cuando estás dormido o fuera.</li>
     </ul>
 
@@ -613,8 +667,10 @@
     B: { ts:"9:00 a.m.", day:"Viernes", lines:[
       {side:"out", t:["Hola Diego. Se te cobró la renta semanal de <b>$60</b> automáticamente a tu tarjeta terminación ••42."]},
       {side:"out", t:["Aquí tu recibo: pay.luckybike.com.au/recibo/df-2607 <i>(ejemplo)</i>. Quedas al corriente hasta el <b>viernes 4 de julio</b>."]},
-      {side:"in",  t:["Gracias!"]},
-      {side:"out", t:["A ti, Diego. Buena semana."]}
+      {side:"in",  t:["Gracias! Oye, y mi primo Andrés también renta con ustedes, él va al corriente?"]},
+      {side:"out", t:["Eso no te lo puedo decir, Diego — solo puedo darte información de <b>tu</b> cuenta. Si Andrés quiere saber, que nos escriba él directo y con gusto le decimos."]},
+      {side:"in",  t:["Jaja ok ok. Buena semana"]},
+      {side:"out", t:["Igualmente, Diego. Aquí andamos."]}
     ]},
     C: { ts:"8:30 a.m.", lines:[
       {lvl:"Nivel 1 · recordatorio amable (D+1)"},
@@ -626,6 +682,14 @@
       {side:"out", t:["Cualquier cosa, escríbeme y lo vemos."]},
       {lvl:"Nivel 3 · escalación a Sebastián"},
       {alert:true, head:"Alerta al dueño", t:["<b>Andrés Molina</b> · bici LB-009 · 5 días sin poder cobrar · $60.","El cobro automático y los recordatorios fallaron. Requiere tu atención."]}
+    ]},
+    E: { ts:"7:48 p.m.", lines:[
+      {side:"in",  t:["Amigo me acaban de robar la bici 😞 estaba afuera del restaurante y ya no está"]},
+      {side:"out", t:["María, qué mal — gracias por avisar de inmediato. Ya registré el reporte de tu bici <b>LB-003</b> y le avisé al equipo en este momento."]},
+      {alert:true, head:"Alerta inmediata al dueño", t:["<b>María Vargas</b> reporta bici <b>LB-003</b> robada hace minutos · zona Haymarket.","Reporte registrado con el número de la bici."]},
+      {side:"out", t:["El equipo ya tiene el aviso. ¿Estás bien tú?"]},
+      {side:"in",  t:["Sí yo bien, solo la bici"]},
+      {side:"out", t:["Ok. Te contactan en breve para los siguientes pasos. Cualquier dato que recuerdes (hora exacta, dónde fue), mándamelo por aquí."]}
     ]},
     D: { ts:"11:20 a.m.", lines:[
       {side:"in",  t:["Hey, is my bike ready for pickup?"]},
