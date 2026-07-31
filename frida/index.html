@@ -4,21 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f7f3ec">
-<title>Novias Frida — Fotos de vestidos</title>
+<title>Novias Frida — Taller de fotos</title>
+<link rel="icon" href="img/logo.png">
 <!--
   ESTE ARCHIVO SE GENERA. No lo edites: edita index.html.tpl y corre build.py.
 
-  Formulario de Novias Frida. NO lleva ninguna llave, ni siquiera la anon:
+  Taller de fotos de Novias Frida. NO lleva ninguna llave, ni siquiera la anon:
   solo conoce la URL de dos Edge Functions. El unico control de acceso real es
   el token que llega en el fragmento del link (#t=..., nunca ?t=..., porque un
-  query string viaja al servidor y queda en logs y en el header Referer). Ver
-  projects/novias-frida/PLAN-FORMULARIO-WEB.md seccion 1.
+  query string viaja al servidor y queda en logs y en el header Referer).
+  Ver PLAN-FORMULARIO-WEB.md seccion 1 para el modelo de amenaza completo.
 
-  Las fuentes van embebidas como data URI a proposito. La version anterior
-  pedia "Iowan Old Style", Baskerville, Georgia -- ninguna existe en Android,
-  que es el telefono desde el que Frida abre esto, asi que el caracter de la
-  marca desaparecia en silencio justo en el unico dispositivo que importa.
-  Cormorant Garamond + Karla, subseteadas al charset de la pagina: 51 KB.
+  DISENO -- las decisiones y por que, en AUDITORIA-DISENO.md.
+  Lo esencial: la paleta base es la de su landing (marfil/oro), pero el ACENTO
+  sale de su logo real -- el carmin de la corona de flores de Frida Kahlo
+  (#a83030 muestreado, desaturado a #9b3c3c para pasar AA sobre marfil). No es
+  el rosa ingles apagado que traia la demo: su marca es mexicana.
+  Las fuentes van embebidas porque "Iowan Old Style"/Baskerville/Georgia NO
+  existen en Android, que es el telefono desde el que ella abre esto.
 -->
 <style>
 /* ---------------------------------------------------------------- fuentes */
@@ -27,48 +30,46 @@
 @font-face{font-family:"Karla";src:url(data:font/woff2;base64,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) format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"Karla";src:url(data:font/woff2;base64,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) format("woff2");font-weight:700;font-style:normal;font-display:swap}
 
-/* ---------------------------------------------------------------- tokens
-   La paleta es la de Novias Frida (demo-final-codex.html). No se reemplaza:
-   dashboard/DESIGN.md documenta que un cliente con marca propia no lleva la
-   identidad de UPSIDE. Lo unico que se agrega son los estados semanticos, que
-   su marca no tenia porque una landing no los necesita y una herramienta si.
-   Van deliberadamente fuera del rosa para que el estado nunca compita con el
-   acento. */
+/* ---------------------------------------------------------------- tokens */
 :root{
-  color-scheme: light;             /* mundo de papel marfil, a proposito de un solo tema */
+  color-scheme: light;             /* mundo de papel marfil, un solo tema a proposito */
 
   --marfil:#f7f3ec;
   --papel:#fffdf9;
   --tinta:#2b2320;
   --tinta-2:#675955;
-  --tinta-3:#8c7f77;
-  --rosa:#9d5c63;
-  --rosa-papel:#eee1e1;
-  --oro:#a98d5f;
-  --linea:#e1d7ca;
+  --tinta-3:#80736c;               /* AA sobre papel (4.51) */
 
-  --salvia:#5f7355;                /* listo */
+  /* acento: muestreado de la corona de flores de su logo */
+  --carmin:#9b3c3c;                /* 6.11 sobre marfil, y 6.11 al reves */
+  --carmin-papel:#f0e2e0;
+  --carmin-hondo:#7d3131;
+
+  --oro:#a98d5f;                   /* SOLO filetes y adornos */
+  --oro-texto:#846c46;             /* AA sobre marfil (4.50): etiquetas */
+  --linea:#e4dbcd;
+
+  --salvia:#4f6247;                /* listo */
   --salvia-papel:#e4eadd;
-  --ambar:#9a6f28;                 /* en proceso */
-  --ambar-papel:#f2e8d5;
-  --ladrillo:#a3433a;              /* error */
-  --ladrillo-papel:#f3ddd9;
+  --ambar:#89621f;                 /* en proceso */
+  --ambar-papel:#f4ead6;
+  --ladrillo:#9c3d34;              /* error */
+  --ladrillo-papel:#f5ddd9;
 
-  --sombra:0 18px 50px rgba(43,35,32,.09);
-  --sombra-corta:0 6px 18px rgba(43,35,32,.06);
+  --sombra:0 20px 56px rgba(43,35,32,.10);
+  --sombra-corta:0 4px 16px rgba(43,35,32,.055);
 
   --display:"Cormorant", Georgia, serif;
   --ui:"Karla", -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  --r-campo:12px;
-  --r-tarjeta:20px;
+  --r:14px;
+  --r-g:22px;
 }
 
 /* ---------------------------------------------------------------- base */
 *,*::before,*::after{box-sizing:border-box}
-/* El atributo `hidden` vive en la hoja del navegador, asi que CUALQUIER regla
-   de autor con display (.portada{display:flex}) se lo come. Se reafirma aqui
-   o las tres pantallas salen encimadas. */
+/* `hidden` vive en la hoja del navegador y CUALQUIER display de autor se lo
+   come. Se reafirma o las pantallas salen encimadas. */
 [hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -78,134 +79,169 @@ body{
 }
 img{display:block;max-width:100%}
 button,input,textarea{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-:focus-visible{outline:2px solid var(--oro);outline-offset:3px;border-radius:4px}
+:focus-visible{outline:2px solid var(--carmin);outline-offset:3px;border-radius:5px}
 
-.hoja{width:min(100%,560px);margin:0 auto;padding:0 18px calc(40px + env(safe-area-inset-bottom))}
+.hoja{width:min(100%,580px);margin:0 auto;padding:0 18px calc(48px + env(safe-area-inset-bottom))}
 
-/* eyebrow: el unico uso del oro. Etiqueta, nunca contenido. */
 .eyebrow{
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--oro);
+  font-size:10px;font-weight:700;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--oro-texto);
 }
-
 h1{
-  font-family:var(--display);font-weight:600;font-style:normal;
-  font-size:34px;line-height:1.05;letter-spacing:-.01em;margin:0;
-  text-wrap:balance;
+  font-family:var(--display);font-weight:600;font-size:36px;line-height:1.02;
+  letter-spacing:-.012em;margin:0;text-wrap:balance;
 }
-h2{
-  font-family:var(--display);font-weight:600;
-  font-size:22px;line-height:1.15;margin:0;text-wrap:balance;
-}
+h2{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.12;margin:0;text-wrap:balance}
 p{margin:0}
-.dice{color:var(--tinta-2);font-size:14px;line-height:1.6}
+.dice{color:var(--tinta-2);font-size:14.5px;line-height:1.6}
 
 /* ---------------------------------------------------------------- masthead */
 .masthead{
-  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
-  padding:22px 0 26px;border-bottom:1px solid var(--linea);margin-bottom:26px;
+  display:flex;align-items:center;gap:12px;
+  padding:20px 0 18px;border-bottom:1px solid var(--linea);margin-bottom:26px;
 }
-.marca{font-family:var(--display);font-style:italic;font-weight:600;font-size:23px;line-height:1}
+.masthead img{width:52px;height:52px;object-fit:contain;flex-shrink:0}
+.masthead .quien{display:flex;flex-direction:column;gap:2px;min-width:0}
+.masthead .lema{
+  font-family:var(--display);font-style:italic;font-size:16px;color:var(--tinta-2);
+  line-height:1.15;
+}
 
 /* ---------------------------------------------------------------- pantallas */
 .pantalla{display:none}
 .pantalla.activa{display:block}
 @media (prefers-reduced-motion:no-preference){
-  .pantalla.activa{animation:entra .28s cubic-bezier(.2,.7,.3,1)}
-  @keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .pantalla.activa{animation:entra .3s cubic-bezier(.2,.7,.3,1)}
+  @keyframes entra{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 }
+.encabezado{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
 
-.encabezado{display:flex;flex-direction:column;gap:7px;margin-bottom:24px}
+/* ---------------------------------------------------------------- antes/despues
+   La portada. Es la tesis del producto: mismo vestido, misma novia, mismo
+   momento -- cuarto revuelto y luz dura antes, pared limpia y encaje legible
+   despues. Son fotos REALES de su inventario, de la corrida del 2026-07-30,
+   no un mockup. Es lo unico que contesta "que es esto" de un vistazo. */
+.demo{
+  position:relative;overflow:hidden;border-radius:var(--r-g);
+  border:1px solid var(--linea);background:var(--papel);box-shadow:var(--sombra);
+  margin-bottom:22px;
+}
+.demo-par{position:relative;aspect-ratio:3/4;overflow:hidden;background:#e9e2d7}
+.demo-par img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.demo-par .despues{clip-path:inset(0 0 0 var(--corte,50%))}
+.demo-linea{
+  position:absolute;top:0;bottom:0;left:var(--corte,50%);width:2px;
+  background:var(--papel);box-shadow:0 0 0 1px rgba(43,35,32,.14);
+  pointer-events:none;
+}
+.demo-linea::after{
+  content:"";position:absolute;top:50%;left:50%;width:38px;height:38px;
+  transform:translate(-50%,-50%);border-radius:50%;
+  background:var(--papel);box-shadow:0 3px 14px rgba(43,35,32,.28);
+}
+.demo-linea::before{
+  content:"‹ ›";position:absolute;top:50%;left:50%;z-index:2;
+  transform:translate(-50%,-50%);font-size:15px;letter-spacing:.06em;color:var(--carmin);
+}
+.demo-rot{
+  position:absolute;z-index:2;top:12px;padding:5px 11px;border-radius:999px;
+  background:rgba(247,243,236,.93);
+  font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+}
+.demo-rot.izq{left:12px;color:var(--tinta-2)}
+.demo-rot.der{right:12px;color:var(--carmin)}
+.demo input[type=range]{
+  position:absolute;inset:0;width:100%;height:100%;margin:0;
+  opacity:0;cursor:ew-resize;
+}
+.demo-pie{
+  padding:14px 17px;border-top:1px solid var(--linea);
+  font-size:12.5px;color:var(--tinta-2);line-height:1.5;
+}
+.demo-pie b{color:var(--tinta)}
 
-/* ---------------------------------------------------------------- inicio */
+/* ---------------------------------------------------------------- acciones */
 .acciones{display:flex;flex-direction:column;gap:12px}
 .accion{
   display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;
   width:100%;text-align:left;cursor:pointer;
-  padding:20px;border:1px solid var(--linea);border-radius:var(--r-tarjeta);
+  padding:19px 20px;border:1px solid var(--linea);border-radius:var(--r-g);
   background:var(--papel);box-shadow:var(--sombra-corta);
-  transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
 }
 .accion:hover{border-color:var(--oro);box-shadow:var(--sombra)}
 .accion:active{transform:translateY(1px)}
-.accion .titulo{font-family:var(--display);font-size:21px;font-weight:600;display:block}
+.accion .titulo{font-family:var(--display);font-size:22px;font-weight:600;display:block}
 .accion .apoyo{font-size:12.5px;color:var(--tinta-2);line-height:1.45;display:block;margin-top:3px}
-.accion .flecha{font-size:19px;color:var(--oro);line-height:1}
-/* la accion primaria se gana el acento; la otra se queda en papel */
-.accion--primaria{background:var(--tinta);border-color:var(--tinta);box-shadow:var(--sombra)}
-.accion--primaria .titulo{color:var(--marfil)}
-.accion--primaria .apoyo{color:#cdbdb6}
-.accion--primaria .flecha{color:var(--rosa-papel)}
-.accion--primaria:hover{border-color:var(--tinta)}
+.accion .flecha{font-size:19px;color:var(--oro-texto);line-height:1}
+.accion--primaria{background:var(--carmin);border-color:var(--carmin);box-shadow:var(--sombra)}
+.accion--primaria .titulo{color:#fffdf9}
+.accion--primaria .apoyo{color:#f2ded9}
+.accion--primaria .flecha{color:#f2ded9}
+.accion--primaria:hover{border-color:var(--carmin-hondo);background:var(--carmin-hondo)}
 
-/* linea de cupo: dato, no alarma. Vive al pie del inicio. */
 .cupo{
   display:flex;align-items:baseline;justify-content:space-between;gap:12px;
-  margin-top:26px;padding-top:16px;border-top:1px solid var(--linea);
+  margin-top:24px;padding-top:15px;border-top:1px solid var(--linea);
   font-size:12.5px;color:var(--tinta-2);
 }
-.cupo b{font-family:var(--display);font-size:19px;color:var(--tinta);font-variant-numeric:tabular-nums}
-.cupo.agotado{color:var(--ladrillo)}
-.cupo.agotado b{color:var(--ladrillo)}
+.cupo b{font-family:var(--display);font-size:20px;color:var(--tinta);font-variant-numeric:tabular-nums}
+.cupo.agotado,.cupo.agotado b{color:var(--ladrillo)}
 
 /* ---------------------------------------------------------------- volver */
 .volver{
   display:inline-flex;align-items:center;gap:7px;
-  margin:18px 0 18px -8px;padding:8px;background:none;border:0;cursor:pointer;
-  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--tinta-3);
+  margin:16px 0 16px -8px;padding:8px;background:none;border:0;cursor:pointer;
+  font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--tinta-3);
 }
 .volver::before{content:"←";font-size:14px}
 .volver:hover{color:var(--tinta)}
 
 /* ---------------------------------------------------------------- ranuras
-   El tamano de la ranura codifica cual foto importa: frente es la heroica y la
-   unica obligatoria (es la que va al modelo caro y la que ancla todo el paso
-   2), asi que ocupa el ancho completo. Los otros tres angulos son una tira
-   debajo. No son cuatro cuadros iguales porque no valen lo mismo. */
-.ranuras{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+   El tamano codifica cual foto importa: frente es la heroica, la unica
+   obligatoria, la que va al modelo caro y la que ancla las publicaciones.
+   Las otras tres son una tira. No son cuatro cuadros iguales porque no valen
+   lo mismo. */
+.ranuras{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .ranura{position:relative;margin:0}
 .ranura--principal{grid-column:1/-1}
 .ranura input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .caja{
-  position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  border:1px dashed var(--linea);border-radius:var(--r-campo);background:var(--papel);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  border:1px dashed var(--linea);border-radius:var(--r);background:var(--papel);
   transition:border-color .18s ease;
 }
-.ranura--principal .caja{min-height:186px}
+.ranura--principal .caja{min-height:190px;border-color:#dcc7c3}
 .ranura--secundaria .caja{aspect-ratio:1}
 .ranura input:hover + .caja{border-color:var(--oro)}
-.caja .signo{font-family:var(--display);font-size:26px;line-height:1;color:var(--oro)}
+.caja .signo{font-family:var(--display);font-size:27px;line-height:1;color:var(--oro-texto)}
 .caja .nombre{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--tinta-3)}
 .caja img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ranura.llena .caja{border-style:solid;border-color:var(--linea)}
 .ranura.llena .signo,.ranura.llena .nombre{display:none}
-/* la obligatoria se distingue por el borde, no por un asterisco suelto */
-.ranura--principal .caja{border-color:#d8c4c0}
 .marca-req{
-  position:absolute;z-index:2;top:10px;left:10px;
-  padding:4px 9px;border-radius:999px;background:var(--rosa-papel);color:var(--rosa);
+  position:absolute;z-index:2;top:10px;left:10px;padding:4px 10px;border-radius:999px;
+  background:var(--carmin);color:#fffdf9;
   font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
 }
-.ranura.llena .marca-req{background:rgba(247,243,236,.94)}
+.ranura.llena .marca-req{background:rgba(247,243,236,.95);color:var(--carmin)}
 
 /* ---------------------------------------------------------------- campos */
-.campo{display:flex;flex-direction:column;gap:7px;margin-top:24px}
-.campo > .rotulo{display:flex;flex-direction:column;gap:2px}
+.campo{display:flex;flex-direction:column;gap:7px;margin-top:22px}
+.rotulo{display:flex;flex-direction:column;gap:2px}
 .rotulo .que{font-size:12.5px;font-weight:700}
 .rotulo .pista{font-size:12px;color:var(--tinta-2);line-height:1.45}
 input[type=text],textarea{
   width:100%;min-height:48px;padding:13px 14px;
-  border:1px solid var(--linea);border-radius:var(--r-campo);background:var(--papel);
+  border:1px solid var(--linea);border-radius:var(--r);background:var(--papel);
   transition:border-color .18s ease;
 }
-textarea{min-height:76px;resize:vertical;line-height:1.55}
+textarea{min-height:74px;resize:vertical;line-height:1.55}
 input[type=text]:focus,textarea:focus{outline:none;border-color:var(--oro)}
-input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
+input[type=text]::placeholder,textarea::placeholder{color:#9d8f86}
 .par{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-/* chips */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{position:relative;flex:1 1 calc(50% - 4px);margin:0}
 .chip input{position:absolute;opacity:0;width:1px;height:1px}
@@ -214,54 +250,82 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
   min-height:46px;padding:10px 12px;
   border:1px solid var(--linea);border-radius:999px;background:var(--papel);
   font-size:12.5px;font-weight:700;cursor:pointer;
-  transition:background .16s ease, color .16s ease, border-color .16s ease;
+  transition:background .16s ease,color .16s ease,border-color .16s ease;
 }
 .chip input:checked + span{background:var(--tinta);color:var(--marfil);border-color:var(--tinta)}
-.chip input:focus-visible + span{outline:2px solid var(--oro);outline-offset:2px}
+.chip input:focus-visible + span{outline:2px solid var(--carmin);outline-offset:2px}
 
-/* nota de encuadre: es la instruccion de mayor retorno de todo el sistema
-   (una foto cortada obliga al modelo a inventar el ruedo), asi que tiene
-   presencia propia -- pero es una nota, no una alarma. */
-.nota{
-  display:flex;gap:12px;margin-top:26px;padding:15px 16px;
-  border-radius:var(--r-campo);background:var(--rosa-papel);color:#6c4c50;
-  font-size:13px;line-height:1.55;
+/* lo opcional se pliega: solo 2 campos son obligatorios y el resto era un muro */
+details.mas{margin-top:22px;border-top:1px solid var(--linea);padding-top:6px}
+details.mas > summary{
+  list-style:none;cursor:pointer;padding:12px 0;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:12px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--tinta-3);
 }
-.nota .num{font-family:var(--display);font-size:19px;line-height:1.1;color:var(--rosa)}
+details.mas > summary::-webkit-details-marker{display:none}
+details.mas > summary::after{content:"+";font-family:var(--display);font-size:21px;color:var(--oro-texto)}
+details.mas[open] > summary::after{content:"–"}
+details.mas > summary:hover{color:var(--tinta)}
+
+.nota{
+  display:flex;gap:12px;margin-top:24px;padding:15px 16px;border-radius:var(--r);
+  background:var(--carmin-papel);color:#6a3f3f;font-size:13px;line-height:1.55;
+}
+.nota .num{font-family:var(--display);font-size:20px;line-height:1.05;color:var(--carmin)}
 .nota b{color:var(--tinta)}
 
-/* ---------------------------------------------------------------- boton */
 .cta{
   display:flex;align-items:center;justify-content:center;gap:10px;
-  width:100%;min-height:54px;margin-top:28px;padding:15px 22px;
-  border:0;border-radius:999px;background:var(--tinta);color:var(--marfil);cursor:pointer;
-  font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  box-shadow:var(--sombra);
-  transition:opacity .18s ease, transform .18s ease;
+  width:100%;min-height:54px;margin-top:26px;padding:15px 22px;
+  border:0;border-radius:999px;background:var(--carmin);color:#fffdf9;cursor:pointer;
+  font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  box-shadow:var(--sombra);transition:background .18s ease,transform .18s ease;
 }
-.cta:hover{opacity:.92}
+.cta:hover{background:var(--carmin-hondo)}
 .cta:active{transform:translateY(1px)}
-.cta[disabled]{opacity:.45;cursor:default;transform:none}
+.cta[disabled]{opacity:.5;cursor:default;transform:none}
 
-.aviso{margin-top:16px;padding:13px 15px;border-radius:var(--r-campo);font-size:13px;line-height:1.5}
+.aviso{margin-top:15px;padding:13px 15px;border-radius:var(--r);font-size:13px;line-height:1.5}
 .aviso--error{background:var(--ladrillo-papel);color:var(--ladrillo)}
 .aviso--bien{background:var(--salvia-papel);color:var(--salvia)}
 
-/* ---------------------------------------------------------------- vestidos */
-.lista{display:flex;flex-direction:column;gap:16px}
+/* ---------------------------------------------------------------- taller
+   La espera deja de ser tiempo muerto: se le ensenan las etapas REALES del
+   motor. No es una barra decorativa, son los pasos que de verdad corren. */
+.taller{padding:30px 0}
+.pasos{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.pasos li{
+  display:grid;grid-template-columns:26px 1fr;gap:13px;align-items:start;
+  padding:13px 0;border-top:1px solid var(--linea);
+}
+.pasos li:first-child{border-top:0}
+.paso-marca{
+  width:22px;height:22px;border-radius:50%;border:1px solid var(--linea);
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+  font-size:10px;font-weight:700;color:var(--tinta-3);background:var(--papel);
+}
+.pasos li.corriendo .paso-marca{border-color:var(--carmin);color:var(--carmin)}
+.pasos li.hecho .paso-marca{background:var(--salvia);border-color:var(--salvia);color:#fff}
+.pasos li.hecho .paso-marca::after{content:"✓"}
+.pasos li.hecho .paso-num{display:none}
+.paso-t{display:block;font-size:13.5px;font-weight:700}
+.paso-d{display:block;font-size:12.5px;color:var(--tinta-2);line-height:1.45;margin-top:2px}
+.pasos li:not(.corriendo):not(.hecho) .paso-t{color:var(--tinta-3);font-weight:400}
+@media (prefers-reduced-motion:no-preference){
+  .pasos li.corriendo .paso-marca{animation:latir 1.5s ease-in-out infinite}
+  @keyframes latir{0%,100%{opacity:.45}50%{opacity:1}}
+}
+
+/* ---------------------------------------------------------------- entrega */
+.lista{display:flex;flex-direction:column;gap:22px}
 .vestido{
-  border:1px solid var(--linea);border-radius:var(--r-tarjeta);
-  background:var(--papel);box-shadow:var(--sombra-corta);overflow:hidden;
+  border:1px solid var(--linea);border-radius:var(--r-g);background:var(--papel);
+  box-shadow:var(--sombra-corta);overflow:hidden;
 }
-.vestido-cab{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:16px 18px 13px;
-}
-/* italica reservada a los NOMBRES de vestido: es el nombre de una pieza, no
-   un titulo de seccion. Convencion editorial, no adorno. */
-.vestido-cab .nombre-vestido{
-  font-family:var(--display);font-style:italic;font-weight:600;font-size:20px;line-height:1.1;
-}
+.vestido-cab{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px 12px}
+/* italica reservada a los NOMBRES de vestido: es el nombre de una pieza.
+   Convencion editorial, no adorno. */
+.nombre-vestido{font-family:var(--display);font-style:italic;font-weight:600;font-size:21px;line-height:1.1}
 .estado{
   flex-shrink:0;padding:5px 11px;border-radius:999px;
   font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap;
@@ -270,67 +334,105 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
 .estado--listo{background:var(--salvia-papel);color:var(--salvia)}
 .estado--error{background:var(--ladrillo-papel);color:var(--ladrillo)}
 
-.tira{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--linea)}
-.tira a{display:block;aspect-ratio:3/4;overflow:hidden;background:var(--marfil)}
-.tira img{width:100%;height:100%;object-fit:cover}
+/* la foto profesional es la heroina: ancho completo. Antes salia a 110px en
+   un telefono, contradiciendo el producto que se vende. */
+.heroica{position:relative;display:block;background:#ece5da}
+.heroica img{width:100%;height:auto;display:block}
+.heroica .rol{
+  position:absolute;left:12px;bottom:12px;padding:6px 12px;border-radius:999px;
+  background:rgba(247,243,236,.94);color:var(--tinta);
+  font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+}
+.otras{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--linea)}
+.otras a{position:relative;display:block;aspect-ratio:1;overflow:hidden;background:var(--marfil)}
+.otras img{width:100%;height:100%;object-fit:cover}
+.otras .rol{
+  position:absolute;left:0;right:0;bottom:0;padding:5px 6px;
+  background:linear-gradient(0deg,rgba(43,35,32,.72),rgba(43,35,32,0));
+  color:#fff;font-size:8.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;text-align:center;
+}
 
-.vestido-cuerpo{padding:15px 18px 18px;display:flex;flex-direction:column;gap:14px}
-.vestido-cuerpo:empty{display:none}
+.cuerpo{padding:16px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.cuerpo:empty{display:none}
 .espera{font-size:13px;color:var(--tinta-2);display:flex;align-items:center;gap:9px}
 .punto{width:7px;height:7px;border-radius:50%;background:var(--ambar);flex-shrink:0}
 @media (prefers-reduced-motion:no-preference){
   .punto{animation:latir 1.6s ease-in-out infinite}
-  @keyframes latir{0%,100%{opacity:.35}50%{opacity:1}}
 }
 .falla{font-size:13px;color:var(--ladrillo);line-height:1.5}
 
-.pub{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--linea)}
+/* una publicacion */
+.pub{display:flex;flex-direction:column;gap:9px;padding-top:17px;border-top:1px solid var(--linea)}
 .pub:first-child{padding-top:0;border-top:0}
-.gancho-txt{font-family:var(--display);font-size:17px;line-height:1.25;color:var(--tinta)}
+.pub-cab{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pub-tipo{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--oro-texto)}
+.pub-cierre{
+  padding:3px 9px;border-radius:999px;font-size:8.5px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+}
+.pub-cierre.comentario{background:var(--carmin-papel);color:var(--carmin)}
+.pub-cierre.reenvio{background:var(--salvia-papel);color:var(--salvia)}
+.gancho-txt{font-family:var(--display);font-size:22px;line-height:1.2;color:var(--tinta)}
+.cuerpo-txt{
+  font-size:14px;line-height:1.62;color:var(--tinta-2);
+  white-space:pre-wrap;word-break:break-word;
+}
+.hashtags{font-size:12.5px;color:var(--carmin);line-height:1.55;word-break:break-word}
+.primer-com{
+  font-size:12.5px;color:var(--tinta-2);line-height:1.5;
+  padding:11px 13px;background:var(--marfil);border-radius:var(--r);
+}
+.primer-com b{color:var(--tinta);font-size:10px;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:3px}
+.porque{
+  font-size:11.5px;color:var(--tinta-3);line-height:1.5;
+  padding-left:11px;border-left:2px solid var(--linea);
+}
 .revisar{
   display:flex;gap:8px;font-size:11.5px;color:var(--ladrillo);line-height:1.45;
+  padding:10px 12px;background:var(--ladrillo-papel);border-radius:var(--r);
 }
 .mini{
   display:inline-flex;align-items:center;justify-content:center;
-  min-height:40px;padding:0 15px;border:1px solid var(--tinta);border-radius:999px;
+  min-height:42px;padding:0 17px;border:1px solid var(--tinta);border-radius:999px;
   background:transparent;color:var(--tinta);cursor:pointer;text-decoration:none;
-  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
   transition:background .16s ease,color .16s ease;
 }
 .mini:hover{background:var(--tinta);color:var(--marfil)}
 .mini.ok{background:var(--salvia);border-color:var(--salvia);color:#fff}
 .botones{display:flex;flex-wrap:wrap;gap:8px}
 
-/* plan B cuando el navegador no da portapapeles */
-.a-mano{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.a-mano{display:flex;flex-direction:column;gap:7px}
 .a-mano-dice{font-size:12px;color:var(--tinta-2);line-height:1.45}
 .a-mano textarea{
-  width:100%;padding:12px 13px;border:1px solid var(--linea);border-radius:var(--r-campo);
+  width:100%;padding:12px 13px;border:1px solid var(--linea);border-radius:var(--r);
   background:var(--marfil);font-size:13px;line-height:1.5;resize:vertical;
 }
 
 .vacio{
-  padding:44px 24px;text-align:center;color:var(--tinta-2);font-size:14px;line-height:1.6;
-  border:1px dashed var(--linea);border-radius:var(--r-tarjeta);
+  padding:46px 24px;text-align:center;color:var(--tinta-2);font-size:14px;line-height:1.65;
+  border:1px dashed var(--linea);border-radius:var(--r-g);
 }
+.portada{padding:62px 0;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.portada h1{font-size:28px}
 
-/* ---------------------------------------------------------------- portada */
-.portada{padding:64px 0;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
-.portada h1{font-size:27px}
-
-@media (min-width:600px){
-  h1{font-size:38px}
-  .par{gap:14px}
+@media (min-width:620px){
+  h1{font-size:42px}
+  .demo-par{aspect-ratio:1/1}
 }
 </style>
 </head>
 <body>
 <div class="hoja">
 
-  <div class="masthead">
-    <span class="marca">Novias Frida</span>
-    <span class="eyebrow">Fotos de vestidos</span>
-  </div>
+  <header class="masthead">
+    <img src="img/logo.png" alt="Novias Frida">
+    <span class="quien">
+      <span class="eyebrow">Taller de fotos</span>
+      <span class="lema">Donde le dices sí al vestido</span>
+    </span>
+  </header>
 
   <div id="cargando" class="portada"><p class="dice">Abriendo…</p></div>
 
@@ -344,13 +446,30 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
     <span class="eyebrow">Sin conexión</span>
     <h1>No se pudo abrir</h1>
     <p class="dice" id="sin-conexion-por"></p>
-    <button type="button" class="cta" id="reintentar" style="max-width:260px">Reintentar</button>
+    <button type="button" class="cta" id="reintentar" style="max-width:270px">Reintentar</button>
   </div>
 
   <main id="app" hidden>
 
     <!-- ============================ INICIO ============================ -->
     <section id="p-inicio" class="pantalla">
+
+      <figure class="demo" style="margin:0 0 22px">
+        <div class="demo-par">
+          <img src="img/princesa-antes.webp" alt="Vestido fotografiado con el celular en el probador" loading="eager">
+          <img class="despues" src="img/princesa-despues.webp" alt="El mismo vestido, ya retocado" loading="eager">
+          <span class="demo-linea" aria-hidden="true"></span>
+          <span class="demo-rot izq">Su foto</span>
+          <span class="demo-rot der">Lo que recibe</span>
+          <input type="range" min="0" max="100" value="50" id="corte"
+                 aria-label="Deslizar para comparar el antes y el después">
+        </div>
+        <figcaption class="demo-pie">
+          Es el mismo vestido, la misma novia y el mismo momento. Lo único que cambia es
+          <b>el cuarto y la luz</b>. El vestido no se toca nunca.
+        </figcaption>
+      </figure>
+
       <div class="encabezado">
         <span class="eyebrow">Hoy</span>
         <h1>¿Qué vas a hacer?</h1>
@@ -360,7 +479,7 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
         <button type="button" class="accion accion--primaria" data-ir="subir">
           <span>
             <span class="titulo">Subir un vestido</span>
-            <span class="apoyo">Tus fotos del celular vuelven convertidas en fotos de catálogo, con el texto ya escrito.</span>
+            <span class="apoyo">Recibes la foto lista y dos publicaciones escritas, con su gancho y sus hashtags.</span>
           </span>
           <span class="flecha" aria-hidden="true">→</span>
         </button>
@@ -383,13 +502,14 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
       <div class="encabezado">
         <span class="eyebrow">Vestido nuevo</span>
         <h1>Súbelo</h1>
+        <p class="dice">Con la foto de frente basta. Lo demás es opcional.</p>
       </div>
 
       <form id="form">
         <div class="campo">
           <span class="rotulo">
             <span class="que">Fotos</span>
-            <span class="pista">La de frente es la que manda. Las otras tres son opcionales y sirven para armar el carrusel.</span>
+            <span class="pista">La de frente es la que manda. Las otras tres ayudan a armar el carrusel.</span>
           </span>
           <div class="ranuras">
             <label class="ranura ranura--principal" data-angulo="frente">
@@ -420,63 +540,93 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
         <label class="campo">
           <span class="rotulo">
             <span class="que">¿Cómo le dices?</span>
-            <span class="pista">Como lo nombras tú. Así lo vas a encontrar después.</span>
+            <span class="pista">Como lo nombras tú. Así lo encuentras después.</span>
           </span>
           <input type="text" id="c-nombre" required placeholder="princesa plata" autocomplete="off">
         </label>
 
-        <div class="campo">
-          <span class="rotulo"><span class="que">¿Cómo está en la foto?</span></span>
-          <div class="chips" id="chips-presentacion">
-            <label class="chip"><input type="radio" name="presentacion" value="maniqui" checked><span>En maniquí</span></label>
-            <label class="chip"><input type="radio" name="presentacion" value="gancho"><span>Colgado</span></label>
-            <label class="chip"><input type="radio" name="presentacion" value="puesto"><span>Alguien lo trae</span></label>
-            <label class="chip"><input type="radio" name="presentacion" value="plano"><span>Acostado</span></label>
+        <details class="mas">
+          <summary>Más detalles <span class="ayuda"></span></summary>
+
+          <div class="campo">
+            <span class="rotulo"><span class="que">¿Cómo está en la foto?</span></span>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="presentacion" value="maniqui" checked><span>En maniquí</span></label>
+              <label class="chip"><input type="radio" name="presentacion" value="gancho"><span>Colgado</span></label>
+              <label class="chip"><input type="radio" name="presentacion" value="puesto"><span>Alguien lo trae</span></label>
+              <label class="chip"><input type="radio" name="presentacion" value="plano"><span>Acostado</span></label>
+            </div>
           </div>
-        </div>
 
-        <div class="campo">
-          <span class="rotulo">
-            <span class="que">¿Cómo quieres que salga?</span>
-            <span class="pista">Con modelo, el cuerpo lo elige la talla que pongas abajo.</span>
-          </span>
-          <div class="chips" id="chips-modelo">
-            <label class="chip"><input type="radio" name="modelo" value="no" checked><span>El vestido solo</span></label>
-            <label class="chip"><input type="radio" name="modelo" value="si"><span>Con modelo</span></label>
+          <div class="campo">
+            <span class="rotulo">
+              <span class="que">¿Cómo quieres que salga?</span>
+              <span class="pista">Con modelo, el cuerpo lo elige la talla que pongas abajo.</span>
+            </span>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="modelo" value="no" checked><span>El vestido solo</span></label>
+              <label class="chip"><input type="radio" name="modelo" value="si"><span>Con modelo</span></label>
+            </div>
           </div>
-        </div>
 
-        <div class="par">
-          <label class="campo">
-            <span class="rotulo"><span class="que">Precio</span><span class="pista">Opcional</span></span>
-            <input type="text" id="c-precio" placeholder="$6,500" autocomplete="off" inputmode="numeric">
-          </label>
-          <label class="campo">
-            <span class="rotulo"><span class="que">Talla</span><span class="pista">Opcional</span></span>
-            <input type="text" id="c-talla" placeholder="12" autocomplete="off" inputmode="numeric">
-          </label>
-        </div>
+          <div class="par">
+            <label class="campo">
+              <span class="rotulo"><span class="que">Precio</span><span class="pista">Desbloquea "adivina el precio"</span></span>
+              <input type="text" id="c-precio" placeholder="$6,500" autocomplete="off">
+            </label>
+            <label class="campo">
+              <span class="rotulo"><span class="que">Talla</span><span class="pista">Opcional</span></span>
+              <input type="text" id="c-talla" placeholder="12" autocomplete="off">
+            </label>
+          </div>
 
-        <label class="campo">
-          <span class="rotulo">
-            <span class="que">Algo del vestido</span>
-            <span class="pista">Tela, corte, detalles. Opcional.</span>
-          </span>
-          <textarea id="c-notas" placeholder="encaje francés, escote ilusión, corte A"></textarea>
-        </label>
+          <label class="campo">
+            <span class="rotulo">
+              <span class="que">Algo del vestido</span>
+              <span class="pista">Tela, corte, detalles.</span>
+            </span>
+            <textarea id="c-notas" placeholder="encaje francés, escote ilusión, corte A"></textarea>
+          </label>
+        </details>
 
         <button type="submit" class="cta" id="btn">Subir vestido</button>
         <div id="msg" role="status" aria-live="polite"></div>
       </form>
     </section>
 
-    <!-- ============================ VESTIDOS ============================ -->
+    <!-- ============================ TALLER (espera) ============================ -->
+    <section id="p-taller" class="pantalla">
+      <div class="taller">
+        <div class="encabezado">
+          <span class="eyebrow">En el taller</span>
+          <h1 id="taller-nombre">Preparando tu vestido</h1>
+          <p class="dice">Tarda como un minuto. Puedes cerrar esto: cuando vuelvas ya va a estar.</p>
+        </div>
+        <ol class="pasos" id="pasos">
+          <li data-paso="0"><span class="paso-marca"><span class="paso-num">1</span></span>
+            <span><span class="paso-t">Revisando tu foto</span>
+            <span class="paso-d">Que el vestido salga completo y con suficiente detalle.</span></span></li>
+          <li data-paso="1"><span class="paso-marca"><span class="paso-num">2</span></span>
+            <span><span class="paso-t">Limpiando el cuarto y la luz</span>
+            <span class="paso-d">El fondo se va, la luz se empareja. El vestido no se toca.</span></span></li>
+          <li data-paso="2"><span class="paso-marca"><span class="paso-num">3</span></span>
+            <span><span class="paso-t">Comparando contra tu original</span>
+            <span class="paso-d">Que sea el mismo vestido: corte, color, tela, pedrería.</span></span></li>
+          <li data-paso="3"><span class="paso-marca"><span class="paso-num">4</span></span>
+            <span><span class="paso-t">Escribiendo tus dos publicaciones</span>
+            <span class="paso-d">Con su gancho, su pregunta y sus hashtags.</span></span></li>
+        </ol>
+        <button type="button" class="cta" data-ir="vestidos" style="margin-top:30px">Ver mis vestidos</button>
+      </div>
+    </section>
+
+    <!-- ============================ ENTREGA ============================ -->
     <section id="p-vestidos" class="pantalla">
       <button type="button" class="volver" data-ir="inicio">Inicio</button>
       <div class="encabezado">
         <span class="eyebrow">Entregas</span>
         <h1>Mis vestidos</h1>
-        <p class="dice">Toca una foto para abrirla y guardarla. El texto se copia de un toque.</p>
+        <p class="dice">Toca la foto para abrirla y guardarla. El texto se copia de un toque.</p>
       </div>
       <div id="lista" class="lista"></div>
     </section>
@@ -488,16 +638,11 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
 (function () {
   "use strict";
 
-  // ------------------------------------------------------------------
-  // Config. SIN llaves: solo la URL publica de las dos Edge Functions.
-  // El control de acceso real es el token, nunca lo que vive aqui.
-  // ------------------------------------------------------------------
   var EDGE = "https://shzybjqvqlruoxouerny.supabase.co/functions/v1";
   var LLAVE_LOCAL = "nf_token";
 
   // El token llega en el fragmento (#t=...), no en el query string: un query
-  // string viaja al servidor y queda en logs de acceso y en el Referer. Se
-  // consume una sola vez a localStorage y se limpia la barra de direcciones.
+  // string viaja al servidor y queda en logs de acceso y en el Referer.
   function tomarToken() {
     var m = (location.hash || "").match(/(?:^#|&)t=([^&]+)/);
     if (m && m[1]) {
@@ -522,16 +667,36 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
   }
 
   var $ = function (id) { return document.getElementById(id); };
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
-    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-  }); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // El comparador de la portada
+  // ------------------------------------------------------------------
+  (function comparador() {
+    var r = $("corte");
+    if (!r) return;
+    var par = r.closest(".demo-par");
+    function pinta() { par.style.setProperty("--corte", r.value + "%"); }
+    r.addEventListener("input", pinta);
+    pinta();
+  })();
 
   // ------------------------------------------------------------------
   // Navegacion
   // ------------------------------------------------------------------
-  var pantallas = { inicio: $("p-inicio"), subir: $("p-subir"), vestidos: $("p-vestidos") };
-  var timer = null;
-  function pararSondeo() { if (timer) { clearTimeout(timer); timer = null; } }
+  var pantallas = {
+    inicio: $("p-inicio"), subir: $("p-subir"),
+    taller: $("p-taller"), vestidos: $("p-vestidos"),
+  };
+  var timer = null, tallerTimer = null;
+  function pararSondeo() {
+    if (timer) { clearTimeout(timer); timer = null; }
+    if (tallerTimer) { clearInterval(tallerTimer); tallerTimer = null; }
+  }
 
   function ir(nombre) {
     Object.keys(pantallas).forEach(function (k) {
@@ -547,18 +712,19 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
   });
 
   // ------------------------------------------------------------------
-  // Inicio: el cupo y el conteo de listos salen de datos reales
+  // Inicio
   // ------------------------------------------------------------------
   function refrescarInicio() {
     api("/frida-resultados").then(function (d) {
-      var c = d.cupo, listos = d.vestidos.filter(function (v) { return v.estado === "listo"; }).length;
+      var c = d.cupo;
+      var listos = d.vestidos.filter(function (v) { return v.estado === "listo"; }).length;
       var enCola = d.vestidos.filter(function (v) {
         return v.estado === "pendiente" || v.estado === "procesando";
       }).length;
 
       $("apoyo-vestidos").textContent = listos
         ? listos + (listos === 1 ? " vestido listo" : " vestidos listos") + " para copiar y publicar."
-        : (enCola ? "Tienes " + enCola + " en proceso." : "Todavía no hay nada terminado.");
+        : (enCola ? "Tienes " + enCola + " en el taller." : "Todavía no hay nada terminado.");
 
       var caja = $("cupo");
       caja.className = "cupo" + (c.restantes <= 0 ? " agotado" : "");
@@ -581,7 +747,7 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
       var f = input.files && input.files[0];
       if (!f) return;
       if (f.size > MAX) {
-        decir("Esa foto pesa más de 12 MB. Mándala desde el celular sin edición, o bájale el tamaño.", "error");
+        decir("Esa foto pesa más de 12 MB. Mándala desde el celular sin editar.", "error");
         input.value = ""; return;
       }
       archivos[angulo] = f;
@@ -606,6 +772,45 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
     });
   }
 
+  // La espera deja de ser tiempo muerto: se avanzan las etapas REALES del
+  // motor. Los tiempos son estimados (el worker no reporta etapa), y por eso
+  // el ultimo paso NO se marca hecho solo: se marca cuando la base dice
+  // 'listo'. Nunca le decimos que termino algo que no termino.
+  var PASO_MS = [4000, 22000, 6000];
+  function correrTaller(nombre) {
+    $("taller-nombre").textContent = "Preparando " + nombre;
+    var lis = $("pasos").querySelectorAll("li");
+    lis.forEach(function (li) { li.classList.remove("corriendo", "hecho"); });
+    var i = 0;
+    lis[0].classList.add("corriendo");
+    function siguiente() {
+      if (i >= PASO_MS.length) return;
+      lis[i].classList.remove("corriendo");
+      lis[i].classList.add("hecho");
+      i++;
+      if (i < lis.length) lis[i].classList.add("corriendo");
+      if (i < PASO_MS.length) tallerTimer = setTimeout(siguiente, PASO_MS[i]);
+    }
+    tallerTimer = setTimeout(siguiente, PASO_MS[0]);
+
+    // el sondeo real: en cuanto la base dice 'listo', se va a la entrega
+    (function espera() {
+      api("/frida-resultados").then(function (d) {
+        var mio = d.vestidos[0];
+        if (mio && (mio.estado === "listo" || mio.estado === "error")) {
+          lis.forEach(function (li) { li.classList.remove("corriendo"); li.classList.add("hecho"); });
+          setTimeout(function () { ir("vestidos"); }, 700);
+          return;
+        }
+        if (pantallas.taller.classList.contains("activa")) {
+          timer = setTimeout(espera, 5000);
+        }
+      }).catch(function () {
+        if (pantallas.taller.classList.contains("activa")) timer = setTimeout(espera, 8000);
+      });
+    })();
+  }
+
   $("form").addEventListener("submit", function (ev) {
     ev.preventDefault();
     var btn = $("btn");
@@ -613,7 +818,7 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
 
     if (!archivos["frente"]) { decir("Falta la foto de frente. Es la única obligatoria.", "error"); return; }
     var nombre = $("c-nombre").value.trim();
-    if (!nombre) { decir("Ponle un nombre al vestido para que lo puedas encontrar después.", "error"); return; }
+    if (!nombre) { decir("Ponle un nombre al vestido para que lo encuentres después.", "error"); return; }
 
     var angulos = Object.keys(archivos).map(function (a) {
       return { angulo: a, mime: archivos[a].type || "image/jpeg", size_bytes: archivos[a].size };
@@ -643,13 +848,13 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
           headers: { "Content-Type": f.type || "image/jpeg" },
           body: f
         }).then(function (r) {
-          if (!r.ok) throw new Error("No se pudo mandar la foto de " + u.angulo + ". Revisa tu señal e inténtalo otra vez.");
+          if (!r.ok) throw new Error("No se pudo mandar la foto de " + u.angulo + ". Revisa tu señal.");
         });
       }));
     }).then(function () {
-      decir("Listo. Tarda como un minuto. Te lo dejo en Mis vestidos.", "bien");
       limpiar();
-      setTimeout(function () { ir("vestidos"); }, 1300);
+      ir("taller");
+      correrTaller(nombre);
     }).catch(function (e) {
       decir(e.message || "Algo falló. Inténtalo otra vez.", "error");
     }).finally(function () {
@@ -659,18 +864,14 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
   });
 
   // ------------------------------------------------------------------
-  // Mis vestidos
+  // Entrega
   // ------------------------------------------------------------------
-  var ESTADO = { pendiente: "En cola", procesando: "Procesando", listo: "Listo", error: "No salió" };
-  var ROL = { "profesional": "Profesional", "variacion-contexto": "Otro fondo", "variacion-detalle": "Detalle" };
+  var ESTADO = { pendiente: "En el taller", procesando: "En el taller", listo: "Listo", error: "No salió" };
+  var ROL = { "profesional": "Foto profesional", "variacion-contexto": "Otro fondo", "variacion-detalle": "Detalle" };
+  var CIERRE = { comentario: "Pide comentario", reenvio: "Pide que la reenvíen" };
 
-  // Las signed URLs de lectura viven 60s (decision de seguridad del plan: el
-  // bucket nunca es publico). Por eso esta pantalla SIEMPRE se refresca sola
-  // mientras este a la vista, no solo cuando hay algo pendiente: si se queda
-  // abierta mas de un minuto sin refrescar, las fotos se caen a roto. Rapido
-  // cuando hay trabajo en curso, lento cuando solo hay que renovar las URLs.
   var CADA_PENDIENTE = 6000;
-  var CADA_REFRESCO = 45000;
+  var CADA_REFRESCO = 45000;   // las signed URLs viven 60s: hay que renovarlas
 
   function cargarVestidos(reinicia) {
     if (reinicia) $("lista").innerHTML = '<p class="vacio">Cargando…</p>';
@@ -679,9 +880,6 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
       var faltan = d.vestidos.some(function (v) {
         return v.estado === "pendiente" || v.estado === "procesando";
       });
-      // No se sondea con la pantalla escondida: son peticiones que nadie va a
-      // ver y que se comen el rate limit. Al volver el foco se recarga sola
-      // (visibilitychange, abajo).
       if (pantallas.vestidos.classList.contains("activa") && !document.hidden) {
         timer = setTimeout(function () { cargarVestidos(false); },
                            faltan ? CADA_PENDIENTE : CADA_REFRESCO);
@@ -691,13 +889,10 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
     });
   }
 
-  // Si el celular se durmio o Frida se fue a otra app, al volver las URLs ya
-  // vencieron. Se recarga al recuperar el foco en vez de esperar al timer.
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) { pararSondeo(); return; }
     if (pantallas.vestidos.classList.contains("activa")) {
-      pararSondeo();
-      cargarVestidos(false);
+      pararSondeo(); cargarVestidos(false);
     }
   });
 
@@ -714,85 +909,98 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
         copiar(texto).then(function () {
           var antes = b.textContent;
           b.classList.add("ok"); b.textContent = "Copiado";
-          setTimeout(function () { b.classList.remove("ok"); b.textContent = antes; }, 1600);
-        }).catch(function () {
-          // Nunca dejarla con un boton muerto: si el navegador no da
-          // portapapeles, se le muestra el texto ya seleccionado para que lo
-          // copie a mano. Copiar la caption ES el entregable de esta pantalla.
-          mostrarParaCopiar(b, texto);
-        });
+          setTimeout(function () { b.classList.remove("ok"); b.textContent = antes; }, 1700);
+        }).catch(function () { mostrarParaCopiar(b, texto); });
       });
     });
   }
 
-  // ------------------------------------------------------------------
-  // Copiar, con plan B.
   // navigator.clipboard.writeText RECHAZA con NotAllowedError en varios
-  // contextos (permiso denegado, WebView vieja de Android, pestana sin foco).
-  // Medido: rechaza incluso en HTTPS. Sin este fallback, Frida toca "Copiar
-  // texto" y no pasa absolutamente nada.
-  // ------------------------------------------------------------------
+  // contextos -- medido, incluso en HTTPS. Sin este plan B, Frida toca
+  // "Copiar" y no pasa nada. Copiar el texto ES el entregable de la pantalla.
   function copiar(texto) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(texto).catch(function () { return legado(texto); });
     }
     return legado(texto);
   }
-
   function legado(texto) {
     return new Promise(function (listo, falla) {
       var ta = document.createElement("textarea");
-      ta.value = texto;
-      ta.setAttribute("readonly", "");
+      ta.value = texto; ta.setAttribute("readonly", "");
       ta.style.cssText = "position:fixed;top:-1000px;left:0;opacity:0";
       document.body.appendChild(ta);
-      ta.select();
-      ta.setSelectionRange(0, ta.value.length);
+      ta.select(); ta.setSelectionRange(0, ta.value.length);
       var ok = false;
       try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
       document.body.removeChild(ta);
       ok ? listo() : falla(new Error("sin portapapeles"));
     });
   }
-
   function mostrarParaCopiar(boton, texto) {
-    var cont = boton.closest(".pub");
+    var cont = boton.closest(".pub") || boton.parentElement;
     if (cont.querySelector(".a-mano")) return;
     var caja = document.createElement("div");
     caja.className = "a-mano";
-    caja.innerHTML = '<p class="a-mano-dice">Tu navegador no dejó copiarlo solo. Selecciona el texto y cópialo:</p>' +
-                     '<textarea readonly rows="5"></textarea>';
+    caja.innerHTML = '<p class="a-mano-dice">Tu navegador no dejó copiarlo solo. Selecciónalo y cópialo:</p><textarea readonly rows="6"></textarea>';
     caja.querySelector("textarea").value = texto;
     cont.appendChild(caja);
     var ta = caja.querySelector("textarea");
     ta.focus(); ta.select();
   }
 
+  function textoCompleto(c, hashtags) {
+    return [c.gancho, "", c.caption, "", hashtags].filter(function (x) { return x !== undefined; }).join("\n");
+  }
+
   function tarjeta(v) {
-    var fotos = (v.fotos || []).filter(function (f) { return f.url; }).map(function (f) {
-      var et = (ROL[f.rol] || f.rol) + " · " + f.angulo;
-      return '<a href="' + f.url + '" target="_blank" rel="noopener" title="' + esc(et) + '">' +
-             '<img loading="lazy" src="' + f.url + '" alt="' + esc(v.nombre + " — " + et) + '"></a>';
-    }).join("");
+    var fotos = (v.fotos || []).filter(function (f) { return f.url; });
+    var hero = fotos.filter(function (f) { return f.rol === "profesional" && f.angulo === "frente"; })[0]
+            || fotos.filter(function (f) { return f.rol === "profesional"; })[0]
+            || fotos[0];
+    var otras = fotos.filter(function (f) { return f !== hero; });
+
+    var heroHTML = hero
+      ? '<a class="heroica" href="' + hero.url + '" target="_blank" rel="noopener">' +
+        '<img src="' + hero.url + '" alt="' + esc(v.nombre) + ', foto profesional" loading="lazy">' +
+        '<span class="rol">' + esc(ROL[hero.rol] || hero.rol) + "</span></a>"
+      : "";
+
+    var otrasHTML = otras.length
+      ? '<div class="otras">' + otras.map(function (f) {
+          return '<a href="' + f.url + '" target="_blank" rel="noopener">' +
+                 '<img src="' + f.url + '" alt="' + esc(v.nombre + " — " + (ROL[f.rol] || f.rol)) + '" loading="lazy">' +
+                 '<span class="rol">' + esc(ROL[f.rol] || f.angulo) + "</span></a>";
+        }).join("") + "</div>"
+      : "";
 
     var pubs = (v.publicaciones || []).map(function (p) {
       var c = p.caption || {};
-      var todo = [c.gancho, "", c.caption, "", (c.hashtags || []).join(" ")].filter(Boolean).join("\n");
-      var problemas = (p.problemas || []).length
-        ? '<p class="revisar"><span aria-hidden="true">!</span><span>Revisa antes de publicar: ' +
-          esc(p.problemas.join("; ")) + "</span></p>"
-        : "";
+      var tags = (c.hashtags || []).map(function (h) {
+        return h.charAt(0) === "#" ? h : "#" + h;
+      }).join(" ");
+      var todo = textoCompleto(c, tags);
       return '<div class="pub">' +
-        '<span class="eyebrow">' + esc(p.tipo) + "</span>" +
+        '<div class="pub-cab"><span class="pub-tipo">' + esc(p.tipo.replace(/-/g, " ")) + "</span>" +
+        (p.cierre ? '<span class="pub-cierre ' + p.cierre + '">' + esc(CIERRE[p.cierre] || p.cierre) + "</span>" : "") +
+        "</div>" +
         (c.gancho ? '<p class="gancho-txt">' + esc(c.gancho) + "</p>" : "") +
-        problemas +
+        (c.caption ? '<p class="cuerpo-txt">' + esc(c.caption) + "</p>" : "") +
+        (tags ? '<p class="hashtags">' + esc(tags) + "</p>" : "") +
+        (c.primer_comentario
+          ? '<p class="primer-com"><b>Primer comentario, lo pones tú</b>' + esc(c.primer_comentario) + "</p>" : "") +
+        ((p.problemas || []).length
+          ? '<p class="revisar"><span aria-hidden="true">!</span><span>Revisa antes de publicar: ' +
+            esc(p.problemas.join("; ")) + "</span></p>" : "") +
+        (p.por_que ? '<p class="porque">' + esc(p.por_que) + "</p>" : "") +
         '<div class="botones"><button type="button" class="mini" data-copia="' +
-        encodeURIComponent(todo) + '">Copiar texto</button></div></div>';
+        encodeURIComponent(todo) + '">Copiar publicación</button></div>' +
+        "</div>";
     }).join("");
 
     var cuerpo = "";
     if (v.estado === "pendiente" || v.estado === "procesando") {
-      cuerpo = '<p class="espera"><span class="punto"></span>Se está preparando. Vuelve en un minuto.</p>';
+      cuerpo = '<p class="espera"><span class="punto"></span>Está en el taller. Vuelve en un minuto.</p>';
     } else if (v.estado === "error") {
       cuerpo = '<p class="falla">' + esc(v.error || "No se pudo procesar.") + "</p>";
     } else {
@@ -802,37 +1010,29 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
     return '<article class="vestido">' +
       '<div class="vestido-cab"><span class="nombre-vestido">' + esc(v.nombre) + "</span>" +
       '<span class="estado estado--' + v.estado + '">' + (ESTADO[v.estado] || v.estado) + "</span></div>" +
-      (fotos ? '<div class="tira">' + fotos + "</div>" : "") +
-      '<div class="vestido-cuerpo">' + cuerpo + "</div></article>";
+      heroHTML + otrasHTML +
+      '<div class="cuerpo">' + cuerpo + "</div></article>";
   }
 
   // ------------------------------------------------------------------
-  // Arranque: valida el token con una llamada real antes de mostrar nada
+  // Arranque. El token SOLO se borra si el servidor dice que no sirve
+  // (401/403). Un 429 o una caida de senal NO son motivo: la primera version
+  // lo borraba y un rate limit pasajero la dejaba sin poder entrar.
   // ------------------------------------------------------------------
-  // El token SOLO se borra cuando el servidor dice que de verdad no sirve
-  // (401 invalido / 403 todavia inactivo). Un 429 o una caida de senal NO son
-  // motivo para borrarlo: la primera version lo hacia y bastaba un rate limit
-  // pasajero para dejar a Frida con "este link ya no sirve" y sin manera de
-  // volver a entrar sin pedirle otro link a Leon.
   function sinAcceso() {
     try { localStorage.removeItem(LLAVE_LOCAL); } catch (e) {}
-    $("cargando").hidden = true;
-    $("sin-conexion").hidden = true;
+    $("cargando").hidden = true; $("sin-conexion").hidden = true;
     $("sin-acceso").hidden = false;
   }
-
   function sinConexion(e) {
     $("sin-conexion-por").textContent = e && e.status === 429
       ? "Se hicieron demasiadas peticiones seguidas. Espera un momento y vuelve a intentar."
       : "Revisa tu señal e inténtalo otra vez. Tu link sigue siendo válido.";
-    $("cargando").hidden = true;
-    $("sin-conexion").hidden = false;
+    $("cargando").hidden = true; $("sin-conexion").hidden = false;
   }
-
   function arrancar() {
     return api("/frida-resultados").then(function () {
-      $("cargando").hidden = true;
-      $("sin-conexion").hidden = true;
+      $("cargando").hidden = true; $("sin-conexion").hidden = true;
       $("app").hidden = false;
       ir("inicio");
     }).catch(function (e) {
@@ -840,11 +1040,8 @@ input[type=text]::placeholder,textarea::placeholder{color:#b3a79f}
       return sinConexion(e);
     });
   }
-
   $("reintentar").addEventListener("click", function () {
-    $("sin-conexion").hidden = true;
-    $("cargando").hidden = false;
-    arrancar();
+    $("sin-conexion").hidden = true; $("cargando").hidden = false; arrancar();
   });
 
   if (!TOKEN) { sinAcceso(); return; }
