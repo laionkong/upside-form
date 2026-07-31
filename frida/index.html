@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f3ec">
+<title>Novias Frida — Sube tu vestido</title>
+<!--
+  Formulario público de Novias Frida. Este archivo NO lleva ninguna llave, ni
+  siquiera la anon: solo conoce la URL de dos Edge Functions. El único control
+  de acceso real es el token que llega en el link (#t=..., nunca ?t=..., para
+  que no quede en logs de servidor ni en el header Referer) y que este script
+  reenvía como header X-Novias-Frida-Token en cada llamada. Ver
+  projects/novias-frida/PLAN-FORMULARIO-WEB.md sección 1 para el modelo de
+  amenaza completo antes de tocar este archivo.
+
+  Diseño: el sistema de marca de projects/novias-frida/demo/demo-final-codex.html
+  (Kinetic Monolith queda fuera a propósito -- dashboard/DESIGN.md documenta que
+  un cliente con marca propia no lleva la identidad de UPSIDE). Geometría de
+  campos y patrón .chip re-vestidos desde motor-fotos/formulario.py.
+-->
+<style>
+:root {
+  --marfil:#f7f3ec;
+  --papel:#fffdf9;
+  --tinta:#2b2320;
+  --tinta-2:#675955;
+  --rosa:#9d5c63;
+  --rosa-papel:#eee1e1;
+  --oro:#a98d5f;
+  --linea:#e1d7ca;
+  --blanco:#fff;
+  --sombra:0 18px 50px rgba(43,35,32,.09);
+  --rojo:#a3433a;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--marfil);
+  color: var(--tinta);
+  font-family: "Iowan Old Style", Baskerville, Georgia, "Times New Roman", serif;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+img { display: block; max-width: 100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; font-family: inherit; }
+.label {
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--oro);
+}
+.page { width: min(100%, 560px); margin: 0 auto; padding: 20px 16px calc(32px + env(safe-area-inset-bottom)); }
+
+/* ---- masthead ---- */
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 2px 20px; }
+.brand { font-size: 20px; font-style: italic; font-weight: 500; }
+.brand small {
+  display: block; margin-top: 2px;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--oro);
+}
+
+/* ---- pantallas ---- */
+.pantalla { display: none; }
+.pantalla.activa { display: block; animation: aparece .25s ease; }
+@keyframes aparece { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none;} }
+
+/* ---- inicio: opciones grandes ---- */
+h1 { font-size: 30px; font-weight: 400; font-style: italic; margin: 0 0 6px; line-height: 1.05; }
+.sub { color: var(--tinta-2); font-size: 15px; margin: 0 0 22px; }
+.opciones { display: grid; gap: 12px; }
+.opcion {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; text-align: left; cursor: pointer;
+  padding: 20px; border: 1px solid var(--linea); border-radius: 24px;
+  background: var(--papel); box-shadow: var(--sombra);
+  font-family: inherit; color: var(--tinta);
+}
+.opcion strong { display: block; font-size: 19px; font-weight: 400; font-style: italic; margin-bottom: 3px; }
+.opcion span.desc {
+  display: block; font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px; color: var(--tinta-2); line-height: 1.4;
+}
+.opcion .flecha { font-size: 20px; color: var(--oro); flex-shrink: 0; }
+
+/* ---- volver ---- */
+.volver {
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px;
+  background: none; border: 0; padding: 8px 0; cursor: pointer;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--tinta-2);
+}
+.volver::before { content: "←"; font-size: 15px; }
+
+/* ---- contador de cupo ---- */
+.cupo {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 16px; border-radius: 14px; background: var(--rosa-papel);
+  margin-bottom: 18px;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px; color: #6c4c50;
+}
+.cupo strong { color: var(--tinta); }
+.cupo.agotado { background: #f3dcd8; color: var(--rojo); }
+
+/* ---- form ---- */
+form { display: block; }
+label.campo { display: block; margin: 18px 0 7px; }
+label.campo .titulo {
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px; font-weight: 700; color: var(--tinta);
+}
+label.campo .hint {
+  display: block; margin-top: 2px;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px; font-weight: 400; color: var(--tinta-2);
+}
+input[type=text], textarea {
+  width: 100%; padding: 13px 14px; border: 1px solid var(--linea); border-radius: 12px;
+  background: var(--papel); font: inherit; font-size: 15px; color: var(--tinta);
+  min-height: 46px;
+}
+textarea { min-height: 70px; resize: vertical; }
+input[type=text]:focus, textarea:focus { outline: none; border-color: var(--oro); }
+.fila { display: flex; gap: 12px; }
+.fila > * { flex: 1; }
+
+/* ---- chips (patrón de motor-fotos/formulario.py, re-vestido) ---- */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.chip { position: relative; flex: 1; min-width: 120px; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.chip span {
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  min-height: 46px; padding: 10px 8px; border: 1px solid var(--linea); border-radius: 999px;
+  background: var(--papel); cursor: pointer;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px; font-weight: 600; color: var(--tinta);
+}
+.chip input:checked + span { background: var(--tinta); color: var(--marfil); border-color: var(--tinta); }
+.chip input:focus-visible + span { outline: 2px solid var(--oro); outline-offset: 2px; }
+
+/* ---- ranuras de foto ---- */
+.ranuras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+.ranura { position: relative; }
+.ranura input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.ranura-caja {
+  aspect-ratio: 3/4; border-radius: 16px; border: 1.5px dashed var(--linea);
+  background: var(--papel); display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 6px; overflow: hidden; position: relative;
+}
+.ranura-caja img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ranura-caja .mas { font-size: 26px; color: var(--oro); line-height: 1; }
+.ranura-caja .etq {
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-2);
+}
+.ranura.llena .ranura-caja .mas, .ranura.llena .ranura-caja .etq { display: none; }
+.ranura.obligatoria .ranura-caja { border-color: var(--rosa); }
+.ranura .req { position: absolute; top: 6px; right: 6px; z-index: 2; color: var(--rosa); font-size: 10px;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif; font-weight: 800; }
+
+.aviso {
+  margin: 20px 0 0; padding: 13px 15px; border-radius: 12px; background: var(--rosa-papel);
+  color: #6c4c50; font-size: 13px; line-height: 1.5;
+}
+.aviso b { color: var(--tinta); }
+
+/* ---- botón principal ---- */
+.cta {
+  display: flex; align-items: center; justify-content: center; width: 100%;
+  min-height: 52px; margin-top: 26px; padding: 14px 20px; border: 0; border-radius: 999px;
+  background: var(--tinta); color: var(--marfil); cursor: pointer;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+  box-shadow: 0 10px 24px rgba(43,35,32,.16);
+}
+.cta:disabled { opacity: .5; cursor: default; }
+.cta.secundario { background: transparent; color: var(--tinta); border: 1px solid var(--tinta); box-shadow: none; }
+
+.mensaje { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 13px; }
+.mensaje.error { background: #f3dcd8; color: var(--rojo); }
+.mensaje.ok { background: #e2ead9; color: #3d5c33; }
+
+/* ---- mis vestidos ---- */
+.grid-vestidos { display: grid; gap: 14px; }
+.tarjeta { border: 1px solid var(--linea); border-radius: 22px; background: var(--papel); box-shadow: var(--sombra); overflow: hidden; }
+.tarjeta-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 10px; }
+.tarjeta-head strong { font-size: 18px; font-weight: 400; font-style: italic; }
+.estado-pill {
+  display: inline-flex; padding: 5px 10px; border-radius: 999px;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+}
+.estado-pendiente, .estado-procesando { background: var(--rosa-papel); color: #6c4c50; }
+.estado-listo { background: #e2ead9; color: #3d5c33; }
+.estado-error { background: #f3dcd8; color: var(--rojo); }
+.tarjeta-fotos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--linea); }
+.tarjeta-fotos a { display: block; aspect-ratio: 3/4; overflow: hidden; }
+.tarjeta-fotos img { width: 100%; height: 100%; object-fit: cover; }
+.tarjeta-body { padding: 12px 16px 16px; }
+.tarjeta-body .error-detalle { color: var(--rojo); font-size: 12px; margin: 0 0 10px; }
+.pub { border-top: 1px solid var(--linea); padding-top: 10px; margin-top: 10px; }
+.pub:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.pub-tipo {
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--oro);
+  margin-bottom: 6px;
+}
+.pub-gancho { font-size: 15px; font-style: italic; margin: 0 0 6px; }
+.pub-btns { display: flex; gap: 8px; margin-top: 8px; }
+.mini {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 12px;
+  border: 1px solid var(--tinta); border-radius: 999px; background: transparent; color: var(--tinta);
+  text-decoration: none; cursor: pointer;
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+}
+.mini.copiado { background: var(--tinta); color: var(--marfil); }
+.vacio { text-align: center; padding: 40px 20px; color: var(--tinta-2); font-size: 14px; }
+
+.sin-acceso { text-align: center; padding: 60px 20px; }
+.sin-acceso h1 { font-size: 24px; }
+.sin-acceso p { color: var(--tinta-2); font-size: 14px; }
+
+@media (min-width: 640px) {
+  .ranuras { grid-template-columns: repeat(4, 1fr); }
+  .tarjeta-fotos { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="masthead">
+    <div class="brand">Novias Frida<small>Formulario de vestidos</small></div>
+  </div>
+
+  <div id="vista-cargando">
+    <p class="sub">Cargando…</p>
+  </div>
+
+  <div id="vista-sin-acceso" class="sin-acceso" style="display:none">
+    <h1>Sin acceso</h1>
+    <p>Este link no es válido o todavía no está activo. Pídele a Leon que te lo reenvíe.</p>
+  </div>
+
+  <main id="app" style="display:none">
+
+    <!-- ===================== PANTALLA 1: INICIO ===================== -->
+    <section id="pantalla-inicio" class="pantalla">
+      <h1>¿Qué vas a hacer hoy?</h1>
+      <p class="sub">Sube un vestido y en un rato tienes las fotos listas para publicar.</p>
+      <div class="opciones">
+        <button class="opcion" data-ir="subir">
+          <span><strong>Subir un vestido</strong><span class="desc">Foto de celular → foto profesional + 2 de publicación</span></span>
+          <span class="flecha">→</span>
+        </button>
+        <button class="opcion" data-ir="vestidos">
+          <span><strong>Dame contenido de lo que ya tengo</strong><span class="desc">Revisa lo que ya está listo para copiar y publicar</span></span>
+          <span class="flecha">→</span>
+        </button>
+        <button class="opcion" data-ir="vestidos">
+          <span><strong>Ver mis vestidos</strong><span class="desc">Todo lo que has subido, con su estado</span></span>
+          <span class="flecha">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================== PANTALLA 2: SUBIR ===================== -->
+    <section id="pantalla-subir" class="pantalla">
+      <button class="volver" data-ir="inicio">Inicio</button>
+      <h1>Subir un vestido</h1>
+      <div id="cupo-caja" class="cupo"><span>Cargando cupo…</span></div>
+
+      <form id="form-subir">
+        <label class="campo"><span class="titulo">Fotos del vestido</span>
+          <span class="hint">Frente es obligatoria. El vestido completo en cuadro, con piso debajo.</span></label>
+        <div class="ranuras">
+          <div class="ranura obligatoria" data-angulo="frente">
+            <span class="req">*</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <div class="ranura-caja"><span class="mas">+</span><span class="etq">Frente</span></div>
+          </div>
+          <div class="ranura" data-angulo="lado-izq">
+            <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <div class="ranura-caja"><span class="mas">+</span><span class="etq">Lado izq.</span></div>
+          </div>
+          <div class="ranura" data-angulo="lado-der">
+            <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <div class="ranura-caja"><span class="mas">+</span><span class="etq">Lado der.</span></div>
+          </div>
+          <div class="ranura" data-angulo="atras">
+            <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <div class="ranura-caja"><span class="mas">+</span><span class="etq">Atrás</span></div>
+          </div>
+        </div>
+
+        <label class="campo"><span class="titulo">Nombre del vestido</span>
+          <span class="hint">Como le dices tú. Ej: "princesa plata"</span></label>
+        <input type="text" id="campo-nombre" required placeholder="princesa plata">
+
+        <label class="campo"><span class="titulo">Cómo está el vestido en la foto</span></label>
+        <div class="chips" id="chips-presentacion">
+          <label class="chip"><input type="radio" name="presentacion" value="maniqui" checked><span>Maniquí</span></label>
+          <label class="chip"><input type="radio" name="presentacion" value="gancho"><span>Colgado</span></label>
+          <label class="chip"><input type="radio" name="presentacion" value="puesto"><span>Alguien lo trae</span></label>
+          <label class="chip"><input type="radio" name="presentacion" value="plano"><span>Acostado</span></label>
+        </div>
+
+        <label class="campo"><span class="titulo">Cómo quieres que salga la foto</span></label>
+        <div class="chips" id="chips-modelo">
+          <label class="chip"><input type="radio" name="modelo" value="no" checked><span>El vestido solo</span></label>
+          <label class="chip"><input type="radio" name="modelo" value="si"><span>Con modelo</span></label>
+        </div>
+
+        <div class="fila">
+          <label class="campo" style="flex:1"><span class="titulo">Precio</span><span class="hint">Opcional</span></label>
+          <label class="campo" style="flex:1"><span class="titulo">Talla</span><span class="hint">Define el cuerpo de la modelo</span></label>
+        </div>
+        <div class="fila">
+          <input type="text" id="campo-precio" placeholder="$6,500">
+          <input type="text" id="campo-talla" placeholder="12">
+        </div>
+
+        <label class="campo"><span class="titulo">Algo del vestido</span><span class="hint">Tela, corte, detalles. Opcional.</span></label>
+        <textarea id="campo-notas" placeholder="encaje francés, escote ilusión, corte A"></textarea>
+
+        <div class="aviso"><b>Importante:</b> el vestido completo en cuadro, con piso debajo. Si sale cortado, el sistema le inventa el ruedo. El fondo no importa: se limpia solo.</div>
+
+        <button type="submit" class="cta" id="btn-subir">Subir vestido</button>
+        <div id="msg-subir"></div>
+      </form>
+    </section>
+
+    <!-- ===================== PANTALLA 3: MIS VESTIDOS ===================== -->
+    <section id="pantalla-vestidos" class="pantalla">
+      <button class="volver" data-ir="inicio">Inicio</button>
+      <h1>Mis vestidos</h1>
+      <p class="sub">Fotos para descargar y captions para copiar de un toque.</p>
+      <div id="grid-vestidos" class="grid-vestidos"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // Config -- SIN llaves. Solo la URL pública de las Edge Functions. El
+  // control de acceso real es el token, nunca lo que hay aquí.
+  // ---------------------------------------------------------------------
+  var EDGE_BASE = "https://shzybjqvqlruoxouerny.supabase.co/functions/v1";
+  var STORAGE_KEY = "nf_token";
+
+  // ---------------------------------------------------------------------
+  // Token: llega por #t=... (fragment, NUNCA ?t=... -- un query string se
+  // manda al servidor y puede quedar en logs de acceso o en el header
+  // Referer; un fragment no sale del navegador). Se consume una sola vez a
+  // localStorage y se limpia la URL visible.
+  // ---------------------------------------------------------------------
+  function resolverToken() {
+    var hash = location.hash || "";
+    var m = hash.match(/(?:^#|&)t=([^&]+)/);
+    if (m && m[1]) {
+      var t = decodeURIComponent(m[1]);
+      try { localStorage.setItem(STORAGE_KEY, t); } catch (e) {}
+      history.replaceState(null, "", location.pathname + location.search);
+      return t;
+    }
+    try { return localStorage.getItem(STORAGE_KEY) || ""; } catch (e) { return ""; }
+  }
+
+  var TOKEN = resolverToken();
+
+  function api(path, opts) {
+    opts = opts || {};
+    var headers = Object.assign({ "X-Novias-Frida-Token": TOKEN }, opts.headers || {});
+    return fetch(EDGE_BASE + path, Object.assign({}, opts, { headers: headers }))
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (body) {
+          if (!r.ok) {
+            var err = new Error(body.error || ("HTTP " + r.status));
+            err.status = r.status;
+            err.body = body;
+            throw err;
+          }
+          return body;
+        });
+      });
+  }
+
+  // ---------------------------------------------------------------------
+  // Navegación entre pantallas (SPA de un solo archivo, sin router)
+  // ---------------------------------------------------------------------
+  var pantallas = {
+    inicio: document.getElementById("pantalla-inicio"),
+    subir: document.getElementById("pantalla-subir"),
+    vestidos: document.getElementById("pantalla-vestidos"),
+  };
+  function irA(nombre) {
+    Object.keys(pantallas).forEach(function (k) { pantallas[k].classList.toggle("activa", k === nombre); });
+    detenerPolling();
+    if (nombre === "subir") cargarCupo();
+    if (nombre === "vestidos") cargarVestidos(true);
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll("[data-ir]").forEach(function (el) {
+    el.addEventListener("click", function () { irA(el.getAttribute("data-ir")); });
+  });
+
+  // ---------------------------------------------------------------------
+  // Pantalla Subir -- ranuras de foto
+  // ---------------------------------------------------------------------
+  var archivosPorAngulo = {};
+  document.querySelectorAll(".ranura").forEach(function (ranura) {
+    var angulo = ranura.getAttribute("data-angulo");
+    var input = ranura.querySelector("input[type=file]");
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      if (!f) return;
+      if (f.size > 12 * 1024 * 1024) {
+        mostrarMensajeSubir("'" + angulo + "' pesa demasiado (máximo 12 MB).", "error");
+        input.value = "";
+        return;
+      }
+      archivosPorAngulo[angulo] = f;
+      ranura.classList.add("llena");
+      var caja = ranura.querySelector(".ranura-caja");
+      var img = caja.querySelector("img");
+      if (!img) { img = document.createElement("img"); caja.appendChild(img); }
+      img.src = URL.createObjectURL(f);
+    });
+  });
+
+  function mostrarMensajeSubir(texto, tipo) {
+    var el = document.getElementById("msg-subir");
+    el.innerHTML = '<div class="mensaje ' + tipo + '">' + texto.replace(/</g, "&lt;") + "</div>";
+  }
+
+  function cargarCupo() {
+    var caja = document.getElementById("cupo-caja");
+    caja.className = "cupo";
+    caja.innerHTML = "<span>Cargando cupo…</span>";
+    api("/frida-resultados").then(function (data) {
+      var c = data.cupo;
+      if (c.restantes <= 0) {
+        caja.className = "cupo agotado";
+        caja.innerHTML = "<span>Se alcanzó el tope de <strong>" + c.tope + "</strong> vestidos este mes.</span>";
+        document.getElementById("btn-subir").disabled = true;
+      } else {
+        caja.innerHTML = "<span>Te quedan <strong>" + c.restantes + "</strong> de " + c.tope + " este mes</span>";
+      }
+    }).catch(function () {
+      caja.innerHTML = "<span>No se pudo cargar el cupo.</span>";
+    });
+  }
+
+  document.getElementById("form-subir").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var btn = document.getElementById("btn-subir");
+    document.getElementById("msg-subir").innerHTML = "";
+
+    if (!archivosPorAngulo["frente"]) {
+      mostrarMensajeSubir("Falta la foto de frente (es obligatoria).", "error");
+      return;
+    }
+    var nombre = document.getElementById("campo-nombre").value.trim();
+    if (!nombre) {
+      mostrarMensajeSubir("Falta el nombre del vestido.", "error");
+      return;
+    }
+
+    var angulos = Object.keys(archivosPorAngulo).map(function (angulo) {
+      var f = archivosPorAngulo[angulo];
+      return { angulo: angulo, mime: f.type || "image/jpeg", size_bytes: f.size };
+    });
+
+    btn.disabled = true;
+    btn.textContent = "Subiendo…";
+
+    var presentacion = document.querySelector('input[name="presentacion"]:checked').value;
+    var conModelo = document.querySelector('input[name="modelo"]:checked').value === "si";
+
+    api("/frida-intake", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: nombre,
+        presentacion: presentacion,
+        con_modelo: conModelo,
+        precio: document.getElementById("campo-precio").value.trim(),
+        talla: document.getElementById("campo-talla").value.trim(),
+        notas: document.getElementById("campo-notas").value.trim(),
+        angulos: angulos,
+      }),
+    }).then(function (data) {
+      btn.textContent = "Subiendo fotos…";
+      var subidas = data.uploads.map(function (u) {
+        var f = archivosPorAngulo[u.angulo];
+        return fetch(u.upload_url, {
+          method: "PUT",
+          headers: { "Content-Type": f.type || "image/jpeg" },
+          body: f,
+        }).then(function (r) {
+          if (!r.ok) throw new Error("no se pudo subir '" + u.angulo + "'");
+        });
+      });
+      return Promise.all(subidas);
+    }).then(function () {
+      mostrarMensajeSubir("Listo. Tu vestido está en proceso, tarda ~1 minuto. Te lo mando a Mis vestidos.", "ok");
+      document.getElementById("form-subir").reset();
+      archivosPorAngulo = {};
+      document.querySelectorAll(".ranura").forEach(function (r) {
+        r.classList.remove("llena");
+        var img = r.querySelector("img");
+        if (img) img.remove();
+      });
+      setTimeout(function () { irA("vestidos"); }, 1200);
+    }).catch(function (err) {
+      mostrarMensajeSubir(err.message || "Algo falló. Intenta de nuevo.", "error");
+    }).finally(function () {
+      btn.disabled = false;
+      btn.textContent = "Subir vestido";
+    });
+  });
+
+  // ---------------------------------------------------------------------
+  // Pantalla Mis vestidos
+  // ---------------------------------------------------------------------
+  var ESTADO_TXT = { pendiente: "En cola", procesando: "Procesando", listo: "Listo", error: "Error" };
+  var pollTimer = null;
+
+  function detenerPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
+
+  function cargarVestidos(reiniciar) {
+    var grid = document.getElementById("grid-vestidos");
+    if (reiniciar) grid.innerHTML = '<p class="vacio">Cargando…</p>';
+    api("/frida-resultados").then(function (data) {
+      renderVestidos(data.vestidos);
+      // sigue viva mientras algo no esté 'listo' o 'error', para que Frida
+      // no tenga que jalar para actualizar
+      var hayPendientes = data.vestidos.some(function (v) { return v.estado === "pendiente" || v.estado === "procesando"; });
+      if (hayPendientes && pantallas.vestidos.classList.contains("activa")) {
+        pollTimer = setTimeout(function () { cargarVestidos(false); }, 6000);
+      }
+    }).catch(function (err) {
+      grid.innerHTML = '<p class="vacio">' + (err.message || "No se pudo cargar.") + "</p>";
+    });
+  }
+
+  function renderVestidos(vestidos) {
+    var grid = document.getElementById("grid-vestidos");
+    if (!vestidos.length) {
+      grid.innerHTML = '<p class="vacio">Todavía no subes ningún vestido.</p>';
+      return;
+    }
+    grid.innerHTML = vestidos.map(tarjetaHTML).join("");
+    grid.querySelectorAll("[data-copiar]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var texto = decodeURIComponent(btn.getAttribute("data-copiar"));
+        navigator.clipboard.writeText(texto).then(function () {
+          btn.classList.add("copiado");
+          var original = btn.textContent;
+          btn.textContent = "Copiado";
+          setTimeout(function () { btn.classList.remove("copiado"); btn.textContent = original; }, 1500);
+        });
+      });
+    });
+  }
+
+  function esc(s) { return String(s == null ? "" : s).replace(/</g, "&lt;"); }
+
+  var ROL_TXT = { "profesional": "Profesional", "variacion-contexto": "Contexto", "variacion-detalle": "Detalle" };
+
+  function tarjetaHTML(v) {
+    var fotosHTML = (v.fotos || []).filter(function (f) { return f.url; }).map(function (f) {
+      var etiqueta = (ROL_TXT[f.rol] || f.rol) + " · " + f.angulo;
+      return '<a href="' + f.url + '" target="_blank" rel="noopener" title="' + esc(etiqueta) + '"><img loading="lazy" src="' + f.url + '" alt="' + esc(v.nombre) + " — " + esc(etiqueta) + '"></a>';
+    }).join("");
+
+    var pubsHTML = (v.publicaciones || []).map(function (p) {
+      var cap = p.caption || {};
+      var textoCompleto = [cap.gancho, "", cap.caption, "", (cap.hashtags || []).join(" ")].filter(Boolean).join("\n");
+      return (
+        '<div class="pub">' +
+        '<div class="pub-tipo">' + esc(p.tipo) + "</div>" +
+        (cap.gancho ? '<p class="pub-gancho">"' + esc(cap.gancho) + '"</p>' : "") +
+        '<div class="pub-btns">' +
+        '<button type="button" class="mini" data-copiar="' + encodeURIComponent(textoCompleto) + '">Copiar caption</button>' +
+        (p.imagenes && p.imagenes[0] ? '<a class="mini" href="' + p.imagenes[0] + '" target="_blank" rel="noopener">Ver foto</a>' : "") +
+        "</div></div>"
+      );
+    }).join("");
+
+    return (
+      '<article class="tarjeta">' +
+      '<div class="tarjeta-head"><strong>' + esc(v.nombre) + '</strong><span class="estado-pill estado-' + v.estado + '">' + (ESTADO_TXT[v.estado] || v.estado) + "</span></div>" +
+      (fotosHTML ? '<div class="tarjeta-fotos">' + fotosHTML + "</div>" : "") +
+      '<div class="tarjeta-body">' +
+      (v.estado === "error" && v.error ? '<p class="error-detalle">' + esc(v.error) + "</p>" : "") +
+      (v.estado === "pendiente" || v.estado === "procesando" ? '<p class="vacio" style="padding:0;text-align:left">Se está procesando, vuelve en un rato.</p>' : "") +
+      pubsHTML +
+      "</div></article>"
+    );
+  }
+
+  // ---------------------------------------------------------------------
+  // Arranque
+  // ---------------------------------------------------------------------
+  if (!TOKEN) {
+    document.getElementById("vista-cargando").style.display = "none";
+    document.getElementById("vista-sin-acceso").style.display = "block";
+    return;
+  }
+
+  // Valida el token con una llamada real antes de mostrar nada -- si está
+  // inactivo o es inválido, no tiene sentido enseñar el formulario.
+  api("/frida-resultados").then(function () {
+    document.getElementById("vista-cargando").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    irA("inicio");
+  }).catch(function () {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    document.getElementById("vista-cargando").style.display = "none";
+    document.getElementById("vista-sin-acceso").style.display = "block";
+  });
+})();
+</script>
+</body>
+</html>
