@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contrato — Casa del Hipertenso y del Adulto Mayor | UPSIDE</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root{
+    --ground:#FAF8FC;--surface:#FFF;--ink:#1F1A26;--ink-soft:#453D50;--muted:#6E6478;
+    --rule:#E2DAEA;--accent:#5B3A82;--accent-soft:#EDE4F5;--on-accent:#FFF;
+    --go:#2F6B45;--go-soft:#E2F0E8;--warn:#A6432F;--warn-soft:#F9EBE7;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px 60px}
+  header{padding:40px 0 0;display:flex;flex-direction:column;gap:14px}
+  .brandrow{display:flex;justify-content:space-between;align-items:flex-start;
+            border-bottom:2px solid var(--accent);padding-bottom:10px;gap:16px;flex-wrap:wrap}
+  .brand{font-size:20px;font-weight:800;letter-spacing:.16em;color:var(--accent)}
+  .brand small{display:block;font-size:9px;font-weight:500;letter-spacing:.06em;color:var(--muted);margin-top:4px}
+  .docid{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7}
+  h1{font-family:var(--serif);font-size:clamp(23px,5vw,31px);line-height:1.15;font-weight:600;margin:0;text-wrap:balance}
+  .sub{color:var(--ink-soft);margin:0}
+  .vig{background:var(--accent-soft);border-radius:3px;padding:12px 16px;font-size:14.5px}
+  .vig b{color:var(--accent)}
+  .vig.expired{background:var(--warn-soft)} .vig.expired b{color:var(--warn)}
+  h2{font-size:12px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin:28px 0 8px}
+  p{margin:0 0 8px} ul,ol{margin:0 0 8px;padding:0;list-style:none}
+  li{padding-left:17px;position:relative;margin-bottom:5px}
+  li::before{content:"";position:absolute;left:3px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+  ol{counter-reset:c} ol>li{padding-left:23px}
+  ol>li::before{counter-increment:c;content:counter(c) ".";background:none;border-radius:0;width:auto;height:auto;top:0;left:2px;color:var(--accent);font-weight:700;font-size:14px}
+  .scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:340px}
+  th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+     color:var(--muted);font-weight:500;padding:0 10px 7px 0;border-bottom:1px solid var(--rule)}
+  td{padding:10px 10px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-soft)}
+  td:first-child{color:var(--ink)}
+  td.n,th.n{text-align:right;padding-right:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+  td.n{font-weight:700;color:var(--ink)}
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);padding:14px 18px;margin:12px 0}
+  .callout b{color:var(--accent)} .callout p:last-child{margin-bottom:0}
+  .signbox{background:var(--surface);border:2px solid var(--accent);border-radius:4px;padding:26px;margin-top:36px}
+  .signbox h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 6px}
+  .lead{color:var(--ink-soft);font-size:15px;margin-bottom:20px}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .field label{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .field input{font-family:var(--sans);font-size:16px;padding:12px 14px;border-radius:3px;
+               border:1px solid var(--rule);background:var(--ground);color:var(--ink);width:100%}
+  .field input:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .hint{font-size:12.5px;color:var(--muted)}
+  .field.bad input{border-color:var(--warn)} .field.bad .hint{color:var(--warn)}
+  .padwrap{border:1px solid var(--rule);border-radius:3px;background:#fff;position:relative;touch-action:none}
+  .padwrap.bad{border-color:var(--warn)}
+  canvas{display:block;width:100%;height:170px;cursor:crosshair;touch-action:none}
+  .padline{position:absolute;left:22px;right:22px;bottom:38px;border-bottom:1px solid #C9BEDA;pointer-events:none}
+  .padhint{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:12.5px;
+           color:#9A8FA6;pointer-events:none}
+  .padtools{display:flex;justify-content:flex-end;margin-top:7px}
+  .link{background:none;border:none;color:var(--accent);font-size:13.5px;font-weight:600;
+        cursor:pointer;padding:5px 2px;width:auto;text-decoration:underline}
+  .chk{display:flex;gap:11px;align-items:flex-start;margin:20px 0;font-size:15px;color:var(--ink-soft)}
+  .chk input{margin-top:4px;width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
+  button{font-family:var(--sans);font-size:16px;font-weight:700;padding:14px 26px;border:none;
+         border-radius:3px;background:var(--accent);color:var(--on-accent);cursor:pointer;width:100%}
+  button:hover{filter:brightness(1.08)} button:disabled{opacity:.45;cursor:not-allowed}
+  button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  button.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent);margin-top:10px}
+  .receipt{background:var(--go-soft);border:2px solid var(--go);border-radius:4px;padding:26px;margin-top:36px}
+  .receipt h3{font-family:var(--serif);font-size:22px;font-weight:600;margin:0 0 4px;color:var(--go)}
+  .rgrid{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;margin:18px 0;font-size:15px}
+  .rgrid dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+  .rgrid dd{margin:0;color:var(--ink);font-weight:600}
+  .hash{font-family:var(--mono);font-size:12.5px;word-break:break-all;font-weight:400;color:var(--ink-soft)}
+  .firmas{display:flex;gap:36px;margin-top:30px;padding-top:8px}
+  .firmas>div{flex:1;text-align:center}
+  .firmaimg{height:74px;display:flex;align-items:flex-end;justify-content:center}
+  .firmaimg img{max-height:74px;max-width:100%}
+  .firmaimg .nombre{font-family:var(--serif);font-size:19px;color:var(--ink);padding-bottom:6px}
+  .firmarule{border-top:1px solid var(--ink-soft);padding-top:7px;font-size:12.5px;color:var(--muted);line-height:1.45}
+  .hidden{display:none!important}
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted);text-align:center}
+  @media(max-width:560px){.wrap{padding:0 16px 48px}.signbox,.receipt{padding:20px}
+    .rgrid{grid-template-columns:1fr;gap:3px 0}.rgrid dd{margin-bottom:10px}
+    .firmas{flex-direction:column;gap:26px}}
+  @media print{
+    @page{size:A4;margin:16mm 15mm}
+    body{background:#fff;font-size:10pt;line-height:1.45}
+    .wrap{max-width:100%;padding:0}
+    header{padding-top:0}
+    .noprint,.signbox,.receipt button,.vig{display:none!important}
+    .receipt{background:#fff;border:none;padding:0;margin-top:22px;page-break-inside:avoid}
+    .receipt h3{color:var(--ink);font-size:13pt}
+    h2{margin:14px 0 5px;page-break-after:avoid} p,li{orphans:3;widows:3}
+    .callout{background:#F4EFF9!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .firmas{page-break-inside:avoid}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brandrow">
+    <div class="brand">UPSIDE<small>AUTOMATIZACIÓN Y CAPTACIÓN</small></div>
+    <div class="docid">Contrato CH-2026-08<br>Ciudad de México</div>
+  </div>
+  <h1>Contrato de prestación de servicios de publicidad digital</h1>
+  <p class="sub">Para <b>Dra. Mónica Gertrudis García González</b> — Casa del Hipertenso y del
+     Adulto Mayor, Col. Nápoles, Ciudad de México.</p>
+  <div class="vig" id="vig"></div>
+</header>
+<h2>Declaraciones</h2>
+<p><b>I. Declara EL PRESTADOR</b>, Santiago Arroyo Pavón, quien opera bajo la marca comercial UPSIDE:</p>
+<ul>
+  <li>Ser persona física con actividad empresarial bajo el Régimen Simplificado de Confianza (RESICO).</li>
+  <li>RFC: <b>AOPS070717546</b>.</li>
+  <li>Domicilio: Cerro de Quetzal 317, Campestre Churubusco, C.P. 04200, Ciudad de México.</li>
+  <li>Contar con la capacidad técnica y los medios para prestar los servicios objeto de este contrato.</li>
+</ul>
+<p><b>II. Declara LA CLIENTE</b>, Dra. Mónica Gertrudis García González:</p>
+<ul>
+  <li>Ser persona física con actividad profesional, titular del consultorio médico
+      <b>Casa del Hipertenso y del Adulto Mayor</b>, en la Col. Nápoles, Ciudad de México.</li>
+  <li>Contar con cédula profesional vigente y con el <b>permiso de publicidad ante COFEPRIS</b>
+      requerido para anunciar servicios médicos.</li>
+  <li>Su RFC queda asentado al momento de la firma, al final de este documento.</li>
+</ul>
+
+<h2>Primera — Objeto</h2>
+<p>EL PRESTADOR se obliga a diseñar, implementar y administrar una campaña de publicidad digital en
+las plataformas de Meta (Facebook e Instagram), con el fin de generar conversaciones por WhatsApp
+con pacientes potenciales para el consultorio de LA CLIENTE en la Ciudad de México.</p>
+
+<h2>Segunda — Alcance y entregables</h2>
+<ol>
+  <li>Producción de creativos publicitarios en formatos 1:1, 4:5 y 9:16, y edición de un video
+      vertical a partir del material que grabe LA CLIENTE.</li>
+  <li>Configuración de WhatsApp Business con enlace de mensaje directo y del sistema de medición
+      de conversaciones iniciadas.</li>
+  <li>Montaje de la campaña con presupuesto por conjunto de anuncios, segmentada a la Ciudad de México.</li>
+  <li>Verificación de que el folio del permiso COFEPRIS de LA CLIENTE aparezca en cada pieza publicitaria.</li>
+  <li>Administración y optimización continua de la campaña durante la vigencia del servicio.</li>
+  <li>Reporte mensual con número de conversaciones generadas y costo por conversación.</li>
+  <li><b>Página web de una sola página para el consultorio, sin costo adicional</b>, siempre que
+      LA CLIENTE continúe con el servicio de administración después del primer mes.</li>
+</ol>
+
+<h2>Tercera — Exclusiones</h2>
+<p>No forman parte de este contrato, salvo acuerdo posterior por escrito: el presupuesto publicitario
+pagado a Meta; la atención o respuesta de los mensajes recibidos; el agendado de citas; el desarrollo
+de agentes conversacionales automatizados; la producción de video profesional; ni la gestión de
+trámites sanitarios ante COFEPRIS.</p>
+
+<h2>Cuarta — Inversión y forma de pago</h2>
+<div class="scroll">
+<table>
+  <thead><tr><th>Concepto</th><th>Momento</th><th class="n">Monto</th></tr></thead>
+  <tbody>
+    <tr><td>Implementación, primer pago</td><td>A la firma</td><td class="n">$1,500.00</td></tr>
+    <tr><td>Implementación, segundo pago <b>(condicionado)</b></td><td>Cierre del mes 1</td><td class="n">$4,500.00</td></tr>
+    <tr><td>Administración mensual</td><td>Desde el mes 2</td><td class="n">$2,500.00 / mes</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Montos en pesos mexicanos. Los datos bancarios para la transferencia se envían junto con este
+contrato en el correo electrónico correspondiente.</p>
+
+<h2>Quinta — Condición del segundo pago</h2>
+<div class="callout">
+  <p><b>El segundo pago de $4,500.00 únicamente se genera si la campaña produce 40 o más
+  conversaciones de WhatsApp</b> durante los primeros 30 días naturales contados a partir de la
+  fecha en que los anuncios entren en circulación.</p>
+  <p>Si al término de ese periodo no se alcanzan las 40 conversaciones, <b>LA CLIENTE no queda
+  obligada a cubrir dicho monto</b> y el primer pago de $1,500.00 se considera liquidación total
+  de la implementación.</p>
+</div>
+<p><b>Medición:</b> se contabiliza como conversación todo mensaje entrante recibido en el número de
+WhatsApp de LA CLIENTE proveniente de un anuncio de la campaña, según el reporte de la plataforma
+de Meta. Ambas partes reconocen dicho reporte como la fuente de verdad. LA CLIENTE puede verificar
+el conteo en su propio dispositivo.</p>
+
+<h2>Sexta — Presupuesto publicitario</h2>
+<p>El presupuesto publicitario <b>no es un cobro de EL PRESTADOR</b>. LA CLIENTE lo paga
+directamente a Meta Platforms desde su propio método de pago. El monto sugerido de arranque es de
+<b>$5,000.00 MXN mensuales</b>; LA CLIENTE puede consultarlo y modificarlo en cualquier momento.
+EL PRESTADOR no responde por cargos, suspensiones o rechazos de pago imputables a Meta o al medio
+de pago de LA CLIENTE.</p>
+
+<h2>Séptima — Cuenta publicitaria y accesos</h2>
+<p>La campaña se aloja en una cuenta publicitaria dentro del <b>Business Manager propiedad de
+LA CLIENTE</b>, sobre la cual EL PRESTADOR recibirá acceso de administrador durante la vigencia del
+contrato. Al terminar la relación, EL PRESTADOR entregará los accesos y se retirará de la cuenta,
+que permanecerá en propiedad de LA CLIENTE junto con su historial y sus públicos.</p>
+
+<h2>Octava — Obligaciones de LA CLIENTE</h2>
+<ul>
+  <li>Proporcionar un número de WhatsApp dedicado al consultorio y mantenerlo operativo.</li>
+  <li>Grabar y entregar el video de presentación de aproximadamente 30 segundos, conforme al guion
+      que EL PRESTADOR le facilite.</li>
+  <li>Atender los mensajes recibidos en un plazo razonable. Las partes reconocen que el tiempo de
+      respuesta incide directamente en la conversión a cita.</li>
+  <li>Mantener vigente su permiso de publicidad ante COFEPRIS y su cédula profesional.</li>
+  <li>Entregar la información necesaria para la segmentación: colonias o alcaldías de cobertura,
+      horarios de atención y precios.</li>
+</ul>
+<p>Los plazos de este contrato quedan suspendidos mientras esté pendiente cualquier insumo a cargo
+de LA CLIENTE.</p>
+
+<h2>Novena — Responsabilidad sanitaria y profesional</h2>
+<p>EL PRESTADOR <b>no ejerce la medicina, no emite diagnósticos ni recomendaciones clínicas</b>, y
+no interviene en la relación médico-paciente. LA CLIENTE es la única responsable del contenido
+médico, de la veracidad de las afirmaciones sanitarias que apruebe para su publicación y del
+cumplimiento de los artículos 300 y 301 de la Ley General de Salud y su Reglamento en materia de
+publicidad. Todo material publicitario será aprobado por LA CLIENTE antes de su publicación.</p>
+
+<h2>Décima — Protección de datos personales</h2>
+<p>Conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares,
+LA CLIENTE es la responsable del tratamiento de los datos de sus pacientes y EL PRESTADOR actúa
+como encargado, limitándose a las instrucciones de LA CLIENTE. Las partes reconocen que los datos
+sensibles de salud requieren consentimiento expreso y por escrito de su titular.
+<b>EL PRESTADOR no accede, almacena ni trata expedientes clínicos.</b> Subencargado autorizado:
+Meta Platforms, para el tratamiento de datos de contacto derivados de la campaña.</p>
+
+<h2>Décima primera — Propiedad intelectual</h2>
+<p>Los creativos publicitarios producidos específicamente para LA CLIENTE, así como la página web
+entregada, pasan a su propiedad una vez cubiertos los pagos correspondientes. EL PRESTADOR conserva
+los derechos sobre su metodología, plantillas, frameworks y conocimiento técnico previo, los cuales
+no se transfieren. EL PRESTADOR podrá referirse a este proyecto como caso de éxito, sin divulgar
+información confidencial y previa autorización de LA CLIENTE.</p>
+
+<h2>Décima segunda — Confidencialidad</h2>
+<p>Ambas partes se obligan a mantener la confidencialidad de la información comercial, técnica y
+financiera compartida, durante la vigencia del contrato y por dos años posteriores a su terminación.</p>
+
+<h2>Décima tercera — Vigencia y cancelación</h2>
+<ul>
+  <li>El contrato inicia en la fecha de firma y de recepción del primer pago.</li>
+  <li>La campaña entrará en circulación entre <b>5 y 7 días naturales</b> posteriores, sujeto a la
+      entrega de los insumos a cargo de LA CLIENTE.</li>
+  <li><b>La administración mensual no tiene plazo forzoso.</b> Cualquiera de las partes puede darla
+      por terminada mediante aviso por escrito con <b>15 días naturales</b> de anticipación.</li>
+  <li>La cancelación no exime del pago de los servicios ya devengados a la fecha de terminación.</li>
+  <li><b>Las condiciones económicas de este contrato tienen vigencia de firma hasta el 3 de
+      septiembre de 2026.</b> Después de esa fecha quedan sujetas a revisión.</li>
+</ul>
+
+<h2>Décima cuarta — Limitación de responsabilidad</h2>
+<p>EL PRESTADOR se obliga a prestar sus servicios con diligencia profesional, sin garantizar un
+número determinado de pacientes, citas o ingresos, por depender estos de factores fuera de su
+control. La única garantía de resultado pactada es la establecida en la cláusula Quinta. La
+responsabilidad máxima de EL PRESTADOR se limita al monto efectivamente pagado por LA CLIENTE.</p>
+
+<h2>Décima quinta — Jurisdicción</h2>
+<p>Para la interpretación y cumplimiento de este contrato, las partes se someten a las leyes
+aplicables y a los tribunales competentes de la Ciudad de México, renunciando a cualquier otro
+fuero que pudiera corresponderles.</p>
+<div class="signbox noprint" id="signbox">
+  <h3>Aceptación y firma</h3>
+  <p class="lead">Complete sus datos y firme con el dedo o el mouse. La fecha se registra
+     automáticamente al momento de firmar.</p>
+
+  <div class="field" id="f-rfc">
+    <label for="rfc">RFC de LA CLIENTE</label>
+    <input id="rfc" type="text" maxlength="13" autocomplete="off" spellcheck="false"
+           placeholder="GAGM800101ABC" aria-describedby="h-rfc">
+    <span class="hint" id="h-rfc">13 caracteres, como aparece en su constancia de situación fiscal.</span>
+  </div>
+
+  <div class="field" id="f-nom">
+    <label for="nom">Nombre completo</label>
+    <input id="nom" type="text" autocomplete="name" value="Mónica Gertrudis García González">
+    <span class="hint">Tal como desea que aparezca en el contrato.</span>
+  </div>
+
+  <div class="field" id="f-pad">
+    <label for="pad">Su firma</label>
+    <div class="padwrap" id="padwrap">
+      <canvas id="pad" aria-label="Área para dibujar su firma"></canvas>
+      <div class="padline"></div>
+      <div class="padhint" id="padhint">Firme aquí con el dedo o el mouse</div>
+    </div>
+    <div class="padtools"><button type="button" class="link" id="clear">Borrar y volver a firmar</button></div>
+  </div>
+
+  <label class="chk">
+    <input type="checkbox" id="acc">
+    <span>He leído el contrato completo y acepto sus términos, incluidas las condiciones
+    económicas y la condición del segundo pago descrita en la cláusula Quinta.</span>
+  </label>
+
+  <button id="btn" disabled>Firmar contrato</button>
+</div>
+
+<div class="receipt hidden" id="receipt">
+  <h3>Contrato firmado</h3>
+  <p style="color:var(--ink-soft);margin-bottom:0" class="noprint">Descargue el contrato firmado
+     y envíelo a León para que quede constancia.</p>
+  <dl class="rgrid">
+    <dt>Firmante</dt><dd id="r-nom"></dd>
+    <dt>RFC</dt><dd id="r-rfc"></dd>
+    <dt>Fecha y hora</dt><dd id="r-fecha"></dd>
+    <dt>Acuse</dt><dd class="hash" id="r-hash"></dd>
+  </dl>
+
+  <div class="firmas">
+    <div>
+      <div class="firmaimg"><img id="f-img" alt="Firma de LA CLIENTE"></div>
+      <div class="firmarule"><b>LA CLIENTE</b><br><span id="f-nombre"></span><br>
+        Casa del Hipertenso y del Adulto Mayor</div>
+    </div>
+    <div>
+      <div class="firmaimg"><span class="nombre">Santiago Arroyo Pavón</span></div>
+      <div class="firmarule"><b>EL PRESTADOR</b><br>Santiago Arroyo Pavón<br>
+        Marca comercial UPSIDE · RFC AOPS070717546</div>
+    </div>
+  </div>
+
+  <button id="dl" style="margin-top:24px">Descargar contrato firmado (PDF)</button>
+  <button class="ghost" id="mail">Enviar acuse por correo a León</button>
+</div>
+
+<div class="foot">UPSIDE · Ciudad de México · Contrato CH-2026-08</div>
+</div>
+
+<script>
+(function(){
+  var LIMITE=new Date(2026,8,3,23,59,59);
+  var MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var rfc=document.getElementById('rfc'),nom=document.getElementById('nom'),
+      acc=document.getElementById('acc'),btn=document.getElementById('btn'),
+      pad=document.getElementById('pad'),vig=document.getElementById('vig'),
+      padhint=document.getElementById('padhint');
+
+  var hoy=new Date();
+  if(hoy<=LIMITE){
+    var d=Math.ceil((LIMITE-hoy)/86400000);
+    vig.innerHTML='<span>Estas condiciones están <b>vigentes hasta el 3 de septiembre de 2026</b>'+
+      (d<=14?' — quedan '+d+(d===1?' día':' días'):'')+'.</span>';
+  }else{
+    vig.className='vig expired';
+    vig.innerHTML='<span>La vigencia de estas condiciones <b>terminó el 3 de septiembre de 2026</b>. '+
+      'Puede firmar, pero los términos quedan sujetos a confirmación por parte de UPSIDE.</span>';
+  }
+
+  // ---- pad de firma ----
+  var ctx=pad.getContext('2d'),dibujando=false,haytrazo=false,last=null;
+  function ajusta(){
+    var r=pad.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+    var img=haytrazo?pad.toDataURL():null;
+    pad.width=Math.round(r.width*dpr); pad.height=Math.round(r.height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1F1A26';
+    if(img){var i=new Image();i.onload=function(){ctx.drawImage(i,0,0,r.width,r.height)};i.src=img;}
+  }
+  window.addEventListener('resize',ajusta); ajusta();
+
+  function pos(e){var r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  pad.addEventListener('pointerdown',function(e){
+    e.preventDefault(); pad.setPointerCapture(e.pointerId);
+    dibujando=true; last=pos(e); padhint.style.display='none';
+  });
+  pad.addEventListener('pointermove',function(e){
+    if(!dibujando)return; e.preventDefault();
+    var p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    last=p; haytrazo=true; valida();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    pad.addEventListener(ev,function(){dibujando=false;});
+  });
+  document.getElementById('clear').addEventListener('click',function(){
+    ctx.clearRect(0,0,pad.width,pad.height); haytrazo=false;
+    padhint.style.display=''; valida();
+  });
+
+  var RE=/^[A-ZÑ&]{4}[0-9]{6}[A-Z0-9]{3}$/;
+  function limpio(v){return (v||'').toUpperCase().replace(/[^A-ZÑ&0-9]/g,'');}
+  function valida(){
+    var okR=RE.test(limpio(rfc.value)), okN=nom.value.trim().length>=5;
+    document.getElementById('f-rfc').className='field'+(rfc.value&&!okR?' bad':'');
+    document.getElementById('h-rfc').textContent=(rfc.value&&!okR)
+      ?'Revise el formato: 4 letras, 6 dígitos de fecha y 3 caracteres. Ejemplo: GAGM800101ABC.'
+      :'13 caracteres, como aparece en su constancia de situación fiscal.';
+    document.getElementById('padwrap').className='padwrap';
+    btn.disabled=!(okR&&okN&&acc.checked&&haytrazo);
+    return okR&&okN&&acc.checked&&haytrazo;
+  }
+  rfc.addEventListener('input',function(){rfc.value=limpio(rfc.value);valida();});
+  nom.addEventListener('input',valida); acc.addEventListener('change',valida);
+
+  function folio(r,f){
+    var b='CH-2026-08|'+r+'|'+f,h=0;
+    for(var i=0;i<b.length;i++){h=((h<<5)-h+b.charCodeAt(i))|0;}
+    return 'CH-'+Math.abs(h).toString(36).toUpperCase().padStart(7,'0');
+  }
+
+  btn.addEventListener('click',function(){
+    if(!valida()){document.getElementById('padwrap').className='padwrap'+(haytrazo?'':' bad');return;}
+    var d=new Date();
+    var fecha=d.getDate()+' de '+MESES[d.getMonth()]+' de '+d.getFullYear()+', '+
+              String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+' h';
+    var n=nom.value.trim(), r=limpio(rfc.value), code=folio(r,fecha);
+
+    document.getElementById('r-nom').textContent=n;
+    document.getElementById('r-rfc').textContent=r;
+    document.getElementById('r-fecha').textContent=fecha;
+    document.getElementById('r-hash').textContent=code;
+    document.getElementById('f-nombre').textContent=n;
+    document.getElementById('f-img').src=pad.toDataURL('image/png');
+
+    document.getElementById('signbox').classList.add('hidden');
+    var rec=document.getElementById('receipt');
+    rec.classList.remove('hidden');
+    rec.scrollIntoView({behavior:'smooth',block:'center'});
+
+    var texto='ACUSE DE FIRMA — Contrato CH-2026-08 (UPSIDE)\n\n'+
+      'Firmante: '+n+'\nRFC: '+r+'\nFecha y hora: '+fecha+'\nAcuse: '+code+'\n\n'+
+      'Manifiesto que he leído el contrato completo y acepto sus términos, incluidas las '+
+      'condiciones económicas y la condición del segundo pago descrita en la cláusula Quinta.\n\n'+
+      'Adjunto el contrato firmado en PDF.';
+
+    document.getElementById('dl').onclick=function(){window.print();};
+    document.getElementById('mail').onclick=function(){
+      window.location.href='mailto:leondavidarroyo@gmail.com?subject='+
+        encodeURIComponent('Contrato firmado — Casa del Hipertenso (CH-2026-08)')+
+        '&body='+encodeURIComponent(texto);
+    };
+  });
+  valida();
+})();
+</script>
+</body>
+</html>
